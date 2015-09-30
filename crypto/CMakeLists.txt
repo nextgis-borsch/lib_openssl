@@ -56,7 +56,7 @@ configure_file( ${CMAKE_CURRENT_BINARY_DIR}/opensslconf.h.cmake ${CMAKE_CURRENT_
 set( LIBSRC cryptlib.c mem.c mem_clr.c mem_dbg.c cversion.c ex_data.c cpt_err.c
   ebcdic.c uid.c o_time.c o_str.c o_dir.c o_init.c )
 
-include_directories( ${CMAKE_CURRENT_BINARY_DIR} .. ../include . asn1 evp modes )
+include_directories( ${CMAKE_CURRENT_BINARY_DIR} .. ${PROJECT_BINARY_DIR}/include . asn1 evp modes )
 
 if( BUILD_SHARED_LIBS )
   add_definitions( -DOPENSSL_BUILD_SHLIBCRYPTO )
@@ -217,7 +217,7 @@ add_submodule ( x509v3 v3_bcons.c v3_bitst.c v3_conf.c v3_extku.c v3_ia5.c v3_li
 
 add_submodule ( . EXHEADERS crypto.h opensslv.h opensslconf.h ebcdic.h symhacks.h
   ossl_typ.h )
-
+  
 add_library ( ${the_target} SHARED ${LIBSRC} ${OBJECTS_SRC} )
 add_library ( ${the_target}static STATIC ${LIBSRC} ${OBJECTS_SRC} )
 

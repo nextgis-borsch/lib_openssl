@@ -27,9 +27,20 @@
 project( openssl )
 cmake_minimum_required( VERSION 2.8.10 )
 
-file(READ ${CMAKE_CURRENT_SOURCE_DIR}/include/openssl/opensslv.h VERSION_H_CONTENTS)
+file(GLOB_RECURSE HHEADERS FOLOW_SYMLYNKS ${CMAKE_CURRENT_SOURCE_DIR}/include/openssl/*.h )
+
+foreach(TO ${HHEADERS})
+    file(READ ${TO} PATH_CONTENTS)
+    #message(STATUS ${CMAKE_CURRENT_SOURCE_DIR}/include/openssl/${PATH_CONTENTS})
+    file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/include/openssl/${PATH_CONTENTS} DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/include/openssl)
+endforeach()
+
+file(READ ${CMAKE_CURRENT_BINARY_DIR}/include/openssl/opensslv.h VERSION_H_CONTENTS)
 string(REGEX MATCH "SHLIB_VERSION_NUMBER \"+([0-9.0-9.0-9]+)" VERSION ${VERSION_H_CONTENTS})
 string (REGEX MATCH "([0-9.0-9.0-9]+)" VERSION ${VERSION})
+
+set(PROJECT_BINARY_DIR ${CMAKE_CURRENT_BINARY_DIR})
+set(PROJECT_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR})
   
 message(STATUS "openssl version=[${VERSION}]")  
 
