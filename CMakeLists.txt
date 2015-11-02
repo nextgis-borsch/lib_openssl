@@ -1,7 +1,8 @@
 # Based on original work by David Manura
 # Copyright (C) 2007-2012 LuaDist.
 # Copyright (C) 2013 Brian Sidebotham
-
+# Copyright (C) 2015 NextGIS <info@nextgis.com>, Dmitry Baryshnikov <dmitry.baryshnikov@nextgis.com>
+#
 # Redistribution and use of this file is allowed according to the terms of the
 # MIT license.
 #
@@ -22,10 +23,16 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
+cmake_minimum_required( VERSION 2.8.10 FATAL_ERROR)
 
+set(PROJECT_NAME "openssl")
+project(${PROJECT_NAME})
 
-project( openssl )
-cmake_minimum_required( VERSION 2.8.10 )
+set(CMAKE_COLOR_MAKEFILE ON)
+set(CMAKE_CONFIGURATION_TYPES "Debug;Release" CACHE STRING "Configs" FORCE)
+
+# set path to additional CMake modules
+set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake ${CMAKE_MODULE_PATH})
 
 file(GLOB_RECURSE HHEADERS FOLOW_SYMLYNKS ${CMAKE_CURRENT_SOURCE_DIR}/include/openssl/*.h )
 
@@ -36,20 +43,38 @@ foreach(TO ${HHEADERS})
 endforeach()
 
 file(READ ${CMAKE_CURRENT_BINARY_DIR}/include/openssl/opensslv.h VERSION_H_CONTENTS)
-string(REGEX MATCH "SHLIB_VERSION_NUMBER \"+([0-9.0-9.0-9]+)" VERSION ${VERSION_H_CONTENTS})
-string (REGEX MATCH "([0-9.0-9.0-9]+)" VERSION ${VERSION})
+string(REGEX MATCH "OPENSSL_VERSION_NUMBER  0x([0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f])"
+      VERSION_NUM ${VERSION_H_CONTENTS})
+      
+string(SUBSTRING ${VERSION_NUM} 26 1 MAJOR_VER)
+string(SUBSTRING ${VERSION_NUM} 27 2 MINOR_VER)
+string(SUBSTRING ${VERSION_NUM} 29 2 REL_VER)
+string(SUBSTRING ${VERSION_NUM} 31 2 FIX_VER)
+
+include(util)
+    
+hex2dec(MAJOR_VER ${MAJOR_VER})
+hex2dec(MINOR_VER ${MINOR_VER})
+hex2dec(REL_VER ${REL_VER})
+hex2dec(FIX_VER ${FIX_VER})
+
+set(VERSION ${MAJOR_VER}.${MINOR_VER}.${REL_VER})
+
 
 set(PROJECT_BINARY_DIR ${CMAKE_CURRENT_BINARY_DIR})
 set(PROJECT_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR})
   
-message(STATUS "openssl version=[${VERSION}]")  
+message(STATUS "${PROJECT_NAME} version=[${VERSION}]")  
 
-add_definitions( -DOPENSSL_NO_ASM )
+add_definitions( -DOPENSSL_NO_ASM -DOPENSSL_THREADS)
 
 if( WIN32 AND NOT CYGWIN )
-  add_definitions( -DOPENSSL_SYSNAME_WIN32 )
-  add_definitions( -DWIN32_LEAN_AND_MEAN )
+    configure_file( ${CMAKE_MODULE_PATH}/version32.rc.cmake ${CMAKE_BINARY_DIR}/version32.rc )
 
+  add_definitions( -DOPENSSL_SYSNAME_WIN32 )
+  add_definitions( -DWIN32_LEAN_AND_MEAN -DDSO_WIN32)
+  add_definitions( -D_UNICODE -D_UNICODE -D_CRT_SECURE_NO_DEPRECATE)
+  
   # avoid conflict: ocsp.h and wincrypt.h
   add_definitions( -D_WINDLL )
 
@@ -59,8 +84,20 @@ if( MINGW )
   set( CMAKE_SHARED_LINKER_FLAGS "-Wl,--export-all" )
 endif()
 
-# set path to additional CMake modules
-set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake ${CMAKE_MODULE_PATH})
+option(BUILD_SHARED_LIBS "Set ON to build shared library" ON)
+
+if(BUILD_SHARED_LIBS)
+    add_definitions( -DOPENSSL_NO_STATIC_ENGINE)
+endif()
+
+include(ext_projects)
+use_zlib(ON)
+
+if(ZLIB_FOUND)
+    list(APPEND EXT_LIBS ${ZLIB_LIBRARIES})
+    include_directories(${ZLIB_INCLUDE_DIRS})
+    add_definitions( -DZLIB )
+endif()
 
 add_subdirectory( crypto )
 add_subdirectory( ssl )

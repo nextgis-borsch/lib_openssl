@@ -109,7 +109,7 @@ extern "C" {
 #undef OPENSSL_UNISTD
 #define OPENSSL_UNISTD <unistd.h>
 
-#undef OPENSSL_EXPORT_VAR_AS_FUNCTION
+#cmakedefine OPENSSL_EXPORT_VAR_AS_FUNCTION
 
 #if defined(HEADER_IDEA_H) && !defined(IDEA_INT)
 #define IDEA_INT unsigned int

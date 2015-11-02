@@ -1,7 +1,8 @@
 # Based on original work by David Manura
 # Copyright (C) 2007-2012 LuaDist.
 # Copyright (C) 2013 Brian Sidebotham
-
+# Copyright (C) 2015 NextGIS <info@nextgis.com>, Dmitry Baryshnikov <dmitry.baryshnikov@nextgis.com>
+#
 # Redistribution and use of this file is allowed according to the terms of the
 # MIT license.
 #
@@ -36,35 +37,51 @@ set ( LIBSRC s2_meth.c s2_srvr.c s2_clnt.c s2_lib.c s2_enc.c s2_pkt.c s3_meth.c 
   s23_lib.c s23_pkt.c t1_meth.c t1_srvr.c t1_clnt.c t1_lib.c t1_enc.c d1_meth.c d1_srvr.c
   d1_clnt.c d1_lib.c d1_pkt.c d1_both.c ssl_lib.c ssl_err2.c ssl_cert.c
   ssl_sess.c ssl_ciph.c ssl_stat.c ssl_rsa.c ssl_asn1.c ssl_txt.c ssl_algs.c bio_ssl.c
-  ssl_err.c kssl.c t1_reneg.c tls_srp.c s3_cbc.c d1_srtp.c )
+  ssl_err.c kssl.c t1_reneg.c tls_srp.c s3_cbc.c d1_srtp.c t1_ext.c )
   
 set(HHEADERS
     ssl.h ssl2.h ssl3.h ssl23.h tls1.h dtls1.h kssl.h
     )
-  
-add_library ( ${the_target} SHARED ${LIBSRC} )
-add_library ( ${the_target}static STATIC ${LIBSRC} )
+    
+include(util)
+include(ssl)
 
-target_link_libraries ( ${the_target} crypto )
-target_link_libraries ( ${the_target}static cryptostatic )
+make_def( SSL "${EXPORT_FUNC}"  "${CMAKE_BINARY_DIR}/ssl.def")
+
+    
+if(WIN32)   
+    set(LIBSRC ${LIBSRC} ${CMAKE_BINARY_DIR}/version32.rc)
+endif()
+  
+if( BUILD_SHARED_LIBS )  
+    add_library ( ${the_target} SHARED ${LIBSRC} ${CMAKE_BINARY_DIR}/ssl.def)    
+else()    
+    add_library ( ${the_target} STATIC ${LIBSRC} )
+endif()
+
+
+target_link_libraries ( ${the_target} crypto ${EXT_LIBS})
 
 if(UNIX)
     # On unix-like platforms the library is almost always called libproj
-   set_target_properties(${the_target} ${the_target}static PROPERTIES OUTPUT_NAME ssl)
+   set_target_properties(${the_target} PROPERTIES OUTPUT_NAME ssl)
 elseif(WIN32)
-    # Creates ssl.dll when building shared library version libeay/ssleay?
-    set_target_properties(${the_target} PROPERTIES OUTPUT_NAME ssl)
-    # Creates ssl_inc.lib when building static library version
-    set_target_properties(${the_target}static PROPERTIES OUTPUT_NAME ssl_inc)
+    if( BUILD_SHARED_LIBS )
+        # Creates ssl.dll when building shared library version libeay/ssleay?
+        set_target_properties(${the_target} PROPERTIES OUTPUT_NAME ssl)
+    else()
+        # Creates ssl_inc.lib when building static library version
+        set_target_properties(${the_target} PROPERTIES OUTPUT_NAME ssl_inc)
+    endif()
 endif()
-
+    
 set_target_properties(${the_target} PROPERTIES VERSION ${VERSION})
 set_target_properties(${the_target} PROPERTIES SOVERSION 1)
 
 install( FILES ${HHEADERS}
     DESTINATION include/openssl )
 
-install( TARGETS ${the_target} ${the_target}static
+install( TARGETS ${the_target}
     RUNTIME DESTINATION bin
     LIBRARY DESTINATION lib
     ARCHIVE DESTINATION lib )
