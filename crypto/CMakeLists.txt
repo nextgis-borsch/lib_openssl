@@ -23,13 +23,11 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
-
-set(the_target crypto)
-
-include( CMakeParseArguments )
+ 
+include(CMakeParseArguments)
 
 #~2DO: set BUILDINF_DATE to `date LC_ALL=C LC_TIME=C`
-configure_file ( ${CMAKE_MODULE_PATH}/buildinf.h.cmake buildinf.h )
+configure_file (${CMAKE_MODULE_PATH}/buildinf.h.cmake buildinf.h )
 
 if( WIN32 AND NOT CYGWIN) #AND MINGW AND NOT CYGWIN )
   set( OPENSSL_EXPORT_VAR_AS_FUNCTION true )
@@ -211,39 +209,37 @@ include(crypto)
 make_def( CRYPTO "${EXPORT_FUNC}"  "${CMAKE_BINARY_DIR}/crypto.def")
   
 if( BUILD_SHARED_LIBS )  
-    add_library ( ${the_target} SHARED ${LIBSRC} ${OBJECTS_SRC} ${CMAKE_BINARY_DIR}/crypto.def )    
+    add_library ( ${LIB_CRYPTO_NAME} SHARED ${LIBSRC} ${OBJECTS_SRC} ${CMAKE_BINARY_DIR}/crypto.def )    
 else()    
-    add_library ( ${the_target} STATIC ${LIBSRC} ${OBJECTS_SRC} )
+    add_library ( ${LIB_CRYPTO_NAME} STATIC ${LIBSRC} ${OBJECTS_SRC} )
 endif()  
 
 
-if(UNIX)
-    # On unix-like platforms the library is almost always called libproj
-   set_target_properties(${the_target} PROPERTIES OUTPUT_NAME crypto)
-elseif(WIN32)
-    if( BUILD_SHARED_LIBS )  
-        # Creates crypto.dll when building shared library version libeay/ssleay?
-        set_target_properties(${the_target} PROPERTIES OUTPUT_NAME crypto)
-    else()    
-        # Creates crypto_inc.lib when building static library version
-        set_target_properties(${the_target} PROPERTIES OUTPUT_NAME crypto_inc)
-    endif()    
-endif()
+#if(UNIX)
+#    # On unix-like platforms the library is almost always called libproj
+#   set_target_properties(${the_target} PROPERTIES OUTPUT_NAME crypto)
+#elseif(WIN32)
+#    if( BUILD_SHARED_LIBS )  
+#        # Creates crypto.dll when building shared library version libeay/ssleay?
+#        set_target_properties(${the_target} PROPERTIES OUTPUT_NAME crypto)
+#    else()    
+#        # Creates crypto_inc.lib when building static library version
+#        set_target_properties(${the_target} PROPERTIES OUTPUT_NAME crypto_inc)
+#    endif()    
+#endif()
 
-set_target_properties(${the_target} PROPERTIES VERSION ${VERSION})
-set_target_properties(${the_target} PROPERTIES SOVERSION 1)
+set_target_properties(${LIB_CRYPTO_NAME} PROPERTIES VERSION ${VERSION})
+set_target_properties(${LIB_CRYPTO_NAME} PROPERTIES SOVERSION 1)
 
-
-if( WIN32 AND NOT CYGWIN )
-  target_link_libraries( ${the_target} ws2_32 crypt32  ${EXT_LIBS})
+if(WIN32 AND NOT CYGWIN)
+    target_link_libraries(${LIB_CRYPTO_NAME} ws2_32 crypt32 ${EXT_LIBS})
 else()
-  target_link_libraries( ${the_target} ${EXT_LIBS})
+    target_link_libraries(${LIB_CRYPTO_NAME} ${EXT_LIBS})
 endif()
 
-install( DIRECTORY ${PROJECT_SOURCE_DIR}/include
-    DESTINATION ./ )
-
-install( TARGETS ${the_target}
-    RUNTIME DESTINATION bin
-    LIBRARY DESTINATION lib
-    ARCHIVE DESTINATION lib )
+install(TARGETS ${LIB_CRYPTO_NAME}
+    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR})
+    
+export(TARGETS ${LIB_CRYPTO_NAME} FILE ${LIB_CRYPTO_NAME}-exports.cmake EXPORT_LINK_INTERFACE_LIBRARIES)

@@ -23,12 +23,10 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
-
+ 
 include_directories ( ../crypto .. ${PROJECT_BINARY_DIR}/include )
 
-set(the_target ssl)
-
-if( BUILD_SHARED_LIBS )
+if(BUILD_SHARED_LIBS)
     add_definitions ( -DOPENSSL_BUILD_SHLIBSSL )
 endif()
 
@@ -46,42 +44,42 @@ set(HHEADERS
 include(util)
 include(ssl)
 
-make_def( SSL "${EXPORT_FUNC}"  "${CMAKE_BINARY_DIR}/ssl.def")
+make_def(SSL "${EXPORT_FUNC}"  "${CMAKE_BINARY_DIR}/ssl.def")
 
-    
 if(WIN32)   
     set(LIBSRC ${LIBSRC} ${CMAKE_BINARY_DIR}/version32.rc)
 endif()
   
-if( BUILD_SHARED_LIBS )  
-    add_library ( ${the_target} SHARED ${LIBSRC} ${CMAKE_BINARY_DIR}/ssl.def)    
+if(BUILD_SHARED_LIBS)  
+    add_library (${LIB_SSL_NAME} SHARED ${LIBSRC} ${CMAKE_BINARY_DIR}/ssl.def)    
 else()    
-    add_library ( ${the_target} STATIC ${LIBSRC} )
+    add_library (${LIB_SSL_NAME} STATIC ${LIBSRC})
 endif()
 
+target_link_libraries (${LIB_SSL_NAME} ${LIB_CRYPTO_NAME} ${EXT_LIBS})
 
-target_link_libraries ( ${the_target} crypto ${EXT_LIBS})
-
-if(UNIX)
-    # On unix-like platforms the library is almost always called libproj
-   set_target_properties(${the_target} PROPERTIES OUTPUT_NAME ssl)
-elseif(WIN32)
-    if( BUILD_SHARED_LIBS )
-        # Creates ssl.dll when building shared library version libeay/ssleay?
-        set_target_properties(${the_target} PROPERTIES OUTPUT_NAME ssl)
-    else()
-        # Creates ssl_inc.lib when building static library version
-        set_target_properties(${the_target} PROPERTIES OUTPUT_NAME ssl_inc)
-    endif()
-endif()
+#if(UNIX)
+#    # On unix-like platforms the library is almost always called libproj
+#   set_target_properties(${the_target} PROPERTIES OUTPUT_NAME ssl)
+#elseif(WIN32)
+#    if( BUILD_SHARED_LIBS )
+#        # Creates ssl.dll when building shared library version libeay/ssleay?
+#        set_target_properties(${the_target} PROPERTIES OUTPUT_NAME ssl)
+#    else()
+#        # Creates ssl_inc.lib when building static library version
+#        set_target_properties(${the_target} PROPERTIES OUTPUT_NAME ssl_inc)
+#    endif()
+#endif()
     
-set_target_properties(${the_target} PROPERTIES VERSION ${VERSION})
-set_target_properties(${the_target} PROPERTIES SOVERSION 1)
+set_target_properties(${LIB_SSL_NAME} PROPERTIES VERSION ${VERSION})
+set_target_properties(${LIB_SSL_NAME} PROPERTIES SOVERSION 1)
 
 install( FILES ${HHEADERS}
-    DESTINATION include/openssl )
+    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/openssl)
 
-install( TARGETS ${the_target}
-    RUNTIME DESTINATION bin
-    LIBRARY DESTINATION lib
-    ARCHIVE DESTINATION lib )
+install( TARGETS ${LIB_SSL_NAME}
+    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR})
+    
+export(TARGETS ${LIB_SSL_NAME} FILE ${LIB_SSL_NAME}-exports.cmake EXPORT_LINK_INTERFACE_LIBRARIES)
