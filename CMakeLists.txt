@@ -55,8 +55,8 @@ set(INSTALL_BIN_DIR ${CMAKE_INSTALL_BINDIR} CACHE INTERNAL "Installation directo
 set(INSTALL_LIB_DIR ${CMAKE_INSTALL_LIBDIR} CACHE INTERNAL "Installation directory for libraries" FORCE)
 set(INSTALL_INC_DIR ${CMAKE_INSTALL_INCLUDEDIR} CACHE INTERNAL "Installation directory for headers" FORCE)
 
+# Replace stub headers with actual ones.
 file(GLOB_RECURSE HHEADERS FOLOW_SYMLYNKS ${CMAKE_CURRENT_SOURCE_DIR}/include/openssl/*.h )
-
 foreach(TO ${HHEADERS})
     file(READ ${TO} PATH_CONTENTS)
     #message(STATUS ${CMAKE_CURRENT_SOURCE_DIR}/include/openssl/${PATH_CONTENTS})
@@ -104,7 +104,7 @@ endif()
 
 set(EXT_LIBS)
 
-find_anyproject(ZLIB DEFAULT ON)
+find_anyproject(ZLIB DEFAULT OFF)
 if(ZLIB_FOUND)
     set(EXT_LIBS ${EXT_LIBS} ${ZLIB_LIBRARIES})
 #    include_directories(${ZLIB_INCLUDE_DIRS})
@@ -119,14 +119,16 @@ set(EXPORT_TARGETS)
 add_subdirectory(crypto)
 add_subdirectory(ssl)
 
-install(FILES e_os2.h DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/openssl)
-
-install(DIRECTORY ${PROJECT_SOURCE_DIR}/include/openssl DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+#install(FILES e_os2.h DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/openssl)
 
 #install(FILES tools/c_hash tools/c_info tools/c_issuer tools/c_name tools/c_rehash
 #    FAQ LICENSE PROBLEMS README README.ASN1 README.ENGINE
 #    DESTINATION share/openssl )
 #install( DIRECTORY doc DESTINATION ./ )
+
+# Replaced headers will be copied. 
+file(GLOB_RECURSE FINAL_HEADERS FOLOW_SYMLYNKS ${CMAKE_CURRENT_BINARY_DIR}/include/openssl/*.h )
+install(FILES ${FINAL_HEADERS} DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/openssl)
 
 if(BUILD_SHARED_LIBS)
     set(EXPORT_NAME ${PROJECT_NAME})
