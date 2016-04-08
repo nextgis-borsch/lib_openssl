@@ -114,6 +114,8 @@ if(ZLIB_FOUND)
     endif()
 endif()
 
+set(EXPORT_TARGETS)
+
 add_subdirectory(crypto)
 add_subdirectory(ssl)
 
@@ -126,4 +128,11 @@ install(DIRECTORY ${PROJECT_SOURCE_DIR}/include/openssl DESTINATION ${CMAKE_INST
 #    DESTINATION share/openssl )
 #install( DIRECTORY doc DESTINATION ./ )
 
-
+if(BUILD_SHARED_LIBS)
+    set(EXPORT_NAME ${PROJECT_NAME})
+else()
+    set(EXPORT_NAME ${PROJECT_NAME}static)
+endif()
+if(EXPORT_TARGETS)
+    export(TARGETS ${EXPORT_TARGETS} FILE ${EXPORT_NAME}-exports.cmake EXPORT_LINK_INTERFACE_LIBRARIES)
+endif()
