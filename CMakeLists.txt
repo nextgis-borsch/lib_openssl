@@ -102,11 +102,11 @@ if(BUILD_SHARED_LIBS)
     add_definitions(-DOPENSSL_NO_STATIC_ENGINE)
 endif()
 
-set(EXT_LIBS)
+#set(EXT_LIBS)
 
 find_anyproject(ZLIB DEFAULT OFF)
 if(ZLIB_FOUND)
-    set(EXT_LIBS ${EXT_LIBS} ${ZLIB_LIBRARIES})
+#    set(EXT_LIBS ${EXT_LIBS} ${ZLIB_LIBRARIES})
 #    include_directories(${ZLIB_INCLUDE_DIRS})
     add_definitions(-DZLIB)
     if(BUILD_SHARED_LIBS)

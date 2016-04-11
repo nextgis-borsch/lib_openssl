@@ -51,12 +51,14 @@ if(WIN32)
 endif()
   
 if(BUILD_SHARED_LIBS)  
-    add_library (${LIB_SSL_NAME} SHARED ${LIBSRC} ${CMAKE_BINARY_DIR}/ssl.def)    
+    add_library(${LIB_SSL_NAME} SHARED ${LIBSRC} ${CMAKE_BINARY_DIR}/ssl.def)    
 else()    
-    add_library (${LIB_SSL_NAME} STATIC ${LIBSRC})
+    add_library(${LIB_SSL_NAME} STATIC ${LIBSRC})
 endif()
 
-target_link_libraries (${LIB_SSL_NAME} ${LIB_CRYPTO_NAME} ${EXT_LIBS})
+#target_link_libraries(${LIB_SSL_NAME} ${LIB_CRYPTO_NAME} ${EXT_LIBS})
+target_link_extlibraries(${LIB_SSL_NAME})
+target_link_libraries(${LIB_SSL_NAME} ${LIB_CRYPTO_NAME})
 
 #if(UNIX)
 #    # On unix-like platforms the library is almost always called libproj

@@ -206,12 +206,12 @@ add_submodule ( . EXHEADERS crypto.h opensslv.h opensslconf.h ebcdic.h symhacks.
 include(util)
 include(crypto)
 
-make_def( CRYPTO "${EXPORT_FUNC}"  "${CMAKE_BINARY_DIR}/crypto.def")
+make_def(CRYPTO "${EXPORT_FUNC}"  "${CMAKE_BINARY_DIR}/crypto.def")
   
-if( BUILD_SHARED_LIBS )  
-    add_library ( ${LIB_CRYPTO_NAME} SHARED ${LIBSRC} ${OBJECTS_SRC} ${CMAKE_BINARY_DIR}/crypto.def )    
+if(BUILD_SHARED_LIBS)  
+    add_library(${LIB_CRYPTO_NAME} SHARED ${LIBSRC} ${OBJECTS_SRC} ${CMAKE_BINARY_DIR}/crypto.def)    
 else()    
-    add_library ( ${LIB_CRYPTO_NAME} STATIC ${LIBSRC} ${OBJECTS_SRC} )
+    add_library(${LIB_CRYPTO_NAME} STATIC ${LIBSRC} ${OBJECTS_SRC})
 endif()  
 
 
@@ -232,10 +232,12 @@ set_target_properties(${LIB_CRYPTO_NAME} PROPERTIES VERSION ${VERSION})
 set_target_properties(${LIB_CRYPTO_NAME} PROPERTIES SOVERSION 1)
 
 if(WIN32 AND NOT CYGWIN)
-    target_link_libraries(${LIB_CRYPTO_NAME} ws2_32 crypt32 ${EXT_LIBS})
-else()
-    target_link_libraries(${LIB_CRYPTO_NAME} ${EXT_LIBS})
+    #target_link_libraries(${LIB_CRYPTO_NAME} ws2_32 crypt32 ${EXT_LIBS})
+    target_link_libraries(${LIB_CRYPTO_NAME} ws2_32 crypt32)
+#else()
+    #target_link_libraries(${LIB_CRYPTO_NAME} ${EXT_LIBS})
 endif()
+target_link_extlibraries(${LIB_CRYPTO_NAME})
 
 install(TARGETS ${LIB_CRYPTO_NAME}
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
