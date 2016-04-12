@@ -57,8 +57,9 @@ else()
 endif()
 
 #target_link_libraries(${LIB_SSL_NAME} ${LIB_CRYPTO_NAME} ${EXT_LIBS})
+set(TARGET_LINK_LIB ${TARGET_LINK_LIB} ${LIB_CRYPTO_NAME})
 target_link_extlibraries(${LIB_SSL_NAME})
-target_link_libraries(${LIB_SSL_NAME} ${LIB_CRYPTO_NAME})
+#target_link_libraries(${LIB_SSL_NAME} ${LIB_CRYPTO_NAME})
 
 #if(UNIX)
 #    # On unix-like platforms the library is almost always called libproj
