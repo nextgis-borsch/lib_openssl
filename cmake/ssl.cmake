@@ -304,5 +304,7 @@ set(EXPORT_FUNC
     TLSv1_method                            
     TLSv1_server_method                     
     d2i_SSL_SESSION                         
-    i2d_SSL_SESSION            
+    i2d_SSL_SESSION
+    SSL_get0_alpn_selected
+    SSL_CTX_set_alpn_protos
 )    
