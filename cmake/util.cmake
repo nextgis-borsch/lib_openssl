@@ -93,3 +93,38 @@ EXPORTS
     endforeach()
     file( WRITE ${FILE_PATH} "${CONF}" )
 endmacro()
+
+function(check_version major minor rev fix)
+    if(WIN32)
+        file(READ ${CMAKE_CURRENT_BINARY_DIR}/include/openssl/opensslv.h VERSION_H_CONTENTS)
+    else()
+        file(READ ${CMAKE_CURRENT_SOURCE_DIR}/include/openssl/opensslv.h VERSION_H_CONTENTS)
+    endif()
+    string(REGEX MATCH "OPENSSL_VERSION_NUMBER  0x([0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f])"
+          VERSION_NUM ${VERSION_H_CONTENTS})      
+    string(SUBSTRING ${VERSION_NUM} 26 1 MAJOR_VER)
+    string(SUBSTRING ${VERSION_NUM} 27 2 MINOR_VER)
+    string(SUBSTRING ${VERSION_NUM} 29 2 REL_VER)
+    string(SUBSTRING ${VERSION_NUM} 31 2 FIX_VER)
+    
+    hex2dec(MAJOR_VER ${MAJOR_VER})
+    hex2dec(MINOR_VER ${MINOR_VER})
+    hex2dec(REL_VER ${REL_VER})
+    hex2dec(FIX_VER ${FIX_VER})
+
+    set(${major} ${MAJOR_VER} PARENT_SCOPE)
+    set(${minor} ${MINOR_VER} PARENT_SCOPE)
+    set(${rev} ${REL_VER} PARENT_SCOPE)
+    set(${fix} ${FIX_VER} PARENT_SCOPE)
+     
+endfunction()
+
+function(report_version name ver)
+
+    string(ASCII 27 Esc)
+    set(BoldYellow  "${Esc}[1;33m")
+    set(ColourReset "${Esc}[m")
+        
+    message(STATUS "${BoldYellow}${name} version ${ver}${ColourReset}")
+    
+endfunction()    

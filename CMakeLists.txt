@@ -29,7 +29,7 @@
 
 cmake_minimum_required(VERSION 2.8.12 FATAL_ERROR)
 
-set(PROJECT_NAME "openssl")
+set(PROJECT_NAME openssl)
 project(${PROJECT_NAME})
 
 set(CMAKE_COLOR_MAKEFILE ON)
@@ -56,27 +56,19 @@ set(INSTALL_LIB_DIR ${CMAKE_INSTALL_LIBDIR} CACHE INTERNAL "Installation directo
 set(INSTALL_INC_DIR ${CMAKE_INSTALL_INCLUDEDIR} CACHE INTERNAL "Installation directory for headers" FORCE)
 
 # Replace stub headers with actual ones.
-file(GLOB_RECURSE HHEADERS FOLOW_SYMLYNKS ${CMAKE_CURRENT_SOURCE_DIR}/include/openssl/*.h )
-foreach(TO ${HHEADERS})
-    file(READ ${TO} PATH_CONTENTS)
-    #message(STATUS ${CMAKE_CURRENT_SOURCE_DIR}/include/openssl/${PATH_CONTENTS})
-    file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/include/openssl/${PATH_CONTENTS} DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/include/openssl)
-endforeach()
+if(WIN32)
+    file(GLOB_RECURSE HHEADERS FOLOW_SYMLYNKS ${CMAKE_CURRENT_SOURCE_DIR}/include/openssl/*.h )
+    foreach(TO ${HHEADERS})
+        file(READ ${TO} PATH_CONTENTS)
+        #message(STATUS ${CMAKE_CURRENT_SOURCE_DIR}/include/openssl/${PATH_CONTENTS})
+        file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/include/openssl/${PATH_CONTENTS} DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/include/openssl)
+    endforeach()
+endif()
 
-file(READ ${CMAKE_CURRENT_BINARY_DIR}/include/openssl/opensslv.h VERSION_H_CONTENTS)
-string(REGEX MATCH "OPENSSL_VERSION_NUMBER  0x([0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f])"
-      VERSION_NUM ${VERSION_H_CONTENTS})      
-string(SUBSTRING ${VERSION_NUM} 26 1 MAJOR_VER)
-string(SUBSTRING ${VERSION_NUM} 27 2 MINOR_VER)
-string(SUBSTRING ${VERSION_NUM} 29 2 REL_VER)
-string(SUBSTRING ${VERSION_NUM} 31 2 FIX_VER)
 include(util)
-hex2dec(MAJOR_VER ${MAJOR_VER})
-hex2dec(MINOR_VER ${MINOR_VER})
-hex2dec(REL_VER ${REL_VER})
-hex2dec(FIX_VER ${FIX_VER})
+check_version(MAJOR_VER MINOR_VER REL_VER FIX_VER)
 set(VERSION ${MAJOR_VER}.${MINOR_VER}.${REL_VER})
-message(STATUS "${PROJECT_NAME} version=[${VERSION}]")  
+report_version(${PROJECT_NAME} ${VERSION})  
 
 set(PROJECT_BINARY_DIR ${CMAKE_CURRENT_BINARY_DIR})
 set(PROJECT_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR})
@@ -127,13 +119,17 @@ add_subdirectory(ssl)
 #install( DIRECTORY doc DESTINATION ./ )
 
 # Replaced headers will be copied. 
-file(GLOB_RECURSE FINAL_HEADERS FOLOW_SYMLYNKS ${CMAKE_CURRENT_BINARY_DIR}/include/openssl/*.h )
+if(WIN32)
+    file(GLOB_RECURSE FINAL_HEADERS FOLOW_SYMLYNKS ${CMAKE_CURRENT_BINARY_DIR}/include/openssl/*.h )
+else()
+    file(GLOB_RECURSE FINAL_HEADERS FOLOW_SYMLYNKS ${CMAKE_CURRENT_SOURCE_DIR}/include/openssl/*.h )
+endif()
 install(FILES ${FINAL_HEADERS} DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/openssl)
 
 if(BUILD_SHARED_LIBS)
-    set(EXPORT_NAME ${PROJECT_NAME})
+    set(EXPORT_NAME openssl)
 else()
-    set(EXPORT_NAME ${PROJECT_NAME}static)
+    set(EXPORT_NAME opensslstatic)
 endif()
 if(EXPORT_TARGETS)
     export(TARGETS ${EXPORT_TARGETS} FILE ${EXPORT_NAME}-exports.cmake EXPORT_LINK_INTERFACE_LIBRARIES)
