@@ -41,8 +41,7 @@ if(WIN32)
     set(LIBSRC ${LIBSRC} ${CMAKE_BINARY_DIR}/version32.rc)
 endif()
 
-include_directories( ${PROJECT_SOURCE_DIR}/include 
-                     ${CMAKE_CURRENT_BINARY_DIR} 
+include_directories( ${CMAKE_CURRENT_BINARY_DIR} 
                      .. 
                      ${PROJECT_BINARY_DIR}/include 
                      . 
@@ -50,6 +49,9 @@ include_directories( ${PROJECT_SOURCE_DIR}/include
                      evp 
                      modes 
                    )
+if(NOT WIN32)
+    include_directories( ${PROJECT_SOURCE_DIR}/include)
+endif()
 
 if( BUILD_SHARED_LIBS )
   add_definitions( -DOPENSSL_BUILD_SHLIBCRYPTO )
