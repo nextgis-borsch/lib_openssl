@@ -24,7 +24,10 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
  
-include_directories ( ../crypto .. ${PROJECT_BINARY_DIR}/include )
+include_directories ( ${PROJECT_SOURCE_DIR}/include
+                      ../crypto 
+                      .. 
+                      ${PROJECT_BINARY_DIR}/include )
 
 if(BUILD_SHARED_LIBS)
     add_definitions ( -DOPENSSL_BUILD_SHLIBSSL )
