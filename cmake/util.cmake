@@ -74,8 +74,9 @@ endmacro()
 
 macro(make_def LIB_NAME FUNCTION_LIST FILE_PATH)
 
-message(STATUS "make_def ${LIB_NAME} ${FILE_PATH}")  
-    if(NOT EXIST FILE_PATH)
+    if(NOT EXISTS FILE_PATH)
+
+        message(STATUS "make_def ${LIB_NAME} ${FILE_PATH}")  
    
     set( CONF 
     "
