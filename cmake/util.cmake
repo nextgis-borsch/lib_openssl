@@ -75,7 +75,8 @@ endmacro()
 macro(make_def LIB_NAME FUNCTION_LIST FILE_PATH)
 
 message(STATUS "make_def ${LIB_NAME} ${FILE_PATH}")  
-
+    if(NOT EXIST FILE_PATH)
+   
     set( CONF 
     "
 ;
@@ -92,6 +93,8 @@ EXPORTS
         set( CONF "${CONF}    ${FUNC}\n")
     endforeach()
     file( WRITE ${FILE_PATH} "${CONF}" )
+
+    endif()
 endmacro()
 
 function(check_version major minor rev fix)
