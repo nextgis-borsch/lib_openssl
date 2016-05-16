@@ -56,14 +56,16 @@ set(INSTALL_LIB_DIR ${CMAKE_INSTALL_LIBDIR} CACHE INTERNAL "Installation directo
 set(INSTALL_INC_DIR ${CMAKE_INSTALL_INCLUDEDIR} CACHE INTERNAL "Installation directory for headers" FORCE)
 
 # Replace stub headers with actual ones.
-if(WIN32)
+#if(WIN32)
     file(GLOB_RECURSE HHEADERS FOLOW_SYMLYNKS ${CMAKE_CURRENT_SOURCE_DIR}/include/openssl/*.h )
     foreach(TO ${HHEADERS})
-        file(READ ${TO} PATH_CONTENTS)
-        #message(STATUS ${CMAKE_CURRENT_SOURCE_DIR}/include/openssl/${PATH_CONTENTS})
-        file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/include/openssl/${PATH_CONTENTS} DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/include/openssl)
+        get_filename_component(HHEADER ${TO} NAME)
+        configure_file(${TO} ${CMAKE_CURRENT_BINARY_DIR}/include/openssl/${HHEADER} COPYONLY)
+        #file(READ ${TO} PATH_CONTENTS)
+        ##message(STATUS ${CMAKE_CURRENT_SOURCE_DIR}/include/openssl/${PATH_CONTENTS})
+        #file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/include/openssl/${PATH_CONTENTS} DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/include/openssl)
     endforeach()
-endif()
+#endif()
 
 include(util)
 check_version(MAJOR_VER MINOR_VER REL_VER FIX_VER)
@@ -119,11 +121,11 @@ add_subdirectory(ssl)
 #install( DIRECTORY doc DESTINATION ./ )
 
 # Replaced headers will be copied. 
-if(WIN32)
-    file(GLOB_RECURSE FINAL_HEADERS FOLOW_SYMLYNKS ${CMAKE_CURRENT_BINARY_DIR}/include/openssl/*.h )
-else()
-    file(GLOB_RECURSE FINAL_HEADERS FOLOW_SYMLYNKS ${CMAKE_CURRENT_SOURCE_DIR}/include/openssl/*.h )
-endif()
+#if(WIN32)
+    file(GLOB_RECURSE FINAL_HEADERS ${CMAKE_CURRENT_BINARY_DIR}/include/openssl/*.h )
+#else()
+#    file(GLOB_RECURSE FINAL_HEADERS FOLOW_SYMLYNKS ${CMAKE_CURRENT_SOURCE_DIR}/include/openssl/*.h )
+#endif()
 install(FILES ${FINAL_HEADERS} DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/openssl)
 
 if(BUILD_SHARED_LIBS)
