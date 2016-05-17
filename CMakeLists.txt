@@ -98,6 +98,9 @@ endif()
 
 if(BUILD_SHARED_LIBS)
     add_definitions(-DOPENSSL_NO_STATIC_ENGINE)
+else()    
+  set( CMAKE_CXX_FLAGS "-fpic ${CMAKE_CXX_FLAGS}" )
+  set( CMAKE_C_FLAGS   "-fpic ${CMAKE_C_FLAGS}" )    
 endif()
 
 #set(EXT_LIBS)
