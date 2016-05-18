@@ -94,7 +94,6 @@ endif( WIN32 AND NOT CYGWIN )
 
 add_submodule ( aes aes_core.c aes_misc.c aes_ecb.c aes_cbc.c aes_cfb.c aes_ofb.c
   aes_ctr.c aes_ige.c aes_wrap.c EXHEADERS aes.h )
-if(NOT ANDROID)  
 add_submodule ( asn1 a_object.c a_bitstr.c a_utctm.c a_gentm.c a_time.c a_int.c a_octet.c
   a_print.c a_type.c a_set.c a_dup.c a_d2i_fp.c a_i2d_fp.c a_enum.c a_utf8.c a_sign.c
   a_digest.c a_verify.c a_mbstr.c a_strex.c x_algor.c x_val.c x_pubkey.c x_sig.c
@@ -114,9 +113,7 @@ add_submodule ( bn bn_add.c bn_div.c bn_exp.c bn_lib.c bn_ctx.c bn_mul.c bn_mod.
   bn_print.c bn_rand.c bn_shift.c bn_word.c bn_blind.c bn_kron.c bn_sqrt.c bn_gcd.c
   bn_prime.c bn_err.c bn_sqr.c bn_asm.c bn_recp.c bn_mont.c bn_mpi.c bn_exp2.c bn_gf2m.c
   bn_nist.c bn_depr.c bn_const.c EXHEADERS bn.h )
-endif()  
 add_submodule ( buffer buffer.c buf_err.c buf_str.c EXHEADERS buffer.h )
-if(NOT ANDROID)
 add_submodule ( camellia camellia.c cmll_misc.c cmll_ecb.c cmll_cbc.c cmll_ofb.c
   cmll_cfb.c cmll_ctr.c cmll_utl.c EXHEADERS camellia.h )
 add_submodule ( cast c_skey.c c_ecb.c c_enc.c c_cfb64.c c_ofb64.c EXHEADERS cast.h )
@@ -126,7 +123,6 @@ add_submodule ( cms cms_lib.c cms_asn1.c cms_att.c cms_io.c cms_smime.c cms_err.
 add_submodule ( comp comp_lib.c comp_err.c c_rle.c c_zlib.c EXHEADERS comp.h )
 add_submodule ( conf conf_err.c conf_lib.c conf_api.c conf_def.c conf_mod.c conf_mall.c
   conf_sap.c EXHEADERS conf.h conf_api.h )
-endif()  
 add_submodule ( des cbc_cksm.c cbc_enc.c cfb64enc.c cfb_enc.c ecb3_enc.c ecb_enc.c
   enc_read.c enc_writ.c fcrypt.c ofb64enc.c ofb_enc.c pcbc_enc.c qud_cksm.c rand_key.c
   rpc_enc.c set_key.c des_enc.c fcrypt_b.c xcbc_enc.c str2key.c cfb64ede.c ofb64ede.c
@@ -156,23 +152,19 @@ add_submodule ( evp encode.c digest.c evp_enc.c evp_key.c evp_acnf.c e_des.c e_b
   c_alld.c evp_lib.c bio_ok.c evp_pkey.c evp_pbe.c p5_crpt.c p5_crpt2.c e_old.c pmeth_lib.c
   pmeth_fn.c pmeth_gn.c m_sigver.c evp_cnf.c e_rc4_hmac_md5.c e_aes_cbc_hmac_sha1.c e_aes_cbc_hmac_sha256.c
   EXHEADERS evp.h )
-if(NOT ANDROID)  
 add_submodule ( hmac hmac.c hm_ameth.c hm_pmeth.c EXHEADERS hmac.h )
 add_submodule ( idea i_cbc.c i_cfb64.c i_ofb64.c i_ecb.c i_skey.c EXHEADERS idea.h )
 # add_submodule(jpake jpake.c jpake_err.c EXHEADERS jpake.h)
 add_submodule ( krb5 krb5_asn.c EXHEADERS krb5_asn.h )
 add_submodule ( lhash lhash.c lh_stats.c EXHEADERS lhash.h )
 # add_submodule(md2 md2_dgst.c md2_one.c EXHEADERS md2.h )
-endif()
 add_submodule ( md4 md4_dgst.c md4_one.c EXHEADERS md4.h )
 add_submodule ( md5 md5_dgst.c md5_one.c EXHEADERS md5.h )
-if(NOT ANDROID)  
 add_submodule ( mdc2 mdc2dgst.c mdc2_one.c EXHEADERS mdc2.h )
 add_submodule ( modes cbc128.c ccm128.c ctr128.c cts128.c cfb128.c gcm128.c ofb128.c
   xts128.c wrap128.c EXHEADERS modes.h )
 add_submodule ( objects o_names.c obj_dat.c obj_lib.c obj_err.c obj_xref.c EXHEADERS
   objects.h obj_mac.h )
-endif()  
 add_submodule ( ocsp ocsp_asn.c ocsp_ext.c ocsp_ht.c ocsp_lib.c ocsp_cl.c ocsp_srv.c
   ocsp_prn.c ocsp_vfy.c ocsp_err.c EXHEADERS ocsp.h )  
 add_submodule ( pem pem_sign.c pem_seal.c pem_info.c pem_lib.c pem_all.c pem_err.c
@@ -185,14 +177,12 @@ add_submodule ( pkcs7 pk7_asn1.c pk7_lib.c pkcs7err.c pk7_doit.c pk7_smime.c pk7
 add_submodule ( pqueue pqueue.c EXHEADERS pqueue.h )
 add_submodule ( rand md_rand.c randfile.c rand_lib.c rand_err.c rand_egd.c rand_win.c
   rand_unix.c rand_os2.c rand_nw.c EXHEADERS rand.h )
-if(NOT ANDROID)
 add_submodule ( rc2 rc2_ecb.c rc2_skey.c rc2_cbc.c rc2cfb64.c rc2ofb64.c EXHEADERS
   rc2.h )
 add_submodule ( rc4 rc4_skey.c rc4_enc.c rc4_utl.c EXHEADERS rc4.h )
 #add_submodule(rc5 rc5_skey.c rc5_ecb.c rc5_enc.c rc5cfb64.c rc5ofb64.c
 #   EXHEADERS rc5.h )
 add_submodule ( ripemd rmd_dgst.c rmd_one.c EXHEADERS ripemd.h )
-endif()
 add_submodule ( rsa rsa_eay.c rsa_gen.c rsa_lib.c rsa_sign.c rsa_saos.c rsa_err.c
   rsa_pk1.c rsa_ssl.c rsa_none.c rsa_oaep.c rsa_chk.c rsa_null.c rsa_pss.c rsa_x931.c
   rsa_asn1.c rsa_depr.c rsa_ameth.c rsa_prn.c rsa_pmeth.c rsa_crpt.c EXHEADERS rsa.h )
@@ -200,7 +190,6 @@ add_submodule ( seed seed.c seed_ecb.c seed_cbc.c seed_cfb.c seed_ofb.c EXHEADER
   seed.h )
 add_submodule ( sha sha_dgst.c sha1dgst.c sha_one.c sha1_one.c sha256.c sha512.c
   EXHEADERS sha.h )
-if(NOT ANDROID)  
 add_submodule ( srp srp_lib.c srp_vfy.c EXHEADERS srp.h srp_grps.h srp_lcl.h )
 add_submodule ( stack stack.c EXHEADERS stack.h safestack.h )
 #add_submodule(store str_err.c str_lib.c str_meth.c str_mem.c
@@ -209,7 +198,6 @@ add_submodule ( ts ts_err.c ts_req_utils.c ts_req_print.c ts_rsp_utils.c ts_rsp_
   ts_rsp_sign.c ts_rsp_verify.c ts_verify_ctx.c ts_lib.c ts_conf.c ts_asn1.c EXHEADERS
   ts.h )
 add_submodule ( txt_db txt_db.c EXHEADERS txt_db.h )
-endif()
 add_submodule ( ui ui_err.c ui_lib.c ui_openssl.c ui_util.c ui_compat.c EXHEADERS
   ui.h ui_compat.h )
 add_submodule ( whrlpool wp_dgst.c wp_block.c EXHEADERS whrlpool.h )
@@ -217,7 +205,6 @@ add_submodule ( x509 x509_def.c x509_d2.c x509_r2x.c x509_cmp.c x509_obj.c x509_
   x509spki.c x509_vfy.c x509_set.c x509cset.c x509rset.c x509_err.c x509name.c x509_v3.c
   x509_ext.c x509_att.c x509type.c x509_lu.c x_all.c x509_txt.c x509_trs.c by_file.c
   by_dir.c x509_vpm.c EXHEADERS x509.h x509_vfy.h )
-
 add_submodule ( x509v3 v3_bcons.c v3_bitst.c v3_conf.c v3_extku.c v3_ia5.c v3_lib.c
   v3_prn.c v3_utl.c v3err.c v3_genn.c v3_alt.c v3_skey.c v3_akey.c v3_pku.c v3_int.c
   v3_enum.c v3_sxnet.c v3_cpols.c v3_crld.c v3_purp.c v3_info.c v3_ocsp.c v3_akeya.c
