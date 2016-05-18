@@ -131,7 +131,6 @@ add_submodule ( des cbc_cksm.c cbc_enc.c cfb64enc.c cfb_enc.c ecb3_enc.c ecb_enc
   enc_read.c enc_writ.c fcrypt.c ofb64enc.c ofb_enc.c pcbc_enc.c qud_cksm.c rand_key.c
   rpc_enc.c set_key.c des_enc.c fcrypt_b.c xcbc_enc.c str2key.c cfb64ede.c ofb64ede.c
   ede_cbcm_enc.c des_old.c des_old2.c read2pwd.c EXHEADERS des.h des_old.h )
-if(NOT ANDROID)
 add_submodule ( dh dh_asn1.c dh_gen.c dh_key.c dh_lib.c dh_check.c dh_err.c dh_depr.c
   dh_ameth.c dh_pmeth.c dh_prn.c dh_kdf.c dh_rfc5114.c EXHEADERS dh.h )
 add_submodule ( dsa dsa_gen.c dsa_key.c dsa_lib.c dsa_asn1.c dsa_vrf.c dsa_sign.c
@@ -144,7 +143,6 @@ add_submodule ( ec ec_lib.c ecp_smpl.c ecp_mont.c ecp_nist.c ec_cvt.c ec_mult.c 
 add_submodule ( ecdh ech_lib.c ech_ossl.c ech_key.c ech_err.c ech_kdf.c EXHEADERS ecdh.h )
 add_submodule ( ecdsa ecs_lib.c ecs_asn1.c ecs_ossl.c ecs_sign.c ecs_vrf.c ecs_err.c
   EXHEADERS ecdsa.h )
-endif()  
 add_submodule ( engine eng_err.c eng_lib.c eng_list.c eng_init.c eng_ctrl.c eng_table.c
   eng_pkey.c eng_fat.c eng_all.c tb_rsa.c tb_dsa.c tb_ecdsa.c tb_dh.c tb_ecdh.c tb_rand.c
   tb_store.c tb_cipher.c tb_digest.c tb_pkmeth.c tb_asnmth.c eng_openssl.c eng_cnf.c
@@ -174,16 +172,16 @@ add_submodule ( modes cbc128.c ccm128.c ctr128.c cts128.c cfb128.c gcm128.c ofb1
   xts128.c wrap128.c EXHEADERS modes.h )
 add_submodule ( objects o_names.c obj_dat.c obj_lib.c obj_err.c obj_xref.c EXHEADERS
   objects.h obj_mac.h )
+endif()  
 add_submodule ( ocsp ocsp_asn.c ocsp_ext.c ocsp_ht.c ocsp_lib.c ocsp_cl.c ocsp_srv.c
-  ocsp_prn.c ocsp_vfy.c ocsp_err.c EXHEADERS ocsp.h )
+  ocsp_prn.c ocsp_vfy.c ocsp_err.c EXHEADERS ocsp.h )  
 add_submodule ( pem pem_sign.c pem_seal.c pem_info.c pem_lib.c pem_all.c pem_err.c
   pem_x509.c pem_xaux.c pem_oth.c pem_pk8.c pem_pkey.c pvkfmt.c EXHEADERS pem.h pem2.h )
 add_submodule ( pkcs12 p12_add.c p12_asn.c p12_attr.c p12_crpt.c p12_crt.c p12_decr.c
   p12_init.c p12_key.c p12_kiss.c p12_mutl.c p12_utl.c p12_npas.c pk12err.c p12_p8d.c
   p12_p8e.c EXHEADERS pkcs12.h )
 add_submodule ( pkcs7 pk7_asn1.c pk7_lib.c pkcs7err.c pk7_doit.c pk7_smime.c pk7_attr.c
-  pk7_mime.c bio_pk7.c EXHEADERS pkcs7.h )
-endif()  
+  pk7_mime.c bio_pk7.c EXHEADERS pkcs7.h )  
 add_submodule ( pqueue pqueue.c EXHEADERS pqueue.h )
 add_submodule ( rand md_rand.c randfile.c rand_lib.c rand_err.c rand_egd.c rand_win.c
   rand_unix.c rand_os2.c rand_nw.c EXHEADERS rand.h )
@@ -211,6 +209,7 @@ add_submodule ( ts ts_err.c ts_req_utils.c ts_req_print.c ts_rsp_utils.c ts_rsp_
   ts_rsp_sign.c ts_rsp_verify.c ts_verify_ctx.c ts_lib.c ts_conf.c ts_asn1.c EXHEADERS
   ts.h )
 add_submodule ( txt_db txt_db.c EXHEADERS txt_db.h )
+endif()
 add_submodule ( ui ui_err.c ui_lib.c ui_openssl.c ui_util.c ui_compat.c EXHEADERS
   ui.h ui_compat.h )
 add_submodule ( whrlpool wp_dgst.c wp_block.c EXHEADERS whrlpool.h )
@@ -218,12 +217,13 @@ add_submodule ( x509 x509_def.c x509_d2.c x509_r2x.c x509_cmp.c x509_obj.c x509_
   x509spki.c x509_vfy.c x509_set.c x509cset.c x509rset.c x509_err.c x509name.c x509_v3.c
   x509_ext.c x509_att.c x509type.c x509_lu.c x_all.c x509_txt.c x509_trs.c by_file.c
   by_dir.c x509_vpm.c EXHEADERS x509.h x509_vfy.h )
+
 add_submodule ( x509v3 v3_bcons.c v3_bitst.c v3_conf.c v3_extku.c v3_ia5.c v3_lib.c
   v3_prn.c v3_utl.c v3err.c v3_genn.c v3_alt.c v3_skey.c v3_akey.c v3_pku.c v3_int.c
   v3_enum.c v3_sxnet.c v3_cpols.c v3_crld.c v3_purp.c v3_info.c v3_ocsp.c v3_akeya.c
   v3_pmaps.c v3_pcons.c v3_ncons.c v3_pcia.c v3_pci.c pcy_cache.c pcy_node.c pcy_data.c
   pcy_map.c pcy_tree.c pcy_lib.c v3_asid.c v3_addr.c v3_scts.c EXHEADERS x509v3.h )
-endif()  
+
 # dirs not included: threads
 
 add_submodule ( . EXHEADERS crypto.h opensslv.h opensslconf.h ebcdic.h symhacks.h
