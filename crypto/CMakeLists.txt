@@ -168,6 +168,7 @@ add_submodule ( lhash lhash.c lh_stats.c EXHEADERS lhash.h )
 endif()
 add_submodule ( md4 md4_dgst.c md4_one.c EXHEADERS md4.h )
 add_submodule ( md5 md5_dgst.c md5_one.c EXHEADERS md5.h )
+if(NOT ANDROID)  
 add_submodule ( mdc2 mdc2dgst.c mdc2_one.c EXHEADERS mdc2.h )
 add_submodule ( modes cbc128.c ccm128.c ctr128.c cts128.c cfb128.c gcm128.c ofb128.c
   xts128.c wrap128.c EXHEADERS modes.h )
@@ -177,7 +178,6 @@ add_submodule ( ocsp ocsp_asn.c ocsp_ext.c ocsp_ht.c ocsp_lib.c ocsp_cl.c ocsp_s
   ocsp_prn.c ocsp_vfy.c ocsp_err.c EXHEADERS ocsp.h )
 add_submodule ( pem pem_sign.c pem_seal.c pem_info.c pem_lib.c pem_all.c pem_err.c
   pem_x509.c pem_xaux.c pem_oth.c pem_pk8.c pem_pkey.c pvkfmt.c EXHEADERS pem.h pem2.h )
-if(NOT ANDROID)  
 add_submodule ( pkcs12 p12_add.c p12_asn.c p12_attr.c p12_crpt.c p12_crt.c p12_decr.c
   p12_init.c p12_key.c p12_kiss.c p12_mutl.c p12_utl.c p12_npas.c pk12err.c p12_p8d.c
   p12_p8e.c EXHEADERS pkcs12.h )
@@ -187,12 +187,14 @@ endif()
 add_submodule ( pqueue pqueue.c EXHEADERS pqueue.h )
 add_submodule ( rand md_rand.c randfile.c rand_lib.c rand_err.c rand_egd.c rand_win.c
   rand_unix.c rand_os2.c rand_nw.c EXHEADERS rand.h )
+if(NOT ANDROID)
 add_submodule ( rc2 rc2_ecb.c rc2_skey.c rc2_cbc.c rc2cfb64.c rc2ofb64.c EXHEADERS
   rc2.h )
 add_submodule ( rc4 rc4_skey.c rc4_enc.c rc4_utl.c EXHEADERS rc4.h )
 #add_submodule(rc5 rc5_skey.c rc5_ecb.c rc5_enc.c rc5cfb64.c rc5ofb64.c
 #   EXHEADERS rc5.h )
 add_submodule ( ripemd rmd_dgst.c rmd_one.c EXHEADERS ripemd.h )
+endif()
 add_submodule ( rsa rsa_eay.c rsa_gen.c rsa_lib.c rsa_sign.c rsa_saos.c rsa_err.c
   rsa_pk1.c rsa_ssl.c rsa_none.c rsa_oaep.c rsa_chk.c rsa_null.c rsa_pss.c rsa_x931.c
   rsa_asn1.c rsa_depr.c rsa_ameth.c rsa_prn.c rsa_pmeth.c rsa_crpt.c EXHEADERS rsa.h )
