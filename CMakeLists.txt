@@ -34,6 +34,7 @@ project(${PROJECT_NAME})
 
 set(CMAKE_COLOR_MAKEFILE ON)
 #set(CMAKE_CONFIGURATION_TYPES "Debug;Release" CACHE STRING "Configs" FORCE)
+
 set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake ${CMAKE_MODULE_PATH})
 
 # TODO: do we need to name them libeay32 & ssleay32 for windows?
@@ -82,7 +83,7 @@ set(PROJECT_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR})
 add_definitions(-DOPENSSL_NO_ASM -DOPENSSL_THREADS)
 
 if(WIN32 AND NOT CYGWIN)
-    configure_file( ${CMAKE_MODULE_PATH}/version32.rc.cmake ${CMAKE_BINARY_DIR}/version32.rc )
+    configure_file( ${CMAKE_SOURCE_DIR}/cmake/version32.rc.cmake ${CMAKE_BINARY_DIR}/version32.rc )
 
     add_definitions(-DOPENSSL_SYSNAME_WIN32)
     add_definitions(-DWIN32_LEAN_AND_MEAN -DDSO_WIN32)
