@@ -27,12 +27,12 @@
 include(CMakeParseArguments)
 
 #~2DO: set BUILDINF_DATE to `date LC_ALL=C LC_TIME=C`
-configure_file (${CMAKE_MODULE_PATH}/buildinf.h.cmake buildinf.h )
+configure_file (${CMAKE_SOURCE_DIR}/cmake/buildinf.h.cmake buildinf.h )
 
 if( WIN32 AND NOT CYGWIN) #AND MINGW AND NOT CYGWIN )
   set( OPENSSL_EXPORT_VAR_AS_FUNCTION true )
 endif()
-configure_file( ${CMAKE_MODULE_PATH}/opensslconf.h.cmake ${CMAKE_BINARY_DIR}/include/openssl/opensslconf.h )
+configure_file(${CMAKE_SOURCE_DIR}/cmake/opensslconf.h.cmake ${CMAKE_BINARY_DIR}/include/openssl/opensslconf.h )
 
 set( LIBSRC cryptlib.c mem.c mem_clr.c mem_dbg.c cversion.c ex_data.c cpt_err.c
   ebcdic.c uid.c o_time.c o_str.c o_dir.c o_init.c )
