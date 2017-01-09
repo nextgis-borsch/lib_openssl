@@ -29,10 +29,177 @@ include_directories(${CMAKE_CURRENT_BINARY_DIR})
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
 include_directories(${CMAKE_CURRENT_BINARY_DIR}/include)
 
+add_subdirectory(objects)
+if(NOT OPENSSL_NO_MD2)
+    add_subdirectory(md2)
+endif()
+
+if(NOT OPENSSL_NO_MD4)
+    add_subdirectory(md4)
+endif()
+
+add_subdirectory(md5)
+add_subdirectory(sha)
+
+if(NOT OPENSSL_NO_MDC2)
+    add_subdirectory(mdc2)
+endif()
+
+add_subdirectory(hmac)
+add_subdirectory(ripemd)
+
+if(NOT OPENSSL_NO_WHRLPOOL)
+    add_subdirectory(whrlpool)
+endif()
+
+if(NOT OPENSSL_NO_POLY1305)
+    add_subdirectory(poly1305)
+endif()
+
+if(NOT OPENNSSL_NO_BLAKE2)
+    add_subdirectory(blake2)
+endif()
+
+if(NOT OPENSSL_NO_DES)
+    add_subdirectory(des)
+endif()
+
+add_subdirectory(aes)
+
+if(NOT OPENSSL_NO_RC2)
+    add_subdirectory(rc2)
+endif()
+
+if(NOT OPENSSL_NO_RC4)
+#    add_subdirectory(rc4)
+endif()
+
+if(NOT OPENSSL_NO_RC5)
+#    add_subdirectory(rc5)
+endif()
+
+if(NOT OPENSSL_NO_IDEA)
+#    add_subdirectory(idea)
+endif()
+
+if(NOT OPENSSL_NO_BF)
+#    add_subdirectory(bf)
+endif()
+
+if(NOT OPENSSL_NO_CAST)
+#    add_subdirectory(cast)
+endif()
+
+if(NOT OPENSSL_NO_CAMELLIA)
+#    add_subdirectory(camellia)
+endif()
+
+if(NOT OPENSSL_NO_SEED)
+#    add_subdirectory(seed)
+endif()
+
+if(NOT OPENSSL_NO_CHACHA)
+#    add_subdirectory(chacha)
+endif()
+
+if(NOT OPENSSL_NO_MODES)
+#    add_subdirectory(modes)
+endif()
+
+#add_subdirectory(bn)
+
+if(NOT OPENSSL_NO_EC)
+#    add_subdirectory(ec)
+endif()
+
+#add_subdirectory(rsa)
+
+if(NOT OPENSSL_NO_DSA)
+#    add_subdirectory(dsa)
+endif()
+
+if(NOT OPENSSL_NO_DH)
+#    add_subdirectory(dh)
+endif()
+
+if(NOT OPENSSL_NO_DSO)
+#    add_subdirectory(dso)
+endif()
+
+if(NOT OPENSSL_NO_ENGINE)
+#    add_subdirectory(engine)
+endif()
+
+#add_subdirectory(buffer)
+#add_subdirectory(bio)
+#add_subdirectory(stack)
+#add_subdirectory(lhash)
+#add_subdirectory(rand)
+
+if(NOT OPENSSL_NO_ERR)
+#    add_subdirectory(err)
+endif()
+
+add_subdirectory(evp)
+add_subdirectory(asn1)
+#add_subdirectory(pem)
+#add_subdirectory(x509)
+#add_subdirectory(x509v3)
+#add_subdirectory(conf)
+#add_subdirectory(txt_db)
+#add_subdirectory(pkcs7)
+#add_subdirectory(pkcs12)
+
+if(NOT OPENSSL_NO_COMP)
+#    add_subdirectory(comp)
+endif()
+
+if(NOT OPENSSL_NO_OCSP)
+#    add_subdirectory(ocsp)
+endif()
+
+if(NOT OPENSSL_NO_UI)
+#    add_subdirectory(ui)
+endif()
+
+if(NOT OPENSSL_NO_CMS)
+#    add_subdirectory(cms)
+endif()
+
+if(NOT OPENSSL_NO_TS)
+#    add_subdirectory(ts)
+endif()
+
+if(NOT OPENSSL_NO_SRP)
+#    add_subdirectory(srp)
+endif()
+
+if(NOT OPENSSL_NO_CMAC)
+#    add_subdirectory(cmac)
+endif()
+
+if(NOT OPENSSL_NO_CT)
+#    add_subdirectory(ct)
+endif()
+
+if(NOT OPENSSL_NO_ASYNC)
+#    add_subdirectory(async)
+endif()
+
+if(NOT OPENSSL_NO_KDF)
+#    add_subdirectory(kdf)
+endif()
 
 #[[
+$config{sdirs} = [
+    "rc4", "rc5", "idea", "bf", "cast", "camellia", "seed", "chacha", "modes",
+    "bn", "ec", "rsa", "dsa", "dh", "dso", "engine",
+    "buffer", "bio", "stack", "lhash", "rand", "err",
+    "evp", "asn1", "pem", "x509", "x509v3", "conf", "txt_db", "pkcs7", "pkcs12", "comp", "ocsp", "ui",
+    "cms", "ts", "srp", "cmac", "ct", "async", "kdf"
+    ];
+
 unless ($disabled{asm}) {
-    $target{cpuid_asm_src}=$table{DEFAULTS}->{cpuid_asm_src} if ($config{processor} eq "386");
     $target{bn_asm_src} =~ s/\w+-gf2m.c// if (defined($disabled{ec2m}));
 
     # bn-586 is the only one implementing bn_*_part_words
@@ -43,54 +210,19 @@ unless ($disabled{asm}) {
     push @{$config{defines}}, "OPENSSL_BN_ASM_MONT5" if ($target{bn_asm_src} =~ /-mont5/);
     push @{$config{defines}}, "OPENSSL_BN_ASM_GF2m" if ($target{bn_asm_src} =~ /-gf2m/);
 
-    if ($config{fips}) {
-	push @{$config{openssl_other_defines}}, "OPENSSL_FIPS";
-    }
-
-    if ($target{sha1_asm_src}) {
-	push @{$config{defines}}, "SHA1_ASM"   if ($target{sha1_asm_src} =~ /sx86/ || $target{sha1_asm_src} =~ /sha1/);
-	push @{$config{defines}}, "SHA256_ASM" if ($target{sha1_asm_src} =~ /sha256/);
-	push @{$config{defines}}, "SHA512_ASM" if ($target{sha1_asm_src} =~ /sha512/);
-    }
     if ($target{rc4_asm_src} ne $table{DEFAULTS}->{rc4_asm_src}) {
 	push @{$config{defines}}, "RC4_ASM";
     }
-    if ($target{md5_asm_src}) {
-	push @{$config{defines}}, "MD5_ASM";
-    }
     $target{cast_asm_src}=$table{DEFAULTS}->{cast_asm_src} unless $disabled{pic}; # CAST assembler is not PIC
-    if ($target{rmd160_asm_src}) {
-	push @{$config{defines}}, "RMD160_ASM";
-    }
-    if ($target{aes_asm_src}) {
-	push @{$config{defines}}, "AES_ASM" if ($target{aes_asm_src} =~ m/\baes-/);;
-	# aes-ctr.fake is not a real file, only indication that assembler
-	# module implements AES_ctr32_encrypt...
-	push @{$config{defines}}, "AES_CTR_ASM" if ($target{aes_asm_src} =~ s/\s*aes-ctr\.fake//);
-	# aes-xts.fake indicates presence of AES_xts_[en|de]crypt...
-	push @{$config{defines}}, "AES_XTS_ASM" if ($target{aes_asm_src} =~ s/\s*aes-xts\.fake//);
-	$target{aes_asm_src} =~ s/\s*(vpaes|aesni)-x86\.s//g if ($no_sse2);
-	push @{$config{defines}}, "VPAES_ASM" if ($target{aes_asm_src} =~ m/vpaes/);
-	push @{$config{defines}}, "BSAES_ASM" if ($target{aes_asm_src} =~ m/bsaes/);
-    }
-    if ($target{wp_asm_src} =~ /mmx/) {
-        if ($config{processor} eq "386") {
-	    $target{wp_asm_src}=$table{DEFAULTS}->{wp_asm_src};
-	} elsif (!$disabled{"whirlpool"}) {
-	    push @{$config{defines}}, "WHIRLPOOL_ASM";
-	}
-    }
+
     if ($target{modes_asm_src} =~ /ghash-/) {
 	push @{$config{defines}}, "GHASH_ASM";
     }
     if ($target{ec_asm_src} =~ /ecp_nistz256/) {
 	push @{$config{defines}}, "ECP_NISTZ256_ASM";
     }
-    if ($target{poly1305_asm_src} ne "") {
-	push @{$config{defines}}, "POLY1305_ASM";
-    }
 }
-GENERATE[buildinf.h]=../util/mkbuildinf.pl "$(CC) $(CFLAGS_Q)" "$(PLATFORM)"
+OPENSSL_IA32_SSE2 OPENSSL_BN_ASM_MONT OPENSSL_BN_ASM_MONT5 OPENSSL_BN_ASM_GF2m SHA1_ASM SHA256_ASM SHA512_ASM RC4_ASM MD5_ASM AES_ASM VPAES_ASM BSAES_ASM GHASH_ASM ECP_NISTZ256_ASM POLY1305_ASM
 
 ]]
 
@@ -105,20 +237,24 @@ if(NOT WIN32)
     set(GEN_ASM_CMD_PREFIX "CC=\"${CMAKE_C_COMPILER}\"")
 endif()
 
-if(HOST_X64)
-    # Generate asm file from x86_64cpuid
-    add_custom_command(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/x86_64cpuid.s
-        COMMAND "${GEN_ASM_CMD_PREFIX} ${PERL_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/x86_64cpuid.pl ${PERLASM_SCHEME} ${CMAKE_CURRENT_BINARY_DIR}/x86_64cpuid.s"
-        DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/x86_64cpuid.pl
-    )
-    set(CSOURCES ${CSOURCES} ${CMAKE_CURRENT_BINARY_DIR}/x86_64cpuid.s)
+if(I386_ONLY)
+    set(CSOURCES ${CSOURCES} mem_clr.c)
 else()
-    # Generate asm file from x86cpuid
-    add_custom_command(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/x86cpuid.s
-        COMMAND "${GEN_ASM_CMD_PREFIX} ${PERL_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/x86cpuid.pl ${PERLASM_SCHEME} ${CMAKE_CURRENT_BINARY_DIR}/x86cpuid.s"
-        DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/x86cpuid.pl
-    )
-    set(CSOURCES ${CSOURCES} ${CMAKE_CURRENT_BINARY_DIR}/x86cpuid.s)
+    if(HOST_X64)
+        # Generate asm file from x86_64cpuid
+        add_custom_command(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/x86_64cpuid.s
+            COMMAND ${GEN_ASM_CMD_PREFIX} ${PERL_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/x86_64cpuid.pl ${PERLASM_SCHEME} ${CMAKE_CURRENT_BINARY_DIR}/x86_64cpuid.s
+            DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/x86_64cpuid.pl
+        )
+        set(CSOURCES ${CSOURCES} ${CMAKE_CURRENT_BINARY_DIR}/x86_64cpuid.s)
+    else()
+        # Generate asm file from x86cpuid
+        add_custom_command(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/x86cpuid.s
+            COMMAND "${GEN_ASM_CMD_PREFIX} ${PERL_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/x86cpuid.pl ${PERLASM_SCHEME} ${CMAKE_CURRENT_BINARY_DIR}/x86cpuid.s"
+            DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/x86cpuid.pl
+        )
+        set(CSOURCES ${CSOURCES} ${CMAKE_CURRENT_BINARY_DIR}/x86cpuid.s)
+    endif()
 endif()
 
 if(MSVC)
@@ -130,18 +266,19 @@ if(MSVC)
 
     add_definitions(-DOPENSSL_USE_APPLINK)
 
-    #[[
-    x86_uplink => {
-    inherit_from	=> [ "uplink_common" ],
-    template	=> 1,
-    uplink_aux_src	=> add("uplink-x86.s"),
-    },
-    x86_64_uplink => {
-    inherit_from	=> [ "uplink_common" ],
-    template	=> 1,
-    uplink_aux_src	=> add("uplink-x86_64.s"),
-    },
-    ]]
+    if(HOST_X64)
+        add_custom_command(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/uplink-x86_64.s
+            COMMAND ${GEN_ASM_CMD_PREFIX} ${PERL_EXECUTABLE} ${CMAKE_SOURCE_DIR}/ms/uplink-x86_64.pl ${PERLASM_SCHEME} ${CMAKE_CURRENT_BINARY_DIR}/uplink-x86_64.s
+            DEPENDS ${CMAKE_SOURCE_DIR}/ms/uplink-x86_64.pl
+        )
+        set(CSOURCES ${CSOURCES} ${CMAKE_CURRENT_BINARY_DIR}/uplink-x86_64.s)
+    else()
+        add_custom_command(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/uplink-x86.s
+            COMMAND ${GEN_ASM_CMD_PREFIX} ${PERL_EXECUTABLE} ${CMAKE_SOURCE_DIR}/ms/uplink-x86.pl ${PERLASM_SCHEME} ${CMAKE_CURRENT_BINARY_DIR}/uplink-x86.s
+            DEPENDS ${CMAKE_SOURCE_DIR}/ms/uplink-x86.pl
+        )
+        set(CSOURCES ${CSOURCES} ${CMAKE_CURRENT_BINARY_DIR}/uplink-x86.s)
+    endif()
 
     set(CSOURCES ${CSOURCES} dllmain.c)
 endif()

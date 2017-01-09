@@ -96,6 +96,30 @@ EXPORTS
     endif()
 endmacro()
 
+macro(generate_asm FILE_NAME)
+    if(NOT WIN32)
+        set(GEN_ASM_CMD_PREFIX "CC=\"${CMAKE_C_COMPILER}\"")
+    endif()
+
+    add_custom_command(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/${FILE_NAME}.s
+        COMMAND ${GEN_ASM_CMD_PREFIX} ${PERL_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/asm/${FILE_NAME}.pl ${PERLASM_SCHEME} ${CMAKE_CURRENT_BINARY_DIR}/${FILE_NAME}.s
+        DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/asm/${FILE_NAME}.pl
+    )
+    set(CSOURCES ${CSOURCES} ${CMAKE_CURRENT_BINARY_DIR}/${FILE_NAME}.s)
+endmacro()
+
+macro(generate_asm2 FILE_NAME OUT_FILE_NAME)
+    if(NOT WIN32)
+        set(GEN_ASM_CMD_PREFIX "CC=\"${CMAKE_C_COMPILER}\"")
+    endif()
+
+    add_custom_command(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/${OUT_FILE_NAME}.s
+        COMMAND ${GEN_ASM_CMD_PREFIX} ${PERL_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/asm/${FILE_NAME}.pl ${PERLASM_SCHEME} ${CMAKE_CURRENT_BINARY_DIR}/${OUT_FILE_NAME}.s
+        DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/asm/${FILE_NAME}.pl
+    )
+    set(CSOURCES ${CSOURCES} ${CMAKE_CURRENT_BINARY_DIR}/${OUT_FILE_NAME}.s)
+endmacro()
+
 function(check_version major minor rev fix)
     file(READ ${CMAKE_CURRENT_SOURCE_DIR}/include/openssl/opensslv.h VERSION_H_CONTENTS)
     string(REGEX MATCH "OPENSSL_VERSION_NUMBER  0x([0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f])"

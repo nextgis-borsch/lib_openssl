@@ -89,6 +89,10 @@ endif()
 
 file(GLOB PUBLIC_HDRS ${CMAKE_CURRENT_SOURCE_DIR}/include/openssl/*.h)
 
+include_directories(${CMAKE_CURRENT_SOURCE_DIR})
+include_directories(${CMAKE_CURRENT_BINARY_DIR})
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
+
 add_subdirectory(crypto)
 #add_subdirectory(ssl)
 #add_subdirectory(apps)
@@ -96,8 +100,12 @@ add_subdirectory(crypto)
 set(LIB_NAME ${PROJECT_NAME})
 if(BUILD_SHARED_LIBS)
     add_library(${LIB_NAME} SHARED ${TARGET_OBJECTS} ${PUBLIC_HDRS})
+    set_target_properties(${LIB_NAME} PROPERTIES
+        SOVERSION ${MAJOR_VER}
+        PUBLIC_HEADER "${PUBLIC_HDRS}")
 elseif(OSX_FRAMEWORK)
     add_library(${LIB_NAME} SHARED ${TARGET_OBJECTS} ${PUBLIC_HDRS})
+    set_property(SOURCE ${PUBLIC_HDRS} PROPERTY MACOSX_PACKAGE_LOCATION "Headers/openssl")
     set_target_properties(${LIB_NAME} PROPERTIES
       FRAMEWORK TRUE
       FRAMEWORK_VERSION ${FRAMEWORK_VERSION}
@@ -107,11 +115,12 @@ elseif(OSX_FRAMEWORK)
       XCODE_ATTRIBUTE_INSTALL_PATH "@rpath")
 else()
     add_library(${LIB_NAME} STATIC ${TARGET_OBJECTS} ${PUBLIC_HDRS})
+    set_target_properties(${LIB_NAME} PROPERTIES
+        SOVERSION ${MAJOR_VER}
+        PUBLIC_HEADER "${PUBLIC_HDRS}")
 endif()
 
-set_target_properties(${LIB_NAME} PROPERTIES
-    SOVERSION ${MAJOR_VER}
-    PUBLIC_HEADER "${PUBLIC_HDRS}")
+
 
 export(TARGETS ${LIB_NAME} FILE ${PROJECT_NAME}-exports.cmake)
 

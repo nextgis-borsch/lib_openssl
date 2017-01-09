@@ -269,6 +269,11 @@ if(NOT OPENSSL_NO_ASM)
     endif()
 endif()
 
+option(OPENSSL_FIPS "Enable FIPS" FALSE)
+if(OPENSSL_FIPS)
+    add_definitions(-DOPENSSL_FIPS)
+endif()
+
 # TODO: Add android specific arm/arm64 asm files
 # set(PERLASM_SCHEME android)
 
@@ -426,9 +431,6 @@ elseif(WIN32)
     configure_file( ${CMAKE_SOURCE_DIR}/cmake/version32.rc.cmake ${CMAKE_BINARY_DIR}/version32.rc )
 endif()
 
-# add_definitions(-DOPENSSL_USE_APPLINK)
-# OPENSSL_IA32_SSE2 OPENSSL_BN_ASM_MONT OPENSSL_BN_ASM_MONT5 OPENSSL_BN_ASM_GF2m SHA1_ASM SHA256_ASM SHA512_ASM RC4_ASM MD5_ASM AES_ASM VPAES_ASM BSAES_ASM GHASH_ASM ECP_NISTZ256_ASM POLY1305_ASM
-
 if(CMAKE_ASM_COMPILER_WORKS)
     set(OPENSSL_CPUID_OBJ TRUE)
 endif()
@@ -459,12 +461,12 @@ string(TIMESTAMP OPENSSL_BUILD_DATE "%Y-%m-%d %H:%M:%S" UTC)
 configure_file(${CMAKE_SOURCE_DIR}/cmake/buildinf.h.cmake.in ${CMAKE_CURRENT_BINARY_DIR}/buildinf.h IMMEDIATE @ONLY)
 
 # Generate include/openssl/opensslconf.h
-configure_file(${CMAKE_SOURCE_DIR}/cmake/opensslconf.h.cmake.in ${CMAKE_CURRENT_BINARY_DIR}/opensslconf.h IMMEDIATE @ONLY)
+configure_file(${CMAKE_SOURCE_DIR}/cmake/opensslconf.h.cmake.in ${CMAKE_CURRENT_BINARY_DIR}/openssl/opensslconf.h IMMEDIATE @ONLY)
 # Generate crypto/include/internal/bn_conf.h
-configure_file(${CMAKE_SOURCE_DIR}/cmake/bn_conf.h.cmake.in ${CMAKE_CURRENT_BINARY_DIR}/bn_conf.h IMMEDIATE @ONLY)
+configure_file(${CMAKE_SOURCE_DIR}/cmake/bn_conf.h.cmake.in ${CMAKE_CURRENT_BINARY_DIR}/openssl/bn_conf.h IMMEDIATE @ONLY)
 # Generate crypto/include/internal/dso_conf.h
 set(DSO_EXTENSION ${CMAKE_SHARED_LIBRARY_SUFFIX})
-configure_file(${CMAKE_SOURCE_DIR}/cmake/dso_conf.h.cmake.in ${CMAKE_CURRENT_BINARY_DIR}/dso_conf.h IMMEDIATE @ONLY)
+configure_file(${CMAKE_SOURCE_DIR}/cmake/dso_conf.h.cmake.in ${CMAKE_CURRENT_BINARY_DIR}/openssl/dso_conf.h IMMEDIATE @ONLY)
 
 if(BUILD_SHARED_LIBS OR OSX_FRAMEWORK)
     add_definitions(-DOPENSSL_NO_STATIC_ENGINE)
