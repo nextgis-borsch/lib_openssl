@@ -1,144 +1,153 @@
-# Based on original work by David Manura
-# Copyright (C) 2007-2012 LuaDist.
-# Copyright (C) 2013 Brian Sidebotham
-# Copyright (C) 2015 NextGIS <info@nextgis.com>, Dmitry Baryshnikov <dmitry.baryshnikov@nextgis.com>
+################################################################################
+# Project:  openssl
+# Purpose:  CMake build scripts
+# Author:   Dmitry Baryshnikov, dmitry.baryshnikov@nextgis.com
+################################################################################
+# Copyright (C) 2015, 2017, NextGIS <info@nextgis.com>
 #
-# Redistribution and use of this file is allowed according to the terms of the
-# MIT license.
+# Permission is hereby granted, free of charge, to any person obtaining a
+# copy of this software and associated documentation files (the "Software"),
+# to deal in the Software without restriction, including without limitation
+# the rights to use, copy, modify, merge, publish, distribute, sublicense,
+# and/or sell copies of the Software, and to permit persons to whom the
+# Software is furnished to do so, subject to the following conditions:
 #
-# Permission is hereby granted, free of charge, to any person obtaining a copy
-# of this software and associated documentation files (the "Software"), to deal
-# in the Software without restriction, including without limitation the rights
-# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-# copies of the Software, and to permit persons to whom the Software is
-# furnished to do so, subject to the following conditions:
+# The above copyright notice and this permission notice shall be included
+# in all copies or substantial portions of the Software.
 #
-# The above copyright notice and this permission notice shall be included in all
-# copies or substantial portions of the Software.
-#
-# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-# SOFTWARE.
-
-# Note for Windows from here: http://developer.covenanteyes.com/building-openssl-for-visual-studio/
-# Don’t try to build 32-bit and 64-bit OpenSSL in the same folder.
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+# OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+# THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+# FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+# DEALINGS IN THE SOFTWARE.
+################################################################################
 
 cmake_minimum_required(VERSION 2.8.12 FATAL_ERROR)
 
-set(PROJECT_NAME openssl)
-project(${PROJECT_NAME})
+project(openssl)
 
+# some init settings
 set(CMAKE_COLOR_MAKEFILE ON)
-#set(CMAKE_CONFIGURATION_TYPES "Debug;Release" CACHE STRING "Configs" FORCE)
-
+# set path to additional CMake modules
 set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake ${CMAKE_MODULE_PATH})
 
-# TODO: do we need to name them libeay32 & ssleay32 for windows?
-set(LIB_CRYPTO_NAME) 
-set(LIB_SSL_NAME) 
-if(BUILD_SHARED_LIBS)
-    set(LIB_CRYPTO_NAME crypto) 
-    set(LIB_SSL_NAME ssl) 
-else()
-    set(LIB_CRYPTO_NAME cryptostatic) 
-    set(LIB_SSL_NAME sslstatic)
+if(OSX_FRAMEWORK AND (BUILD_SHARED_LIBS OR BUILD_STATIC_LIBS))
+  message(FATAL_ERROR "Only OSX_FRAMEWORK key or any or both BUILD_SHARED_LIBS
+                       and BUILD_STATIC_LIBS keys are permitted")
 endif()
 
-include(FindAnyProject)
-
-include(GNUInstallDirs)
-
-set(INSTALL_BIN_DIR ${CMAKE_INSTALL_BINDIR} CACHE INTERNAL "Installation directory for executables" FORCE)
-set(INSTALL_LIB_DIR ${CMAKE_INSTALL_LIBDIR} CACHE INTERNAL "Installation directory for libraries" FORCE)
-set(INSTALL_INC_DIR ${CMAKE_INSTALL_INCLUDEDIR} CACHE INTERNAL "Installation directory for headers" FORCE)
-
-# Replace stub headers with actual ones.
-if(WIN32)
-    file(GLOB_RECURSE HHEADERS FOLOW_SYMLYNKS ${CMAKE_CURRENT_SOURCE_DIR}/include/openssl/*.h )
-    foreach(TO ${HHEADERS})
-        file(READ ${TO} PATH_CONTENTS)
-        #message(STATUS ${CMAKE_CURRENT_SOURCE_DIR}/include/openssl/${PATH_CONTENTS})
-        file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/include/openssl/${PATH_CONTENTS} DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/include/openssl)
-    endforeach()
+if(OSX_FRAMEWORK)
+  set(INSTALL_BIN_DIR "${CMAKE_INSTALL_PREFIX}/Applications" CACHE INTERNAL "Installation directory for executables" FORCE)
+  set(INSTALL_LIB_DIR "${CMAKE_INSTALL_PREFIX}/Library/Frameworks" CACHE INTERNAL "Installation directory for libraries" FORCE)
+  set(SKIP_INSTALL_HEADERS ON)
+  set(SKIP_INSTALL_EXECUTABLES ON)
+  set(SKIP_INSTALL_FILES ON)
+  set(SKIP_INSTALL_EXPORT ON)
+  set(CMAKE_MACOSX_RPATH ON)
 else()
-    file(GLOB_RECURSE HHEADERS FOLOW_SYMLYNKS ${CMAKE_CURRENT_SOURCE_DIR}/include/openssl/*.h )
-    foreach(TO ${HHEADERS})
-        get_filename_component(HHEADER ${TO} NAME)
-        configure_file(${TO} ${CMAKE_CURRENT_BINARY_DIR}/include/openssl/${HHEADER} COPYONLY)
-    endforeach()    
+    include(GNUInstallDirs)
+
+    set(INSTALL_BIN_DIR ${CMAKE_INSTALL_BINDIR} CACHE INTERNAL "Installation directory for executables" FORCE)
+    set(INSTALL_LIB_DIR ${CMAKE_INSTALL_LIBDIR} CACHE INTERNAL "Installation directory for libraries" FORCE)
+    set(INSTALL_INC_DIR ${CMAKE_INSTALL_INCLUDEDIR}/openssl CACHE INTERNAL "Installation directory for headers" FORCE)
+    set(INSTALL_DOC_DIR ${CMAKE_INSTALL_DOCDIR} CACHE INTERNAL "Share directory for data" FORCE)
 endif()
 
 include(util)
 check_version(MAJOR_VER MINOR_VER REL_VER FIX_VER)
 set(VERSION ${MAJOR_VER}.${MINOR_VER}.${REL_VER})
-report_version(${PROJECT_NAME} ${VERSION})  
+report_version(${PROJECT_NAME} ${VERSION})
 
-set(PROJECT_BINARY_DIR ${CMAKE_CURRENT_BINARY_DIR})
-set(PROJECT_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR})
-
-add_definitions(-DOPENSSL_NO_ASM -DOPENSSL_THREADS)
-
-if(WIN32 AND NOT CYGWIN)
-    configure_file( ${CMAKE_SOURCE_DIR}/cmake/version32.rc.cmake ${CMAKE_BINARY_DIR}/version32.rc )
-
-    add_definitions(-DOPENSSL_SYSNAME_WIN32)
-    add_definitions(-DWIN32_LEAN_AND_MEAN -DDSO_WIN32)
-    add_definitions(-D_UNICODE -D_UNICODE -D_CRT_SECURE_NO_DEPRECATE)
-  
-    # avoid conflict: ocsp.h and wincrypt.h
-    add_definitions(-D_WINDLL)
+if(OSX_FRAMEWORK)
+    set(FRAMEWORK_VERSION "${MAJOR_VER}")
 endif()
 
-if(MINGW)
-  set(CMAKE_SHARED_LINKER_FLAGS "-Wl,--export-all")
-endif()
+include(configure)
 
-if(BUILD_SHARED_LIBS)
-    add_definitions(-DOPENSSL_NO_STATIC_ENGINE)
-else()    
-    if(CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX)
-        set( CMAKE_CXX_FLAGS "-fpic ${CMAKE_CXX_FLAGS}" )
-        set( CMAKE_C_FLAGS   "-fpic ${CMAKE_C_FLAGS}" )  
-    endif()
-endif()
-
-#set(EXT_LIBS)
+include(FindAnyProject)
 
 find_anyproject(ZLIB DEFAULT OFF)
 if(ZLIB_FOUND)
-#    set(EXT_LIBS ${EXT_LIBS} ${ZLIB_LIBRARIES})
-#    include_directories(${ZLIB_INCLUDE_DIRS})
     add_definitions(-DZLIB)
     if(BUILD_SHARED_LIBS)
         add_definitions(-DZLIB_SHARED)
     endif()
 endif()
 
-set(EXPORT_TARGETS)
+if(CYGWIN)
+    set(LIB_CRYPTO_NAME_OUT "cygcrypto-${MAJOR_VER}.${MINOR_VER}")
+    set(LIB_SSL_NAME_OUT "cygssl-${MAJOR_VER}.${MINOR_VER}")
+elseif(MINGW)
+    set(LIB_CRYPTO_NAME_OUT "libcrypto-${MAJOR_VER}_${MINOR_VER}")
+    set(LIB_SSL_NAME_OUT "libssl-${MAJOR_VER}_${MINOR_VER}")
+elseif(MSVC)
+    set(LIB_CRYPTO_NAME_OUT "libcrypto-${MAJOR_VER}_${MINOR_VER}")
+    set(LIB_SSL_NAME_OUT "libssl-${MAJOR_VER}_${MINOR_VER}")
+endif()
+
+file(GLOB PUBLIC_HDRS ${CMAKE_CURRENT_SOURCE_DIR}/include/openssl/*.h)
 
 add_subdirectory(crypto)
-add_subdirectory(ssl)
+#add_subdirectory(ssl)
+#add_subdirectory(apps)
 
-#install(FILES e_os2.h DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/openssl)
+set(LIB_NAME ${PROJECT_NAME})
+if(BUILD_SHARED_LIBS)
+    add_library(${LIB_NAME} SHARED ${TARGET_OBJECTS} ${PUBLIC_HDRS})
+elseif(OSX_FRAMEWORK)
+    add_library(${LIB_NAME} SHARED ${TARGET_OBJECTS} ${PUBLIC_HDRS})
+    set_target_properties(${LIB_NAME} PROPERTIES
+      FRAMEWORK TRUE
+      FRAMEWORK_VERSION ${FRAMEWORK_VERSION}
+      MACOSX_FRAMEWORK_SHORT_VERSION_STRING ${VERSION}
+      MACOSX_FRAMEWORK_BUNDLE_VERSION ${VERSION}
+      MACOSX_FRAMEWORK_IDENTIFIER org.openssl.libopenssl
+      XCODE_ATTRIBUTE_INSTALL_PATH "@rpath")
+else()
+    add_library(${LIB_NAME} STATIC ${TARGET_OBJECTS} ${PUBLIC_HDRS})
+endif()
 
-#install(FILES tools/c_hash tools/c_info tools/c_issuer tools/c_name tools/c_rehash
-#    FAQ LICENSE PROBLEMS README README.ASN1 README.ENGINE
-#    DESTINATION share/openssl )
-#install( DIRECTORY doc DESTINATION ./ )
+set_target_properties(${LIB_NAME} PROPERTIES
+    SOVERSION ${MAJOR_VER}
+    PUBLIC_HEADER "${PUBLIC_HDRS}")
 
-# Replaced headers will be copied. 
-#if(WIN32)
-    file(GLOB_RECURSE FINAL_HEADERS ${CMAKE_CURRENT_BINARY_DIR}/include/openssl/*.h )
-#else()
-#    file(GLOB_RECURSE FINAL_HEADERS FOLOW_SYMLYNKS ${CMAKE_CURRENT_SOURCE_DIR}/include/openssl/*.h )
-#endif()
-install(FILES ${FINAL_HEADERS} DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/openssl)
+export(TARGETS ${LIB_NAME} FILE ${PROJECT_NAME}-exports.cmake)
 
-set(EXPORT_NAME openssl)
-if(EXPORT_TARGETS)
-    export(TARGETS ${EXPORT_TARGETS} FILE ${EXPORT_NAME}-exports.cmake EXPORT_LINK_INTERFACE_LIBRARIES)
+if (REGISTER_PACKAGE)
+
+    set(EXPORT_PACKAGE_NAME OpenSSL)
+    set(EXPORT_PACKAGE_NAME_UPPER OPENSSL)
+    set(EXPORT_PACKAGE_LIB_NAME ${PROJECT_NAME})
+    set(EXPORT_PACKAGE_LIB_NAMES ssl crypto)
+
+    export(PACKAGE ${EXPORT_PACKAGE_NAME})
+
+    include(CMakePackageConfigHelpers)
+    configure_package_config_file(
+        ${CMAKE_SOURCE_DIR}/cmake/PackageConfig.cmake.in
+        ${CMAKE_CURRENT_BINARY_DIR}/${EXPORT_PACKAGE_NAME}Config.cmake
+        INSTALL_DESTINATION ${INSTALL_LIB_DIR}/cmake
+        PATH_VARS INSTALL_INC_DIR )
+    write_basic_package_version_file(
+        ${CMAKE_CURRENT_BINARY_DIR}/${EXPORT_PACKAGE_NAME}ConfigVersion.cmake
+        VERSION ${VERSION}
+        COMPATIBILITY AnyNewerVersion )
+endif()
+
+add_custom_target(uninstall COMMAND ${CMAKE_COMMAND} -P ${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake)
+
+if(NOT SKIP_INSTALL_LIBRARIES AND NOT SKIP_INSTALL_ALL )
+    install(TARGETS ${LIB_NAME}
+        RUNTIME DESTINATION "${INSTALL_BIN_DIR}"
+        ARCHIVE DESTINATION "${INSTALL_LIB_DIR}"
+        LIBRARY DESTINATION "${INSTALL_LIB_DIR}"
+        FRAMEWORK DESTINATION "${INSTALL_LIB_DIR}"
+        PUBLIC_HEADER DESTINATION "${INSTALL_INC_DIR}"
+    )
+endif()
+
+if(NOT SUPPRESS_VERBOSE_OUTPUT)
+    include(summary)
 endif()

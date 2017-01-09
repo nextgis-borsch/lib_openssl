@@ -26,49 +26,47 @@
 ################################################################################
 
 macro(hexchar2dec VAR VAL)
-        if (${VAL} MATCHES "[0-9]")
-            SET(${VAR} ${VAL})
-        elseif(${VAL} MATCHES "[aA]")
-            SET(${VAR} 10)
-        elseif(${VAL} MATCHES "[bB]")
-            SET(${VAR} 11)
-        elseif(${VAL} MATCHES "[cC]")
-            SET(${VAR} 12)
-        elseif(${VAL} MATCHES "[dD]")
-            SET(${VAR} 13)
-        elseif(${VAL} MATCHES "[eE]")
-            SET(${VAR} 14)
-        elseif(${VAL} MATCHES "[fF]")
-            SET(${VAR} 15)
-        else()
-            MESSAGE(FATAL_ERROR "Invalid format for hexidecimal character")
-        endif()
-
+    if (${VAL} MATCHES "[0-9]")
+        set(${VAR} ${VAL})
+    elseif(${VAL} MATCHES "[aA]")
+        set(${VAR} 10)
+    elseif(${VAL} MATCHES "[bB]")
+        set(${VAR} 11)
+    elseif(${VAL} MATCHES "[cC]")
+        set(${VAR} 12)
+    elseif(${VAL} MATCHES "[dD]")
+        set(${VAR} 13)
+    elseif(${VAL} MATCHES "[eE]")
+        set(${VAR} 14)
+    elseif(${VAL} MATCHES "[fF]")
+        set(${VAR} 15)
+    else()
+        message(FATAL_ERROR "Invalid format for hexidecimal character")
+    endif()
 endmacro()
 
 macro(hex2dec VAR VAL)
 
-    IF (${VAL} EQUAL 0)
-        SET(${VAR} 0)
-    ELSE()
+    if (${VAL} EQUAL 0)
+        set(${VAR} 0)
+    else()
+        set(CURINDEX 0)
+        string(LENGTH "${VAL}" CURLENGTH)
 
-        SET(CURINDEX 0)
-        STRING(LENGTH "${VAL}" CURLENGTH)
+        set(${VAR} 0)
 
-        SET(${VAR} 0)
+        while (CURINDEX LESS CURLENGTH)
 
-        while (CURINDEX LESS  CURLENGTH)
-
-            STRING(SUBSTRING "${VAL}" ${CURINDEX} 1 CHAR)
+            string(SUBSTRING "${VAL}" ${CURINDEX} 1 CHAR)
 
             hexchar2dec(CHAR ${CHAR})
 
-            MATH(EXPR POWAH "(1<<((${CURLENGTH}-${CURINDEX}-1)*4))")
-            MATH(EXPR CHAR "(${CHAR}*${POWAH})")
-            MATH(EXPR ${VAR} "${${VAR}}+${CHAR}")
-            MATH(EXPR CURINDEX "${CURINDEX}+1")
+            math(EXPR POWAH "(1<<((${CURLENGTH}-${CURINDEX}-1)*4))")
+            math(EXPR CHAR "(${CHAR}*${POWAH})")
+            math(EXPR ${VAR} "${${VAR}}+${CHAR}")
+            math(EXPR CURINDEX "${CURINDEX}+1")
         endwhile()
-    ENDIF()
+    endif()
 
 endmacro()
 
@@ -76,20 +74,20 @@ macro(make_def LIB_NAME FUNCTION_LIST FILE_PATH)
 
     if(NOT EXISTS FILE_PATH)
 
-        message(STATUS "make_def ${LIB_NAME} ${FILE_PATH}")  
-   
-    set( CONF 
+        message(STATUS "make_def ${LIB_NAME} ${FILE_PATH}")
+
+    set( CONF
     "
 ;
 ; Definition file for the DLL version of the SSLEAY library from OpenSSL
 ;
 
-LIBRARY         ${LIB_NAME}	
+LIBRARY         ${LIB_NAME}
 
 EXPORTS
 "
     )
-    
+
     foreach(FUNC ${FUNCTION_LIST})
         set( CONF "${CONF}    ${FUNC}\n")
     endforeach()
@@ -99,18 +97,14 @@ EXPORTS
 endmacro()
 
 function(check_version major minor rev fix)
-    if(WIN32)
-        file(READ ${CMAKE_CURRENT_BINARY_DIR}/include/openssl/opensslv.h VERSION_H_CONTENTS)
-    else()
-        file(READ ${CMAKE_CURRENT_SOURCE_DIR}/include/openssl/opensslv.h VERSION_H_CONTENTS)
-    endif()
+    file(READ ${CMAKE_CURRENT_SOURCE_DIR}/include/openssl/opensslv.h VERSION_H_CONTENTS)
     string(REGEX MATCH "OPENSSL_VERSION_NUMBER  0x([0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f])"
-          VERSION_NUM ${VERSION_H_CONTENTS})      
+          VERSION_NUM ${VERSION_H_CONTENTS})
     string(SUBSTRING ${VERSION_NUM} 26 1 MAJOR_VER)
     string(SUBSTRING ${VERSION_NUM} 27 2 MINOR_VER)
     string(SUBSTRING ${VERSION_NUM} 29 2 REL_VER)
     string(SUBSTRING ${VERSION_NUM} 31 2 FIX_VER)
-    
+
     hex2dec(MAJOR_VER ${MAJOR_VER})
     hex2dec(MINOR_VER ${MINOR_VER})
     hex2dec(REL_VER ${REL_VER})
@@ -120,7 +114,7 @@ function(check_version major minor rev fix)
     set(${minor} ${MINOR_VER} PARENT_SCOPE)
     set(${rev} ${REL_VER} PARENT_SCOPE)
     set(${fix} ${FIX_VER} PARENT_SCOPE)
-     
+
 endfunction()
 
 function(report_version name ver)
@@ -128,10 +122,10 @@ function(report_version name ver)
     string(ASCII 27 Esc)
     set(BoldYellow  "${Esc}[1;33m")
     set(ColourReset "${Esc}[m")
-        
+
     message(STATUS "${BoldYellow}${name} version ${ver}${ColourReset}")
-    
-endfunction()    
+
+endfunction()
 
 # macro to find packages on the host OS
 macro( find_exthost_package )
