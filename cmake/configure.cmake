@@ -26,7 +26,7 @@
 include (CheckIncludeFile)
 include (TestBigEndian)
 
-if(NOT BUILD_SHARED_LIBS)
+if(BUILD_STATIC_LIBS)
     set(OPENSSL_NO_SHARED TRUE)
 endif()
 
@@ -235,6 +235,7 @@ if(OPENSSL_NO_PIC)
     set(OPENSSL_NO_SHARED TRUE)
     set(BUILD_STATIC_LIBS TRUE)
     set(BUILD_SHARED_LIBS FALSE)
+    set(OSX_FRAMEWORK FALSE)
 endif()
 
 if(OPENSSL_NO_ENGINE)
@@ -465,7 +466,7 @@ configure_file(${CMAKE_SOURCE_DIR}/cmake/bn_conf.h.cmake.in ${CMAKE_CURRENT_BINA
 set(DSO_EXTENSION ${CMAKE_SHARED_LIBRARY_SUFFIX})
 configure_file(${CMAKE_SOURCE_DIR}/cmake/dso_conf.h.cmake.in ${CMAKE_CURRENT_BINARY_DIR}/dso_conf.h IMMEDIATE @ONLY)
 
-if(BUILD_SHARED_LIBS)
+if(BUILD_SHARED_LIBS OR OSX_FRAMEWORK)
     add_definitions(-DOPENSSL_NO_STATIC_ENGINE)
 else()
     if(CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX OR APPLE)

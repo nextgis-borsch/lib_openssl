@@ -107,12 +107,16 @@ endif()
 
 if(HOST_X64)
     # Generate asm file from x86_64cpuid
-    execute_process(COMMAND "${GEN_ASM_CMD_PREFIX} ${PERL_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/x86_64cpuid.pl ${PERLASM_SCHEME} ${CMAKE_CURRENT_BINARY_DIR}/x86_64cpuid.s"
+    add_custom_command(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/x86_64cpuid.s
+        COMMAND "${GEN_ASM_CMD_PREFIX} ${PERL_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/x86_64cpuid.pl ${PERLASM_SCHEME} ${CMAKE_CURRENT_BINARY_DIR}/x86_64cpuid.s"
+        DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/x86_64cpuid.pl
     )
     set(CSOURCES ${CSOURCES} ${CMAKE_CURRENT_BINARY_DIR}/x86_64cpuid.s)
 else()
     # Generate asm file from x86cpuid
-    execute_process(COMMAND "${GEN_ASM_CMD_PREFIX} ${PERL_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/x86cpuid.pl ${PERLASM_SCHEME} ${CMAKE_CURRENT_BINARY_DIR}/x86cpuid.s"
+    add_custom_command(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/x86cpuid.s
+        COMMAND "${GEN_ASM_CMD_PREFIX} ${PERL_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/x86cpuid.pl ${PERLASM_SCHEME} ${CMAKE_CURRENT_BINARY_DIR}/x86cpuid.s"
+        DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/x86cpuid.pl
     )
     set(CSOURCES ${CSOURCES} ${CMAKE_CURRENT_BINARY_DIR}/x86cpuid.s)
 endif()
@@ -141,6 +145,8 @@ if(MSVC)
 
     set(CSOURCES ${CSOURCES} dllmain.c)
 endif()
+
+set(TARGET_NAME crypto)
 
 add_library(${TARGET_NAME} OBJECT ${CSOURCES})
 
