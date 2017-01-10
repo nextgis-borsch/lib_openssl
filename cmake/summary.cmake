@@ -25,29 +25,15 @@
 ################################################################################
 
 message(STATUS "Configuring OpenSSL version ${VERSION}")
-# TODO:
-#[[
-no-asan         [default]  OPENSSL_NO_ASAN
-no-crypto-mdebug [default]  OPENSSL_NO_CRYPTO_MDEBUG
-no-crypto-mdebug-backtrace [default]  OPENSSL_NO_CRYPTO_MDEBUG_BACKTRACE
-no-ec_nistp_64_gcc_128 [default]  OPENSSL_NO_EC_NISTP_64_GCC_128
-no-egd          [default]  OPENSSL_NO_EGD
-no-fuzz-afl     [default]  OPENSSL_NO_FUZZ_AFL
-no-fuzz-libfuzzer [default]  OPENSSL_NO_FUZZ_LIBFUZZER
-no-heartbeats   [default]  OPENSSL_NO_HEARTBEATS
-no-md2          [default]  OPENSSL_NO_MD2 (skip dir)
-no-msan         [default]  OPENSSL_NO_MSAN
-no-rc5          [default]  OPENSSL_NO_RC5 (skip dir)
-no-sctp         [default]  OPENSSL_NO_SCTP
-no-ssl-trace    [default]  OPENSSL_NO_SSL_TRACE
-no-ssl3         [default]  OPENSSL_NO_SSL3
-no-ssl3-method  [default]  OPENSSL_NO_SSL3_METHOD
-no-ubsan        [default]  OPENSSL_NO_UBSAN
-no-unit-test    [default]  OPENSSL_NO_UNIT_TEST
-no-weak-ssl-ciphers [default]  OPENSSL_NO_WEAK_SSL_CIPHERS
-no-zlib         [default]
-no-zlib-dynamic [default]
-]]
+
+get_cmake_property(_variableNames VARIABLES)
+string (REGEX MATCHALL "(^|;)OPENSSL_NO_[A-Za-z0-9_]*" _matchedVars "${_variableNames}")
+foreach(_variableName ${_matchedVars})
+    if(${_variableName})
+        message(STATUS "    ${_variableName}=${${_variableName}}")
+    endif()
+endforeach()
+message(STATUS "")
 message(STATUS "Configuring for ${CMAKE_SYSTEM_NAME}")
 message(STATUS "CC            =${CMAKE_C_COMPILER}")
 message(STATUS "CFLAG         =${CMAKE_C_FLAGS}")

@@ -38,9 +38,20 @@ if(OSX_FRAMEWORK AND (BUILD_SHARED_LIBS OR BUILD_STATIC_LIBS))
                        and BUILD_STATIC_LIBS keys are permitted")
 endif()
 
+include(util)
+check_version(MAJOR_VER MINOR_VER REL_VER FIX_VER)
+set(VERSION ${MAJOR_VER}.${MINOR_VER}.${REL_VER})
+report_version(${PROJECT_NAME} ${VERSION})
+
+if(OSX_FRAMEWORK)
+    set(FRAMEWORK_VERSION "${MAJOR_VER}")
+endif()
+
 if(OSX_FRAMEWORK)
   set(INSTALL_BIN_DIR "${CMAKE_INSTALL_PREFIX}/Applications" CACHE INTERNAL "Installation directory for executables" FORCE)
   set(INSTALL_LIB_DIR "${CMAKE_INSTALL_PREFIX}/Library/Frameworks" CACHE INTERNAL "Installation directory for libraries" FORCE)
+  set(INSTALL_ENGINES_DIR ${INSTALL_LIB_DIR}/${PROJECT_NAME}.framework/Libraries/engines CACHE INTERNAL "Directory for engines" FORCE)
+  set(INSTALL_SHARE_DIR ${INSTALL_LIB_DIR}/${PROJECT_NAME}.framework/Resources CACHE INTERNAL "Directory for data" FORCE)
   set(SKIP_INSTALL_HEADERS ON)
   set(SKIP_INSTALL_EXECUTABLES ON)
   set(SKIP_INSTALL_FILES ON)
@@ -52,16 +63,8 @@ else()
     set(INSTALL_BIN_DIR ${CMAKE_INSTALL_BINDIR} CACHE INTERNAL "Installation directory for executables" FORCE)
     set(INSTALL_LIB_DIR ${CMAKE_INSTALL_LIBDIR} CACHE INTERNAL "Installation directory for libraries" FORCE)
     set(INSTALL_INC_DIR ${CMAKE_INSTALL_INCLUDEDIR}/openssl CACHE INTERNAL "Installation directory for headers" FORCE)
-    set(INSTALL_DOC_DIR ${CMAKE_INSTALL_DOCDIR} CACHE INTERNAL "Share directory for data" FORCE)
-endif()
-
-include(util)
-check_version(MAJOR_VER MINOR_VER REL_VER FIX_VER)
-set(VERSION ${MAJOR_VER}.${MINOR_VER}.${REL_VER})
-report_version(${PROJECT_NAME} ${VERSION})
-
-if(OSX_FRAMEWORK)
-    set(FRAMEWORK_VERSION "${MAJOR_VER}")
+    set(INSTALL_SHARE_DIR ${CMAKE_INSTALL_DATADIR}/ssl CACHE INTERNAL "Installation directory for share data" FORCE)
+    set(INSTALL_ENGINES_DIR ${INSTALL_LIB_DIR}/engines-${MAJOR_VER}.${MINOR_VER} CACHE INTERNAL "Directory for engines" FORCE)
 endif()
 
 include(configure)
@@ -74,6 +77,9 @@ if(ZLIB_FOUND)
     if(BUILD_SHARED_LIBS)
         add_definitions(-DZLIB_SHARED)
     endif()
+else()
+    set(OPENSSL_NO_ZIP ON)
+    set(OPENSSL_NO_ZIP_DYNAMIC ON)
 endif()
 
 if(CYGWIN)
@@ -93,8 +99,11 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
 
+# $config{dirs} = [ "crypto", "ssl", "engines", "apps", "test", "util", "tools", "fuzz" ];
+
 add_subdirectory(crypto)
 #add_subdirectory(ssl)
+#add_subdirectory(engines)
 #add_subdirectory(apps)
 
 set(LIB_NAME ${PROJECT_NAME})
@@ -119,8 +128,6 @@ else()
         SOVERSION ${MAJOR_VER}
         PUBLIC_HEADER "${PUBLIC_HDRS}")
 endif()
-
-
 
 export(TARGETS ${LIB_NAME} FILE ${PROJECT_NAME}-exports.cmake)
 
