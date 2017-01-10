@@ -50,7 +50,7 @@ endif()
 if(OSX_FRAMEWORK)
   set(INSTALL_BIN_DIR "${CMAKE_INSTALL_PREFIX}/Applications" CACHE INTERNAL "Installation directory for executables" FORCE)
   set(INSTALL_LIB_DIR "${CMAKE_INSTALL_PREFIX}/Library/Frameworks" CACHE INTERNAL "Installation directory for libraries" FORCE)
-  set(INSTALL_ENGINES_DIR ${INSTALL_LIB_DIR}/${PROJECT_NAME}.framework/Libraries/engines CACHE INTERNAL "Directory for engines" FORCE)
+  set(INSTALL_ENGINES_DIR ${INSTALL_LIB_DIR}/${PROJECT_NAME}.framework/Resources/engines CACHE INTERNAL "Directory for engines" FORCE)
   set(INSTALL_SHARE_DIR ${INSTALL_LIB_DIR}/${PROJECT_NAME}.framework/Resources CACHE INTERNAL "Directory for data" FORCE)
   set(SKIP_INSTALL_HEADERS ON)
   set(SKIP_INSTALL_EXECUTABLES ON)
@@ -99,22 +99,32 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
 
+set(LIB_NAME ${PROJECT_NAME})
+
 # $config{dirs} = [ "crypto", "ssl", "engines", "apps", "test", "util", "tools", "fuzz" ];
 
 add_subdirectory(crypto)
-#add_subdirectory(ssl)
-#add_subdirectory(engines)
+add_subdirectory(ssl)
+add_subdirectory(engines)
 #add_subdirectory(apps)
+add_subdirectory(util) # remove it
 
-set(LIB_NAME ${PROJECT_NAME})
+if(WIN32)
+    add_subdirectory(util)
+    set(TARGET_OBJECTS ${TARGET_OBJECTS} ${CMAKE_BINARY_DIR}/util/openssl.def)
+    configure_file(${CMAKE_SOURCE_DIR}/cmake/version32.rc ${CMAKE_CURRENT_BINARY_DIR}/version32.rc IMMEDIATE @ONLY)
+    set(TARGET_OBJECTS ${TARGET_OBJECTS} ${CMAKE_BINARY_DIR}/version32.rc)
+endif()
+
 if(BUILD_SHARED_LIBS)
-    add_library(${LIB_NAME} SHARED ${TARGET_OBJECTS} ${PUBLIC_HDRS})
+    add_library(${LIB_NAME} SHARED ${TARGET_OBJECTS} ${PUBLIC_HDRS} ${DEF_FILE})
     set_target_properties(${LIB_NAME} PROPERTIES
         SOVERSION ${MAJOR_VER}
         PUBLIC_HEADER "${PUBLIC_HDRS}")
 elseif(OSX_FRAMEWORK)
     add_library(${LIB_NAME} SHARED ${TARGET_OBJECTS} ${PUBLIC_HDRS})
     set_property(SOURCE ${PUBLIC_HDRS} PROPERTY MACOSX_PACKAGE_LOCATION "Headers/openssl")
+
     set_target_properties(${LIB_NAME} PROPERTIES
       FRAMEWORK TRUE
       FRAMEWORK_VERSION ${FRAMEWORK_VERSION}

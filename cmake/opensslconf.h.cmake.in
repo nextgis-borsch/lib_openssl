@@ -128,9 +128,7 @@ extern "C" {
 #cmakedefine OPENSSL_NO_DTLS
 #endif
 
-#ifndef OPENSSL_NO_DYNAMIC_ENGINE
-#cmakedefine OPENSSL_NO_DYNAMIC_ENGINE
-#endif
+#cmakedefine01 OPENSSL_NO_DYNAMIC_ENGINE
 
 #ifndef OPENSSL_NO_EC
 #cmakedefine OPENSSL_NO_EC

@@ -19,22 +19,17 @@ BEGIN
     BEGIN
 	BLOCK "040904b0"
 	BEGIN
-	    // Required:	    
+	    // Required:
 	    VALUE "CompanyName", "The OpenSSL Project, http://www.openssl.org/\0"
 	    VALUE "FileDescription", "OpenSSL Shared Library\0"
 	    VALUE "FileVersion", "@VERSION@\0"
-#if defined(CRYPTO)
-	    VALUE "InternalName", "libeay32\0"
-	    VALUE "OriginalFilename", "libeay32.dll\0"
-#elif defined(SSL)
-	    VALUE "InternalName", "ssleay32\0"
-	    VALUE "OriginalFilename", "ssleay32.dll\0"
-#endif
+	    VALUE "InternalName", "openssl\0"
+	    VALUE "OriginalFilename", "openssl.dll\0"
 	    VALUE "ProductName", "The OpenSSL Toolkit\0"
 	    VALUE "ProductVersion", "@VERSION@\0"
 	    // Optional:
 	    //VALUE "Comments", "\0"
-	    VALUE "LegalCopyright", "Copyright © 1998-2005 The OpenSSL Project. Copyright © 1995-1998 Eric A. Young, Tim J. Hudson. All rights reserved.\0"
+	    VALUE "LegalCopyright", "Copyright ï¿½ 1998-2005 The OpenSSL Project. Copyright ï¿½ 1995-1998 Eric A. Young, Tim J. Hudson. All rights reserved.\0"
 	    //VALUE "LegalTrademarks", "\0"
 	    //VALUE "PrivateBuild", "\0"
 	    //VALUE "SpecialBuild", "\0"

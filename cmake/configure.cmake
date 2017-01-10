@@ -274,6 +274,10 @@ if(OPENSSL_FIPS)
     add_definitions(-DOPENSSL_FIPS)
 endif()
 
+if(NOT UNIX OR APPLE)
+    set(OPENSSL_NO_AFALGENG ON)
+endif()
+
 # TODO: Add android specific arm/arm64 asm files
 # set(PERLASM_SCHEME android)
 
