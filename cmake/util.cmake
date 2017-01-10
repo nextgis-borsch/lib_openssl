@@ -121,7 +121,10 @@ macro(generate_asm2 FILE_NAME OUT_FILE_NAME)
 endmacro()
 
 function(check_version major minor rev fix)
-    file(READ ${CMAKE_CURRENT_SOURCE_DIR}/include/openssl/opensslv.h VERSION_H_CONTENTS)
+
+    set(VERSION_FILE ${CMAKE_CURRENT_SOURCE_DIR}/include/openssl/opensslv.h)
+
+    file(READ ${VERSION_FILE} VERSION_H_CONTENTS)
     string(REGEX MATCH "OPENSSL_VERSION_NUMBER  0x([0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f])"
           VERSION_NUM ${VERSION_H_CONTENTS})
     string(SUBSTRING ${VERSION_NUM} 26 1 MAJOR_VER)
@@ -138,6 +141,10 @@ function(check_version major minor rev fix)
     set(${minor} ${MINOR_VER} PARENT_SCOPE)
     set(${rev} ${REL_VER} PARENT_SCOPE)
     set(${fix} ${FIX_VER} PARENT_SCOPE)
+
+    # Store version string in file for installer needs
+    file(TIMESTAMP ${VERSION_FILE} VERSION_DATETIME "%Y-%m-%d %H:%M:%S" UTC)
+    file(WRITE ${CMAKE_BINARY_DIR}/version.str "${MAJOR_VER}.${MINOR_VER}.${REL_VER}\n${VERSION_DATETIME}")
 
 endfunction()
 

@@ -50,6 +50,7 @@ endif()
 if(OSX_FRAMEWORK)
   set(INSTALL_BIN_DIR "${CMAKE_INSTALL_PREFIX}/Applications" CACHE INTERNAL "Installation directory for executables" FORCE)
   set(INSTALL_LIB_DIR "${CMAKE_INSTALL_PREFIX}/Library/Frameworks" CACHE INTERNAL "Installation directory for libraries" FORCE)
+  set(INSTALL_INC_DIR ${INSTALL_LIB_DIR}/${PROJECT_NAME}.framework/Headers CACHE INTERNAL "Installation directory for headers" FORCE)
   set(INSTALL_ENGINES_DIR ${INSTALL_LIB_DIR}/${PROJECT_NAME}.framework/Resources/engines CACHE INTERNAL "Directory for engines" FORCE)
   set(INSTALL_SHARE_DIR ${INSTALL_LIB_DIR}/${PROJECT_NAME}.framework/Resources CACHE INTERNAL "Directory for data" FORCE)
   set(SKIP_INSTALL_HEADERS ON)
@@ -126,12 +127,14 @@ elseif(OSX_FRAMEWORK)
     set_property(SOURCE ${PUBLIC_HDRS} PROPERTY MACOSX_PACKAGE_LOCATION "Headers/openssl")
 
     set_target_properties(${LIB_NAME} PROPERTIES
-      FRAMEWORK TRUE
-      FRAMEWORK_VERSION ${FRAMEWORK_VERSION}
-      MACOSX_FRAMEWORK_SHORT_VERSION_STRING ${VERSION}
-      MACOSX_FRAMEWORK_BUNDLE_VERSION ${VERSION}
-      MACOSX_FRAMEWORK_IDENTIFIER org.openssl.libopenssl
-      XCODE_ATTRIBUTE_INSTALL_PATH "@rpath")
+        SOVERSION ${MAJOR_VER}
+        VERSION ${VERSION}
+        FRAMEWORK TRUE
+        FRAMEWORK_VERSION ${FRAMEWORK_VERSION}
+        MACOSX_FRAMEWORK_SHORT_VERSION_STRING ${VERSION}
+        MACOSX_FRAMEWORK_BUNDLE_VERSION ${VERSION}
+        MACOSX_FRAMEWORK_IDENTIFIER org.openssl.libopenssl
+        XCODE_ATTRIBUTE_INSTALL_PATH "@rpath")
 else()
     add_library(${LIB_NAME} STATIC ${TARGET_OBJECTS} ${PUBLIC_HDRS})
     set_target_properties(${LIB_NAME} PROPERTIES
