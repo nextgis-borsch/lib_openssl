@@ -201,9 +201,9 @@ if(NOT WIN32)
     set(GEN_ASM_CMD_PREFIX "CC=\"${CMAKE_C_COMPILER}\"")
 endif()
 
-if(I386_ONLY)
+if(I386_ONLY OR OPENSSL_NO_ASM)
     set(CSOURCES ${CSOURCES} mem_clr.c)
-else()
+else(OPENSSL_NO_ASM)
     if(HOST_X64)
         # Generate asm file from x86_64cpuid
         add_custom_command(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/x86_64cpuid.s
@@ -230,18 +230,20 @@ if(MSVC)
 
     add_definitions(-DOPENSSL_USE_APPLINK)
 
-    if(HOST_X64)
-        add_custom_command(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/uplink-x86_64.s
-            COMMAND ${GEN_ASM_CMD_PREFIX} ${PERL_EXECUTABLE} ${CMAKE_SOURCE_DIR}/ms/uplink-x86_64.pl ${PERLASM_SCHEME} ${CMAKE_CURRENT_BINARY_DIR}/uplink-x86_64.s
-            DEPENDS ${CMAKE_SOURCE_DIR}/ms/uplink-x86_64.pl
-        )
-        set(CSOURCES ${CSOURCES} ${CMAKE_CURRENT_BINARY_DIR}/uplink-x86_64.s)
-    else()
-        add_custom_command(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/uplink-x86.s
-            COMMAND ${GEN_ASM_CMD_PREFIX} ${PERL_EXECUTABLE} ${CMAKE_SOURCE_DIR}/ms/uplink-x86.pl ${PERLASM_SCHEME} ${CMAKE_CURRENT_BINARY_DIR}/uplink-x86.s
-            DEPENDS ${CMAKE_SOURCE_DIR}/ms/uplink-x86.pl
-        )
-        set(CSOURCES ${CSOURCES} ${CMAKE_CURRENT_BINARY_DIR}/uplink-x86.s)
+    if(NOT OPENSSL_NO_ASM)
+        if(HOST_X64)
+            add_custom_command(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/uplink-x86_64.s
+                COMMAND ${GEN_ASM_CMD_PREFIX} ${PERL_EXECUTABLE} ${CMAKE_SOURCE_DIR}/ms/uplink-x86_64.pl ${PERLASM_SCHEME} ${CMAKE_CURRENT_BINARY_DIR}/uplink-x86_64.s
+                DEPENDS ${CMAKE_SOURCE_DIR}/ms/uplink-x86_64.pl
+            )
+            set(CSOURCES ${CSOURCES} ${CMAKE_CURRENT_BINARY_DIR}/uplink-x86_64.s)
+        else()
+            add_custom_command(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/uplink-x86.s
+                COMMAND ${GEN_ASM_CMD_PREFIX} ${PERL_EXECUTABLE} ${CMAKE_SOURCE_DIR}/ms/uplink-x86.pl ${PERLASM_SCHEME} ${CMAKE_CURRENT_BINARY_DIR}/uplink-x86.s
+                DEPENDS ${CMAKE_SOURCE_DIR}/ms/uplink-x86.pl
+            )
+            set(CSOURCES ${CSOURCES} ${CMAKE_CURRENT_BINARY_DIR}/uplink-x86.s)
+        endif()
     endif()
 
     set(CSOURCES ${CSOURCES} dllmain.c)

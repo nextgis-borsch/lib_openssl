@@ -3,7 +3,7 @@
 # Purpose:  CMake build scripts
 # Author:   Dmitry Baryshnikov, dmitry.baryshnikov@nextgis.com
 ################################################################################
-# Copyright (C) 2015, NextGIS <info@nextgis.com>
+# Copyright (C) 2015, 2017, NextGIS <info@nextgis.com>
 # Copyright (C) 2015 Dmitry Baryshnikov <dmitry.baryshnikov@nextgis.com>
 #
 # Permission is hereby granted, free of charge, to any person obtaining a

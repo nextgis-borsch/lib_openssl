@@ -262,7 +262,7 @@ endif()
 
 if(NOT OPENSSL_NO_ASM)
     # If Assembler enabled need perl
-    find_package(Perl 5)
+    find_exthost_program(Perl 5)
     if(NOT PERL_FOUND)
         message(WARNING "Perl not found. Assembler will be disabled")
         set(OPENSSL_NO_ASM ON)

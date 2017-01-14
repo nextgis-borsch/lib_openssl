@@ -22,7 +22,9 @@ extern "C" {
  * OpenSSL was configured with the following options:
  */
 
+#ifndef OPENSSL_SYS_@OPENSSL_TARGET@
 #define OPENSSL_SYS_@OPENSSL_TARGET@ 1
+#endif // OPENSSL_SYS_@OPENSSL_TARGET@
 
 #ifndef OPENSSL_THREADS
 #cmakedefine OPENSSL_THREADS
