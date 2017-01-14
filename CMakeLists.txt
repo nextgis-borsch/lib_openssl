@@ -95,6 +95,7 @@ elseif(MSVC)
 endif()
 
 file(GLOB PUBLIC_HDRS ${CMAKE_CURRENT_SOURCE_DIR}/include/openssl/*.h)
+set(PUBLIC_HDRS ${PUBLIC_HDRS} ${CMAKE_BINARY_DIR}/openssl/opensslconf.h)
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
