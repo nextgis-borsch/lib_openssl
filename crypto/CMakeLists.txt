@@ -203,8 +203,22 @@ endif()
 
 if(I386_ONLY OR OPENSSL_NO_ASM)
     set(CSOURCES ${CSOURCES} mem_clr.c)
-else(OPENSSL_NO_ASM)
-    if(HOST_X64)
+else()
+    if(ANDROID_ARMV4)
+        add_custom_command(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/armv4cpuid.S
+            COMMAND ${GEN_ASM_CMD_PREFIX} ${PERL_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/armv4cpuid.pl ${PERLASM_SCHEME} ${CMAKE_CURRENT_BINARY_DIR}/armv4cpuid.S
+            DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/armv4cpuid.pl
+        )
+        set(CSOURCES ${CSOURCES} ${CMAKE_CURRENT_BINARY_DIR}/armv4cpuid.S armcap.c)
+    # no asm elseif(ANDROID_MIPS32)
+    elseif(ANDROID_AARCH64)
+        add_custom_command(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/arm64cpuid.S
+            COMMAND ${GEN_ASM_CMD_PREFIX} ${PERL_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/arm64cpuid.pl ${PERLASM_SCHEME} ${CMAKE_CURRENT_BINARY_DIR}/arm64cpuid.S
+            DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/arm64cpuid.pl
+        )
+        set(CSOURCES ${CSOURCES} ${CMAKE_CURRENT_BINARY_DIR}/armv4cpuid.S armcap.c)
+    # no asm elseif(ANDROID_MIPS64)
+    elseif(HOST_X64)
         # Generate asm file from x86_64cpuid
         add_custom_command(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/x86_64cpuid.s
             COMMAND ${GEN_ASM_CMD_PREFIX} ${PERL_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/x86_64cpuid.pl ${PERLASM_SCHEME} ${CMAKE_CURRENT_BINARY_DIR}/x86_64cpuid.s

@@ -30,6 +30,22 @@ set(CSOURCES
 
 if(OPENSSL_NO_ASM)
     set(CSOURCES ${CSOURCES} aes_core.c aes_cbc.c)
+elseif(ANDROID_ARMV4)
+    set(CSOURCES ${CSOURCES} aes_cbc.c)
+    set(ASM_SOURCES aes-armv4 bsaes-armv7 aesv8-armx)
+    add_definitions(-DBSAES_ASM -DAES_ASM)
+elseif(ANDROID_MIPS32)
+    set(CSOURCES ${CSOURCES} aes_cbc.c)
+    set(ASM_SOURCES aes-mips)
+    add_definitions(-DAES_ASM)
+elseif(ANDROID_AARCH64)
+    set(CSOURCES ${CSOURCES} aes_core.c aes_cbc.c)
+    set(ASM_SOURCES aesv8-armx vpaes-armv8)
+    add_definitions(-DAES_ASM -DVPAES_ASM)
+elseif(ANDROID_MIPS64)
+    set(CSOURCES ${CSOURCES} aes_cbc.c)
+    set(ASM_SOURCES aes-mips)
+    add_definitions(-DAES_ASM)
 elseif(HOST_X64)
     # aes_asm_src     => "aes-x86_64.s vpaes-x86_64.s bsaes-x86_64.s aesni-x86_64.s aesni-sha1-x86_64.s aesni-sha256-x86_64.s aesni-mb-x86_64.s",
     set(ASM_SOURCES aes-x86_64 vpaes-x86_64 bsaes-x86_64 aesni-x86_64
