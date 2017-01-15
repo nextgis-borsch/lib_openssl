@@ -28,7 +28,9 @@ set(CSOURCES
     wp_dgst.c
 )
 
-if(NOT OPENSSL_NO_ASM)
+if(OPENSSL_NO_ASM)
+    set(CSOURCES ${CSOURCES} wp_block.c)
+else()
     if(HOST_X64)
         generate_asm(wp-x86_64)
     else()

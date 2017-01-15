@@ -32,7 +32,9 @@ set(CSOURCES
     fcrypt.c xcbc_enc.c rpc_enc.c  cbc_cksm.c
 )
 
-if(NOT OPENSSL_NO_ASM)
+if(OPENSSL_NO_ASM)
+    set(CSOURCES ${CSOURCES} des_enc.c fcrypt_b.c)
+else()
     if(HOST_X64)
         set(CSOURCES ${CSOURCES} des_enc.c fcrypt_b.c)
     else()

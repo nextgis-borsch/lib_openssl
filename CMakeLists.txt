@@ -143,6 +143,8 @@ else()
         PUBLIC_HEADER "${PUBLIC_HDRS}")
 endif()
 
+target_link_extlibraries(${LIB_NAME})
+
 export(TARGETS ${LIB_NAME} FILE ${PROJECT_NAME}-exports.cmake)
 
 if (REGISTER_PACKAGE)

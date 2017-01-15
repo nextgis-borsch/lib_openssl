@@ -398,7 +398,7 @@ if(UNIX)
                 add_definitions(-DPEDANTIC)
                 set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -pedantic -Wno-long-long")
             endif()
-            set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -Wsign-compare -Wmissing-prototypes  -Wshadow -Wformat -Wtype-limits -Werror -Wl,--export-all -Wl,-znodelete")
+            set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -Wsign-compare -Wmissing-prototypes  -Wshadow -Wformat -Wtype-limits -Werror -Wl,-znodelete") # TODO: put in right place -Wl,--export-all
             set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DOPENSSL_USE_NODELETE")
 
             if(HOST_X64)
@@ -437,7 +437,7 @@ if(UNIX)
         set(SHARED_CFLAG "-fPIC")
     endif()
 
-    if(NOT NO_ASM)
+    if(NOT OPENSSL_NO_ASM)
         enable_language(ASM)
         if(NOT CMAKE_ASM_COMPILER_WORKS)
             set(OPENSSL_NO_ASM ON)
@@ -494,7 +494,7 @@ elseif(WIN32)
     configure_file( ${CMAKE_SOURCE_DIR}/cmake/version32.rc.cmake ${CMAKE_BINARY_DIR}/version32.rc )
 endif()
 
-if(CMAKE_ASM_COMPILER_WORKS)
+if(CMAKE_ASM_COMPILER_WORKS AND NOT OPENSSL_NO_ASM)
     set(OPENSSL_CPUID_OBJ ON)
 endif()
 
