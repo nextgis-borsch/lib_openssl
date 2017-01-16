@@ -123,6 +123,9 @@ if(NOT OPENSSL_NO_DH)
 endif()
 
 if(NOT OPENSSL_NO_DSO)
+    if(WIN32)
+        add_definitions(-DDSO_WIN32)
+    endif()
     add_subdirectory(dso)
 endif()
 
@@ -246,17 +249,17 @@ if(MSVC)
 
     if(NOT OPENSSL_NO_ASM)
         if(HOST_X64)
-            add_custom_command(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/uplink-x86_64.s
-                COMMAND ${GEN_ASM_CMD_PREFIX} ${PERL_EXECUTABLE} ${CMAKE_SOURCE_DIR}/ms/uplink-x86_64.pl ${PERLASM_SCHEME} ${CMAKE_CURRENT_BINARY_DIR}/uplink-x86_64.s
+            add_custom_command(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/uplink-x86_64.${ASM_FILE_EXT}
+                COMMAND ${GEN_ASM_CMD_PREFIX} ${PERL_EXECUTABLE} ${CMAKE_SOURCE_DIR}/ms/uplink-x86_64.pl ${PERLASM_SCHEME} ${CMAKE_CURRENT_BINARY_DIR}/uplink-x86_64.${ASM_FILE_EXT}
                 DEPENDS ${CMAKE_SOURCE_DIR}/ms/uplink-x86_64.pl
             )
-            set(CSOURCES ${CSOURCES} ${CMAKE_CURRENT_BINARY_DIR}/uplink-x86_64.s)
+            set(CSOURCES ${CSOURCES} ${CMAKE_CURRENT_BINARY_DIR}/uplink-x86_64.${ASM_FILE_EXT})
         else()
-            add_custom_command(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/uplink-x86.s
-                COMMAND ${GEN_ASM_CMD_PREFIX} ${PERL_EXECUTABLE} ${CMAKE_SOURCE_DIR}/ms/uplink-x86.pl ${PERLASM_SCHEME} ${CMAKE_CURRENT_BINARY_DIR}/uplink-x86.s
+            add_custom_command(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/uplink-x86.${ASM_FILE_EXT}
+                COMMAND ${GEN_ASM_CMD_PREFIX} ${PERL_EXECUTABLE} ${CMAKE_SOURCE_DIR}/ms/uplink-x86.pl ${PERLASM_SCHEME} ${CMAKE_CURRENT_BINARY_DIR}/uplink-x86.${ASM_FILE_EXT}
                 DEPENDS ${CMAKE_SOURCE_DIR}/ms/uplink-x86.pl
             )
-            set(CSOURCES ${CSOURCES} ${CMAKE_CURRENT_BINARY_DIR}/uplink-x86.s)
+            set(CSOURCES ${CSOURCES} ${CMAKE_CURRENT_BINARY_DIR}/uplink-x86.${ASM_FILE_EXT})
         endif()
     endif()
 
