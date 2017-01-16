@@ -116,13 +116,13 @@ add_subdirectory(engines)
 
 if(WIN32)
     add_subdirectory(util)
-    set(TARGET_OBJECTS ${TARGET_OBJECTS} ${CMAKE_BINARY_DIR}/util/openssl.def)
+    set(RESOURCE_FILES ${CMAKE_BINARY_DIR}/util/openssl.def)
     configure_file(${CMAKE_SOURCE_DIR}/cmake/version32.rc.cmake ${CMAKE_CURRENT_BINARY_DIR}/version32.rc IMMEDIATE @ONLY)
-    set(TARGET_OBJECTS ${TARGET_OBJECTS} ${CMAKE_BINARY_DIR}/version32.rc)
+    set(RESOURCE_FILES ${RESOURCE_FILES} ${CMAKE_BINARY_DIR}/version32.rc)
 endif()
 
 if(BUILD_SHARED_LIBS)
-    add_library(${LIB_NAME} SHARED ${TARGET_OBJECTS} ${PUBLIC_HDRS} ${DEF_FILE})
+    add_library(${LIB_NAME} SHARED ${TARGET_OBJECTS} ${PUBLIC_HDRS} ${RESOURCE_FILES})
     set_target_properties(${LIB_NAME} PROPERTIES
         SOVERSION ${MAJOR_VER}
         PUBLIC_HEADER "${PUBLIC_HDRS}")
