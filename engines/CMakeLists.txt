@@ -69,24 +69,26 @@ if(NOT OPENSSL_NO_DYNAMIC_ENGINE)
     endif()
 
     add_library(padlock SHARED ${CSOURCES})
-    target_link_libraries(padlock ${LIB_NAME})
+    target_link_libraries(padlock ${LIB_NAME} ${TARGET_LINK_LIB})
 
     set(ENGINE_TARGETS padlock)
 
     if(NOT OPENSSL_NO_CAPIENG)
         add_library(capi SHARED e_capi.c)
-        target_link_libraries(capi ${LIB_NAME})
-        set(ENGINE_TARGETS capi)
+        target_link_libraries(capi ${LIB_NAME} ${TARGET_LINK_LIB})
+        set(ENGINE_TARGETS ${ENGINE_TARGETS} capi)
     endif()
 
     if(NOT OPENSSL_NO_AFALGENG)
         add_library(afalg SHARED afalg/e_afalg.c afalg/e_afalg_err.c)
-        target_link_libraries(afalg ${LIB_NAME})
-        set(ENGINE_TARGETS afalg)
+        target_link_libraries(afalg ${LIB_NAME} ${TARGET_LINK_LIB})
+        set(ENGINE_TARGETS ${ENGINE_TARGETS} afalg)
     endif()
 
     install(TARGETS ${ENGINE_TARGETS}
         LIBRARY DESTINATION ${INSTALL_ENGINES_DIR}
+        RUNTIME DESTINATION ${INSTALL_ENGINES_DIR}
+        ARCHIVE DESTINATION ${INSTALL_ENGINES_DIR}
     )
 endif()
 

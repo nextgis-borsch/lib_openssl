@@ -72,6 +72,10 @@ include(configure)
 
 include(FindAnyProject)
 
+if(WIN32)
+    set(TARGET_LINK_LIB ${TARGET_LINK_LIB} Ws2_32.lib Crypt32.lib) # WS2_32.LIB, GDI32.LIB, ADVAPI32.LIB, CRYPT32.LIB and USER32.LIB
+endif()
+
 find_anyproject(ZLIB DEFAULT OFF)
 if(ZLIB_FOUND)
     add_definitions(-DZLIB)
@@ -109,12 +113,11 @@ add_subdirectory(crypto)
 add_subdirectory(ssl)
 add_subdirectory(engines)
 #add_subdirectory(apps)
-add_subdirectory(util) # remove it
 
 if(WIN32)
     add_subdirectory(util)
     set(TARGET_OBJECTS ${TARGET_OBJECTS} ${CMAKE_BINARY_DIR}/util/openssl.def)
-    configure_file(${CMAKE_SOURCE_DIR}/cmake/version32.rc ${CMAKE_CURRENT_BINARY_DIR}/version32.rc IMMEDIATE @ONLY)
+    configure_file(${CMAKE_SOURCE_DIR}/cmake/version32.rc.cmake ${CMAKE_CURRENT_BINARY_DIR}/version32.rc IMMEDIATE @ONLY)
     set(TARGET_OBJECTS ${TARGET_OBJECTS} ${CMAKE_BINARY_DIR}/version32.rc)
 endif()
 

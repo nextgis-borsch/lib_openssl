@@ -469,7 +469,7 @@ elseif(WIN32)
     set(RC4_INT "unsigned int")
 
     # Search asm
-    if(NOT NO_ASM)
+    if(NOT OPENSSL_NO_ASM)
         enable_language(ASM-NASM)
         if(CMAKE_ASM-NASM_COMPILER_WORKS)
             if(CMAKE_CL_64)
