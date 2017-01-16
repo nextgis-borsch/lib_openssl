@@ -48,7 +48,7 @@ endif()
 add_subdirectory(hmac)
 add_subdirectory(ripemd)
 
-if(NOT OPENSSL_NO_WHRLPOOL)
+if(NOT OPENSSL_NO_WHIRLPOOL)
     add_subdirectory(whrlpool)
 endif()
 

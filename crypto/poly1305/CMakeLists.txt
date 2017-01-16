@@ -30,18 +30,24 @@ set(CSOURCES
 
 if(NOT OPENSSL_NO_ASM)
     if(ANDROID_ARMV4)
-        generate_asm(poly1305-armv4)
+        # FIXME: Error: selected processor does not support ARM mode and Error: undefined symbol ARMV7_NEON used as an immediate value
+        # generate_asm(poly1305-armv4)
+        # add_definitions(-DPOLY1305_ASM)
     elseif(ANDROID_MIPS32)
     elseif(ANDROID_AARCH64)
         generate_asm(poly1305-armv8.S)
+        add_definitions(-DPOLY1305_ASM)
     elseif(ANDROID_MIPS64)
         generate_asm(poly1305-mips)
+        add_definitions(-DPOLY1305_ASM)
     elseif(HOST_X64)
         generate_asm(poly1305-x86_64)
+        add_definitions(-DPOLY1305_ASM)
     else()
         generate_asm(poly1305-x86)
+        add_definitions(-DPOLY1305_ASM)
     endif()
-    add_definitions(-DPOLY1305_ASM)
+
 endif()
 
 set(TARGET_NAME poly1305)

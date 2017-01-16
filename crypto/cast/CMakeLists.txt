@@ -31,7 +31,10 @@ set(CSOURCES
 if(OPENSSL_NO_ASM OR NOT OPENSSL_NO_PIC) # CAST assembler is not PIC
     set(CSOURCES ${CSOURCES} c_enc.c)
 else()
-    if(HOST_X64)
+    if(ANDROID_ARMV4)
+    elseif(ANDROID_MIPS32 OR ANDROID_MIPS64)
+    elseif(ANDROID_AARCH64)
+    elseif(HOST_X64)
         set(CSOURCES ${CSOURCES} c_enc.c)
     else()
         generate_asm(cast-586)

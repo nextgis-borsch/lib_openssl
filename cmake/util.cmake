@@ -160,7 +160,7 @@ endfunction()
 
 # macro to find packages on the host OS
 macro( find_exthost_package )
-    if(CMAKE_CROSSCOMPILING)
+    if(CMAKE_CROSSCOMPILING OR ANDROID OR IOS)
         set( CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER )
         set( CMAKE_FIND_ROOT_PATH_MODE_LIBRARY NEVER )
         set( CMAKE_FIND_ROOT_PATH_MODE_INCLUDE NEVER )
@@ -186,7 +186,7 @@ endmacro()
 
 # macro to find programs on the host OS
 macro( find_exthost_program )
-    if(CMAKE_CROSSCOMPILING)
+    if(CMAKE_CROSSCOMPILING OR ANDROID OR IOS)
         set( CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER )
         set( CMAKE_FIND_ROOT_PATH_MODE_LIBRARY NEVER )
         set( CMAKE_FIND_ROOT_PATH_MODE_INCLUDE NEVER )
