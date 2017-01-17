@@ -28,9 +28,9 @@ cmake_minimum_required(VERSION 2.8.12 FATAL_ERROR)
 
 project(openssl)
 
-# some init settings
+# Some init settings
 set(CMAKE_COLOR_MAKEFILE ON)
-# set path to additional CMake modules
+# Set path to additional CMake modules
 set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake ${CMAKE_MODULE_PATH})
 
 if(OSX_FRAMEWORK AND (BUILD_SHARED_LIBS OR BUILD_STATIC_LIBS))
@@ -153,9 +153,8 @@ endif()
 
 target_link_extlibraries(${LIB_NAME})
 
-export(TARGETS ${LIB_NAME} FILE ${PROJECT_NAME}-exports.cmake)
-
 if (REGISTER_PACKAGE)
+    export(TARGETS ${LIB_NAME} FILE ${PROJECT_NAME}-exports.cmake)
 
     set(EXPORT_PACKAGE_NAME OpenSSL)
     set(EXPORT_PACKAGE_NAME_UPPER OPENSSL)
@@ -174,6 +173,8 @@ if (REGISTER_PACKAGE)
         ${CMAKE_CURRENT_BINARY_DIR}/${EXPORT_PACKAGE_NAME}ConfigVersion.cmake
         VERSION ${VERSION}
         COMPATIBILITY AnyNewerVersion )
+else()
+    export(TARGETS ${LIB_NAME} FILE ${PROJECT_NAME}-exports.cmake EXPORT_LINK_INTERFACE_LIBRARIES)
 endif()
 
 add_custom_target(uninstall COMMAND ${CMAKE_COMMAND} -P ${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake)
