@@ -112,7 +112,7 @@ set(LIB_NAME ${PROJECT_NAME})
 add_subdirectory(crypto)
 add_subdirectory(ssl)
 add_subdirectory(engines)
-#add_subdirectory(apps)
+add_subdirectory(apps)
 
 if(WIN32)
     add_subdirectory(util)
@@ -139,6 +139,11 @@ elseif(OSX_FRAMEWORK)
         MACOSX_FRAMEWORK_BUNDLE_VERSION ${VERSION}
         MACOSX_FRAMEWORK_IDENTIFIER org.openssl.libopenssl
         XCODE_ATTRIBUTE_INSTALL_PATH "@rpath")
+
+    # Add path to dynamic engines
+    if(NOT OPENSSL_NO_DYNAMIC_ENGINE)
+        set_target_properties(${LIB_NAME} PROPERTIES INSTALL_RPATH "@loader_path/Resources/engines")
+    endif()
 else()
     add_library(${LIB_NAME} STATIC ${TARGET_OBJECTS} ${PUBLIC_HDRS})
     set_target_properties(${LIB_NAME} PROPERTIES

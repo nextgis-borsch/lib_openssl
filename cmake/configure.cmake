@@ -541,7 +541,11 @@ string(TIMESTAMP OPENSSL_BUILD_DATE "%Y-%m-%d %H:%M:%S" UTC)
 configure_file(${CMAKE_SOURCE_DIR}/cmake/buildinf.h.cmake.in ${CMAKE_CURRENT_BINARY_DIR}/buildinf.h IMMEDIATE @ONLY)
 
 add_definitions(-DENGINESDIR="${INSTALL_ENGINES_DIR}")
-add_definitions(-DOPENSSLDIR="${INSTALL_SHARE_DIR}")
+if(OSX_FRAMEWORK)
+    add_definitions(-DOPENSSLDIR="/etc/ssl")
+else()
+    add_definitions(-DOPENSSLDIR="${INSTALL_SHARE_DIR}")
+endif()
 
 # Generate include/openssl/opensslconf.h
 configure_file(${CMAKE_SOURCE_DIR}/cmake/opensslconf.h.cmake.in ${CMAKE_CURRENT_BINARY_DIR}/openssl/opensslconf.h IMMEDIATE @ONLY)
@@ -556,7 +560,7 @@ if(OPENSSL_NO_STATIC_ENGINE)
 endif()
 
 if(BUILD_SHARED_LIBS OR OSX_FRAMEWORK)
-    
+
 else()
     if(CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX OR APPLE)
         set( CMAKE_CXX_FLAGS "-fpic ${CMAKE_CXX_FLAGS}" )
