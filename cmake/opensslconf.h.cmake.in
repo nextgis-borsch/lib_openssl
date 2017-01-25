@@ -18,6 +18,10 @@ extern "C" {
 # error OPENSSL_ALGORITHM_DEFINES no longer supported
 #endif
 
+#if OPENSSL_VERSION_NUMBER >= 0x10100000L
+#define OPENSSL_NO_SSL2
+#endif
+
 /*
  * OpenSSL was configured with the following options:
  */
