@@ -26,7 +26,7 @@
 
 set(FUNCTION_LIST)
 
-set(IGNORE_DEPRECATION_NAMES "ASN1_STRING_data" "TLSv1_server_method" "TLSv1_client_method")
+set(IGNORE_DEPRECATION_NAMES "ASN1_STRING_data" "TLSv1_server_method" "TLSv1_client_method" "TLSv1_method" "TLSv1_1_method" "TLSv1_2_method")
 
 macro(fill_list)
     foreach(FILE_STRING ${FILE_STRINGS})
