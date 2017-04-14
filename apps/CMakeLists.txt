@@ -34,7 +34,7 @@ file(DOWNLOAD "https://curl.haxx.se/ca/cacert.pem" ${CMAKE_CURRENT_BINARY_DIR}/c
 #    TLS_VERIFY ON
 )
 
-if(EXISTS ${CMAKE_CURRENT_BINARY_DIR}/cacert.pem)
+if(EXISTS ${CMAKE_CURRENT_BINARY_DIR}/cert.pem)
     install(FILES ${CMAKE_CURRENT_BINARY_DIR}/cert.pem DESTINATION ${INSTALL_SHARE_DIR}/certs)
 endif()
 
