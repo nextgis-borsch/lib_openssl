@@ -24,16 +24,15 @@
 # DEALINGS IN THE SOFTWARE.
 ################################################################################
 
-# install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/cert.pem DESTINATION ${INSTALL_SHARE_DIR}/ssl/certs)
-install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/ct_log_list.cnf DESTINATION ${INSTALL_SHARE_DIR}/private)
-install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/openssl.cnf DESTINATION ${INSTALL_SHARE_DIR})
-
 # Get Mosilla certs from curl site
 file(DOWNLOAD "https://curl.haxx.se/ca/cacert.pem" ${CMAKE_CURRENT_BINARY_DIR}/cert.pem
     INACTIVITY_TIMEOUT 30
-#    TLS_VERIFY ON
+    TLS_VERIFY OFF
+    SHOW_PROGRESS
 )
 
+install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/ct_log_list.cnf DESTINATION ${INSTALL_SHARE_DIR}/private)
+install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/openssl.cnf DESTINATION ${INSTALL_SHARE_DIR})
 if(EXISTS ${CMAKE_CURRENT_BINARY_DIR}/cert.pem)
     install(FILES ${CMAKE_CURRENT_BINARY_DIR}/cert.pem DESTINATION ${INSTALL_SHARE_DIR}/certs)
 endif()
