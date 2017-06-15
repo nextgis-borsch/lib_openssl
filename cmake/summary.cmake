@@ -65,7 +65,16 @@ CHACHA_ENC    =chacha-x86_64.o
 POLY1305_OBJ  =poly1305-x86_64.o
 BLAKE2_OBJ    =
 ]]
-message(STATUS "PROCESSOR     =${CMAKE_SYSTEM_PROCESSOR}")
+if(DEFINED IOS_ARCH)
+    message(STATUS "PROCESSOR     =${IOS_ARCH}")
+else()
+    message(STATUS "PROCESSOR     =${CMAKE_SYSTEM_PROCESSOR}")
+endif()
+
+if(DEFINED BUILD_TARGET_PLATFORM)
+    message(STATUS "BUILD TARGET PLATFORM=${BUILD_TARGET_PLATFORM}")
+endif()
+
 message(STATUS "RANLIB        =${CMAKE_RANLIB}")
 #[[
 ARFLAGS       =
