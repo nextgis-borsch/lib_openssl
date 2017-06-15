@@ -337,7 +337,7 @@ if(UNIX)
             set(OPENSSL_TARGET ios32)
         endif()
 
-        if(IOS_ARCH MATCHES "i386|x86_64")
+        if(IOS_ARCH STREQUAL "i386" OR IOS_ARCH STREQUAL "x86_64")
             if(HOST_X64)
                 set(SIXTY_FOUR_BIT_LONG TRUE)
                 set(PERLASM_SCHEME macosx)
