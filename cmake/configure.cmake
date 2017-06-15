@@ -366,6 +366,7 @@ if(UNIX)
         endif()
 
         set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fno-common")
+        set(CMAKE_LINKER_FLAGS "${CMAKE_LINKER_FLAGS} -Qunused-arguments -Wextra -Wno-unused-parameter -Wno-missing-field-initializers -Wno-language-extension-token -Wno-extended-offsetof -Wconditional-uninitialized -Wincompatible-pointer-types-discards-qualifiers -Wmissing-variable-declarations")
     elseif(ANDROID)
         if(ANDROID_ABI)
             if (NOT CMAKE_CXX_COMPILER_ID MATCHES "Clang") # using regular Clang or AppleClang
