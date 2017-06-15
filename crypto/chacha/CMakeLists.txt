@@ -31,7 +31,7 @@ else()
         # FIXME: Error: selected processor does not support ARM mode
         # generate_asm(chacha-armv4)
     elseif(ANDROID_MIPS32)
-    elseif(ANDROID_AARCH64)
+    elseif(ANDROID_AARCH64 OR IOS_ARM64)
     	generate_asm(chacha-armv8)
     elseif(ANDROID_MIPS64)
     elseif(HOST_X64)

@@ -214,12 +214,12 @@ else()
         )
         set(CSOURCES ${CSOURCES} ${CMAKE_CURRENT_BINARY_DIR}/armv4cpuid.S armcap.c)
     # no asm elseif(ANDROID_MIPS32)
-    elseif(ANDROID_AARCH64)
+    elseif(ANDROID_AARCH64 OR IOS_ARM64)
         add_custom_command(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/arm64cpuid.S
             COMMAND ${GEN_ASM_CMD_PREFIX} ${PERL_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/arm64cpuid.pl ${PERLASM_SCHEME} ${CMAKE_CURRENT_BINARY_DIR}/arm64cpuid.S
             DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/arm64cpuid.pl
         )
-        set(CSOURCES ${CSOURCES} ${CMAKE_CURRENT_BINARY_DIR}/armv4cpuid.S armcap.c)
+        set(CSOURCES ${CSOURCES} ${CMAKE_CURRENT_BINARY_DIR}/arm64cpuid.S armcap.c)
     # no asm elseif(ANDROID_MIPS64)
     elseif(HOST_X64)
         # Generate asm file from x86_64cpuid
@@ -236,6 +236,7 @@ else()
         )
         set(CSOURCES ${CSOURCES} ${CMAKE_CURRENT_BINARY_DIR}/x86cpuid.s)
     endif()
+
 endif()
 
 if(MSVC)
