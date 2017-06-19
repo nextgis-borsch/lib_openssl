@@ -38,6 +38,8 @@ if(OSX_FRAMEWORK AND (BUILD_SHARED_LIBS OR BUILD_STATIC_LIBS))
                        and BUILD_STATIC_LIBS keys are permitted")
 endif()
 
+include(configure)
+
 include(util)
 check_version(MAJOR_VER MINOR_VER REL_VER FIX_VER)
 set(VERSION ${MAJOR_VER}.${MINOR_VER}.${REL_VER})
@@ -69,8 +71,6 @@ else()
     set(INSTALL_ENGINES_DIR ${INSTALL_LIB_DIR}/engines-${MAJOR_VER}.${MINOR_VER} CACHE INTERNAL "Directory for engines" FORCE)
     set(INSTALL_PARENT_INC_DIR ${CMAKE_INSTALL_FULL_INCLUDEDIR} CACHE INTERNAL "Installation directory for headers" FORCE)
 endif()
-
-include(configure)
 
 include(FindAnyProject)
 
