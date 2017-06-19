@@ -24,14 +24,19 @@
 # DEALINGS IN THE SOFTWARE.
 ################################################################################
 include (CheckIncludeFile)
-include (TestBigEndian)
 
-test_big_endian(WORDS_BIGENDIAN)
-if (WORDS_BIGENDIAN)
-    add_definitions(-DB_ENDIAN)
-else()
+if(IOS)
     add_definitions(-DL_ENDIAN)
-endif ()
+else()
+    include (TestBigEndian)
+
+    test_big_endian(WORDS_BIGENDIAN)
+    if (WORDS_BIGENDIAN)
+        add_definitions(-DB_ENDIAN)
+    else()
+        add_definitions(-DL_ENDIAN)
+    endif()
+endif()
 
 if(BUILD_STATIC_LIBS)
     set(OPENSSL_NO_SHARED ON)
