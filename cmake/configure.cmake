@@ -26,6 +26,13 @@
 include (CheckIncludeFile)
 include (TestBigEndian)
 
+test_big_endian(WORDS_BIGENDIAN)
+if (WORDS_BIGENDIAN)
+    add_definitions(-DB_ENDIAN)
+else()
+    add_definitions(-DL_ENDIAN)
+endif ()
+
 if(BUILD_STATIC_LIBS)
     set(OPENSSL_NO_SHARED ON)
 endif()
@@ -297,17 +304,6 @@ endif()
 if( CMAKE_HOST_SYSTEM_PROCESSOR MATCHES "amd64|x86_64|AMD64|arm64|ARM64" )
     set(HOST_X64 TRUE)
 endif()
-
-test_big_endian(WORDS_BIGENDIAN)
-if(NOT DEFINED CMAKE_16BIT_TYPE)
-    set(CMAKE_16BIT_TYPE "unsigned short")
-endif()
-
-if (WORDS_BIGENDIAN)
-    add_definitions(-DB_ENDIAN)
-else()
-    add_definitions(-DL_ENDIAN)
-endif ()
 
 if(UNIX)
     set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -Wall")
