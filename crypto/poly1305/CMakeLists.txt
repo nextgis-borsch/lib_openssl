@@ -24,6 +24,7 @@
 # DEALINGS IN THE SOFTWARE.
 ################################################################################
 
+IF(NOT OPENSSL_NO_POLY1305)
 set(CSOURCES
     poly1305.c
 )
@@ -55,3 +56,4 @@ set(TARGET_NAME poly1305)
 add_library(${TARGET_NAME} OBJECT ${CSOURCES})
 
 set(TARGET_OBJECTS ${TARGET_OBJECTS} $<TARGET_OBJECTS:${TARGET_NAME}> PARENT_SCOPE)
+endif()

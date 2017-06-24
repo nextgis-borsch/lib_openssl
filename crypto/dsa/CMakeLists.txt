@@ -24,9 +24,10 @@
 # DEALINGS IN THE SOFTWARE.
 ################################################################################
 
+if(NOT OPENSSL_NO_DSA)
 set(CSOURCES
     dsa_gen.c dsa_key.c dsa_lib.c dsa_asn1.c dsa_vrf.c dsa_sign.c
-    dsa_err.c dsa_ossl.c dsa_depr.c dsa_ameth.c dsa_pmeth.c dsa_prn.c 
+    dsa_err.c dsa_ossl.c dsa_depr.c dsa_ameth.c dsa_pmeth.c dsa_prn.c
     dsa_meth.c
 )
 
@@ -35,3 +36,4 @@ set(TARGET_NAME dsa)
 add_library(${TARGET_NAME} OBJECT ${CSOURCES})
 
 set(TARGET_OBJECTS ${TARGET_OBJECTS} $<TARGET_OBJECTS:${TARGET_NAME}> PARENT_SCOPE)
+endif()

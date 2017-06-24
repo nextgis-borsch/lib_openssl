@@ -24,6 +24,7 @@
 # DEALINGS IN THE SOFTWARE.
 ################################################################################
 
+if(NOT OPENSSL_NO_CAMELLIA)
 set(CSOURCES
     cmll_ecb.c cmll_ofb.c cmll_cfb.c cmll_ctr.c
 )
@@ -50,3 +51,4 @@ set(TARGET_NAME camellia)
 add_library(${TARGET_NAME} OBJECT ${CSOURCES})
 
 set(TARGET_OBJECTS ${TARGET_OBJECTS} $<TARGET_OBJECTS:${TARGET_NAME}> PARENT_SCOPE)
+endif()

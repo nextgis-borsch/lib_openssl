@@ -24,6 +24,7 @@
 # DEALINGS IN THE SOFTWARE.
 ################################################################################
 
+if(NOT OPENSSL_NO_BLAKE2)
 set(CSOURCES
     blake2b.c blake2s.c m_blake2b.c m_blake2s.c
 )
@@ -33,3 +34,4 @@ set(TARGET_NAME blake2)
 add_library(${TARGET_NAME} OBJECT ${CSOURCES})
 
 set(TARGET_OBJECTS ${TARGET_OBJECTS} $<TARGET_OBJECTS:${TARGET_NAME}> PARENT_SCOPE)
+endif()

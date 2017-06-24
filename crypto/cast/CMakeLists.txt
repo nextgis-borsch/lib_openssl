@@ -24,6 +24,7 @@
 # DEALINGS IN THE SOFTWARE.
 ################################################################################
 
+if(NOT OPENSSL_NO_CAST)
 set(CSOURCES
     c_skey.c c_ecb.c c_cfb64.c c_ofb64.c
 )
@@ -46,3 +47,4 @@ set(TARGET_NAME cast)
 add_library(${TARGET_NAME} OBJECT ${CSOURCES})
 
 set(TARGET_OBJECTS ${TARGET_OBJECTS} $<TARGET_OBJECTS:${TARGET_NAME}> PARENT_SCOPE)
+endif()

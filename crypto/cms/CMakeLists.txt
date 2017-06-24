@@ -24,8 +24,9 @@
 # DEALINGS IN THE SOFTWARE.
 ################################################################################
 
+if(NOT OPENSSL_NO_CMS)
 set(CSOURCES
-    cms_lib.c cms_asn1.c cms_att.c cms_io.c cms_smime.c cms_err.c 
+    cms_lib.c cms_asn1.c cms_att.c cms_io.c cms_smime.c cms_err.c
     cms_sd.c cms_dd.c cms_cd.c cms_env.c cms_enc.c cms_ess.c
     cms_pwri.c cms_kari.c
 )
@@ -35,3 +36,4 @@ set(TARGET_NAME cms)
 add_library(${TARGET_NAME} OBJECT ${CSOURCES})
 
 set(TARGET_OBJECTS ${TARGET_OBJECTS} $<TARGET_OBJECTS:${TARGET_NAME}> PARENT_SCOPE)
+endif()

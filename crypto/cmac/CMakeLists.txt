@@ -24,6 +24,7 @@
 # DEALINGS IN THE SOFTWARE.
 ################################################################################
 
+if(NOT OPENSSL_NO_CMAC)
 set(CSOURCES
     cmac.c cm_ameth.c cm_pmeth.c
 )
@@ -33,3 +34,4 @@ set(TARGET_NAME cmac)
 add_library(${TARGET_NAME} OBJECT ${CSOURCES})
 
 set(TARGET_OBJECTS ${TARGET_OBJECTS} $<TARGET_OBJECTS:${TARGET_NAME}> PARENT_SCOPE)
+endif()

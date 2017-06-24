@@ -24,6 +24,7 @@
 # DEALINGS IN THE SOFTWARE.
 ################################################################################
 
+if(NOT OPENSSL_NO_IDEA)
 set(CSOURCES
     i_cbc.c i_cfb64.c i_ofb64.c i_ecb.c i_skey.c
 )
@@ -33,3 +34,4 @@ set(TARGET_NAME idea)
 add_library(${TARGET_NAME} OBJECT ${CSOURCES})
 
 set(TARGET_OBJECTS ${TARGET_OBJECTS} $<TARGET_OBJECTS:${TARGET_NAME}> PARENT_SCOPE)
+endif()
