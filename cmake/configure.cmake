@@ -259,6 +259,8 @@ if(OPENSSL_NO_SOCK)
 endif()
 
 if(OPENSSL_NO_DGRAM)
+    list(APPEND OPENSSL_FEATURES_DISABLED dtls)
+    list(APPEND OPENSSL_FEATURES_DISABLED sctp)
     set(OPENSSL_NO_DTLS ON)
     set(OPENSSL_NO_SCTP ON)
 endif()
@@ -328,6 +330,10 @@ foreach(OPENSSL_FEATURE ${OPENSSL_FEATURES})
     string(REPLACE "-" "_" OPENSSL_FEATURE ${OPENSSL_FEATURE})
     # make uppercase
     string(TOUPPER ${OPENSSL_FEATURE} OPENSSL_FEATURE)
+
+    if(OPENSSL_NO_${OPENSSL_FEATURE}) # From cmake input parameters
+        set(IS_DISABLED ON)
+    else()
 
     option(OPENSSL_NO_${OPENSSL_FEATURE} "do not compile support for ${OPENSSL_FEATURE}" ${IS_DISABLED})
     if(IS_DISABLED)
