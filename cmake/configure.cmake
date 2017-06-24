@@ -323,8 +323,6 @@ foreach(OPENSSL_FEATURE ${OPENSSL_FEATURES})
 
     if(OPENSSL_NO_${OPENSSL_FEATURE}) # From cmake input parameters
         set(IS_DISABLED ON)
-    else()
-        set(IS_DISABLED OFF)
     endif()
 
     option(OPENSSL_NO_${OPENSSL_FEATURE} "do not compile support for ${OPENSSL_FEATURE}" ${IS_DISABLED})
