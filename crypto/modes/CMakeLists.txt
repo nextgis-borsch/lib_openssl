@@ -30,10 +30,9 @@ set(CSOURCES
 )
 
 if(NOT OPENSSL_NO_ASM)
-    if(ANDROID_ARMV4)
-        # FIXME: Error: selected processor does not support ARM mode
-        # generate_asm(ghash-armv4)
-        # generate_asm(ghashv8-armx)
+    if(ANDROID_ARMV4 OR IOS_ARM32)
+        generate_asm(ghash-armv4)
+        generate_asm(ghashv8-armx)
     elseif(ANDROID_MIPS32)
     elseif(ANDROID_AARCH64 OR IOS_ARM64)
         generate_asm(ghashv8-armx)

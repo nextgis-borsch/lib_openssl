@@ -29,7 +29,7 @@ set(CSOURCES
 )
 
 if(NOT OPENSSL_NO_ASM)
-    if(NOT HOST_X64)
+    if(NOT HOST_X64 AND NOT IOS_ARM32 AND NOT IOS_ARM64)
         generate_asm(rmd-586)
         add_definitions(-DRMD160_ASM)
     endif()

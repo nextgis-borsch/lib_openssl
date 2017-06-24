@@ -207,10 +207,11 @@ endif()
 if(I386_ONLY OR OPENSSL_NO_ASM)
     set(CSOURCES ${CSOURCES} mem_clr.c)
 else()
-    if(ANDROID_ARMV4)
+    if(ANDROID_ARMV4 OR IOS_ARM32)
         add_custom_command(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/armv4cpuid.S
             COMMAND ${GEN_ASM_CMD_PREFIX} ${PERL_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/armv4cpuid.pl ${PERLASM_SCHEME} ${CMAKE_CURRENT_BINARY_DIR}/armv4cpuid.S
             DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/armv4cpuid.pl
+            COMMENT "Generate cpuid for PERLASM_SCHEME ${PERLASM_SCHEME}"
         )
         set(CSOURCES ${CSOURCES} ${CMAKE_CURRENT_BINARY_DIR}/armv4cpuid.S armcap.c)
     # no asm elseif(ANDROID_MIPS32)
@@ -218,6 +219,7 @@ else()
         add_custom_command(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/arm64cpuid.S
             COMMAND ${GEN_ASM_CMD_PREFIX} ${PERL_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/arm64cpuid.pl ${PERLASM_SCHEME} ${CMAKE_CURRENT_BINARY_DIR}/arm64cpuid.S
             DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/arm64cpuid.pl
+            COMMENT "Generate cpuid for PERLASM_SCHEME ${PERLASM_SCHEME}"
         )
         set(CSOURCES ${CSOURCES} ${CMAKE_CURRENT_BINARY_DIR}/arm64cpuid.S armcap.c)
     # no asm elseif(ANDROID_MIPS64)
@@ -226,6 +228,7 @@ else()
         add_custom_command(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/x86_64cpuid.s
             COMMAND ${GEN_ASM_CMD_PREFIX} ${PERL_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/x86_64cpuid.pl ${PERLASM_SCHEME} ${CMAKE_CURRENT_BINARY_DIR}/x86_64cpuid.s
             DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/x86_64cpuid.pl
+            COMMENT "Generate cpuid for PERLASM_SCHEME ${PERLASM_SCHEME}"
         )
         set(CSOURCES ${CSOURCES} ${CMAKE_CURRENT_BINARY_DIR}/x86_64cpuid.s)
     else()
@@ -233,6 +236,7 @@ else()
         add_custom_command(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/x86cpuid.s
             COMMAND "${GEN_ASM_CMD_PREFIX} ${PERL_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/x86cpuid.pl ${PERLASM_SCHEME} ${CMAKE_CURRENT_BINARY_DIR}/x86cpuid.s"
             DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/x86cpuid.pl
+            COMMENT "Generate cpuid for PERLASM_SCHEME ${PERLASM_SCHEME}"
         )
         set(CSOURCES ${CSOURCES} ${CMAKE_CURRENT_BINARY_DIR}/x86cpuid.s)
     endif()

@@ -30,7 +30,7 @@ if(NOT OPENSSL_NO_STATIC_ENGINE)
     )
 
     if(NOT OPENSSL_NO_ASM)
-        if(ANDROID_ARMV4)
+        if(ANDROID_ARMV4 OR IOS_ARM32)
         elseif(ANDROID_MIPS32 OR ANDROID_MIPS64)
         elseif(ANDROID_AARCH64 OR IOS_ARM64)
         elseif(HOST_X64)

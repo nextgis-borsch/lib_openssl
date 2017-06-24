@@ -29,9 +29,8 @@ set(CSOURCES
 )
 
 if(NOT OPENSSL_NO_ASM)
-    if(ANDROID_ARMV4)
-        # FIXME: Error: selected processor does not support ARM mode and Error: undefined symbol ARMV8_SHA1 used as an immediate value and Error: undefined symbol ARMV7_NEON used as an immediate value
-        # set(ASM_SOURCES sha1-armv4-large sha256-armv4 sha512-armv4)
+    if(ANDROID_ARMV4 OR IOS_ARM32)
+        set(ASM_SOURCES sha1-armv4-large sha256-armv4 sha512-armv4)
     elseif(ANDROID_MIPS32)
         set(ASM_SOURCES sha1-mips sha256-mips)
     elseif(ANDROID_AARCH64 OR IOS_ARM64)

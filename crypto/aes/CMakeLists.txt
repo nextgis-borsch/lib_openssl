@@ -30,12 +30,10 @@ set(CSOURCES
 
 if(OPENSSL_NO_ASM)
     set(CSOURCES ${CSOURCES} aes_core.c aes_cbc.c)
-elseif(ANDROID_ARMV4)
-    set(CSOURCES ${CSOURCES} aes_core.c aes_cbc.c)
-    # FIXME: Error: selected processor does not support ARM mode
-    # set(CSOURCES ${CSOURCES} aes_cbc.c)
-    # set(ASM_SOURCES aes-armv4 bsaes-armv7 aesv8-armx)
-    # add_definitions(-DBSAES_ASM -DAES_ASM)
+elseif(ANDROID_ARMV4 OR IOS_ARM32)
+    set(CSOURCES ${CSOURCES} aes_cbc.c)
+    set(ASM_SOURCES aes-armv4 bsaes-armv7 aesv8-armx)
+    add_definitions(-DBSAES_ASM -DAES_ASM)
 elseif(ANDROID_MIPS32)
     set(CSOURCES ${CSOURCES} aes_cbc.c)
     set(ASM_SOURCES aes-mips)

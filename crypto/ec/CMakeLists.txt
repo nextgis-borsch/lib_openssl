@@ -35,7 +35,7 @@ set(CSOURCES
 
 if(NOT OPENSSL_NO_ASM)
     set(CSOURCES ${CSOURCES} ecp_nistz256.c)
-    if(ANDROID_ARMV4)
+    if(ANDROID_ARMV4 OR IOS_ARM32)
     	generate_asm(ecp_nistz256-armv4)
     elseif(ANDROID_MIPS32)
     elseif(ANDROID_AARCH64 OR IOS_ARM64)

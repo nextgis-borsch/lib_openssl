@@ -31,7 +31,7 @@ set(CSOURCES
 if(OPENSSL_NO_ASM)
     set(CSOURCES ${CSOURCES} camellia.c cmll_misc.c cmll_cbc.c)
 else()
-    if(ANDROID_ARMV4)
+    if(ANDROID_ARMV4 OR IOS_ARM32)
         set(CSOURCES ${CSOURCES} camellia.c cmll_misc.c cmll_cbc.c)
     elseif(ANDROID_MIPS32 OR ANDROID_MIPS64)
         set(CSOURCES ${CSOURCES} camellia.c cmll_misc.c cmll_cbc.c)

@@ -27,9 +27,8 @@
 if(OPENSSL_NO_ASM)
     set(CSOURCES chacha_enc.c)
 else()
-    if(ANDROID_ARMV4)
-        # FIXME: Error: selected processor does not support ARM mode
-        # generate_asm(chacha-armv4)
+    if(ANDROID_ARMV4 OR IOS_ARM32)
+        generate_asm(chacha-armv4)
     elseif(ANDROID_MIPS32)
     elseif(ANDROID_AARCH64 OR IOS_ARM64)
     	generate_asm(chacha-armv8)

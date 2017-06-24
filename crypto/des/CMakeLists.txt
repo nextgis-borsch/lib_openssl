@@ -35,7 +35,7 @@ set(CSOURCES
 if(OPENSSL_NO_ASM)
     set(CSOURCES ${CSOURCES} des_enc.c fcrypt_b.c)
 else()
-    if(ANDROID_ARMV4)
+    if(ANDROID_ARMV4 OR IOS_ARM32)
         set(CSOURCES ${CSOURCES} des_enc.c fcrypt_b.c)
     elseif(ANDROID_MIPS32 OR ANDROID_MIPS64)
         set(CSOURCES ${CSOURCES} des_enc.c fcrypt_b.c)

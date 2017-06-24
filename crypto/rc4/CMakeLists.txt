@@ -29,13 +29,11 @@ if(OPENSSL_NO_ASM)
         rc4_enc.c rc4_skey.c
     )
 else()
-    if(ANDROID_ARMV4)
+    if(ANDROID_ARMV4 OR IOS_ARM32)
+        set(CSOURCES rc4_enc.c rc4_skey.c)
     elseif(ANDROID_MIPS32 OR ANDROID_MIPS64)
-    elseif(ANDROID_AARCH64)
-    elseif(IOS_ARM64)
-        set(CSOURCES
-            rc4_enc.c rc4_skey.c
-        )
+    elseif(ANDROID_AARCH64 OR IOS_ARM64)
+        set(CSOURCES rc4_enc.c rc4_skey.c)
     elseif(HOST_X64)
         generate_asm(rc4-md5-x86_64)
         generate_asm(rc4-x86_64)
