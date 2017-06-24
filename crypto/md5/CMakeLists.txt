@@ -29,9 +29,9 @@ set(CSOURCES
 )
 
 if(NOT OPENSSL_NO_ASM)
-    if(ANDROID_ARMV4)
+    if(ANDROID_ARMV4 OR IOS_ARM32)
     elseif(ANDROID_MIPS32 OR ANDROID_MIPS64)
-    elseif(ANDROID_AARCH64)
+    elseif(ANDROID_AARCH64 OR IOS_ARM64)
     elseif(HOST_X64)
         generate_asm(md5-x86_64)
     else()
