@@ -24,7 +24,6 @@
 # DEALINGS IN THE SOFTWARE.
 ################################################################################
 
-if(NOT OPENSSL_NO_CHACHA)
 if(OPENSSL_NO_ASM)
     set(CSOURCES chacha_enc.c)
 else()
@@ -47,4 +46,3 @@ set(TARGET_NAME chacha)
 add_library(${TARGET_NAME} OBJECT ${CSOURCES})
 
 set(TARGET_OBJECTS ${TARGET_OBJECTS} $<TARGET_OBJECTS:${TARGET_NAME}> PARENT_SCOPE)
-endif()

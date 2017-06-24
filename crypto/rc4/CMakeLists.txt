@@ -24,7 +24,6 @@
 # DEALINGS IN THE SOFTWARE.
 ################################################################################
 
-if(NOT OPENSSL_NO_RC4)
 if(OPENSSL_NO_ASM)
     set(CSOURCES
         rc4_enc.c rc4_skey.c
@@ -51,4 +50,3 @@ set(TARGET_NAME rc4)
 add_library(${TARGET_NAME} OBJECT ${CSOURCES})
 
 set(TARGET_OBJECTS ${TARGET_OBJECTS} $<TARGET_OBJECTS:${TARGET_NAME}> PARENT_SCOPE)
-endif()

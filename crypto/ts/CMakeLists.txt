@@ -24,7 +24,6 @@
 # DEALINGS IN THE SOFTWARE.
 ################################################################################
 
-if(NOT OPENSSL_NO_TS)
 set(CSOURCES
     ts_err.c ts_req_utils.c ts_req_print.c ts_rsp_utils.c ts_rsp_print.c
     ts_rsp_sign.c ts_rsp_verify.c ts_verify_ctx.c ts_lib.c ts_conf.c
@@ -36,4 +35,3 @@ set(TARGET_NAME ts)
 add_library(${TARGET_NAME} OBJECT ${CSOURCES})
 
 set(TARGET_OBJECTS ${TARGET_OBJECTS} $<TARGET_OBJECTS:${TARGET_NAME}> PARENT_SCOPE)
-endif()

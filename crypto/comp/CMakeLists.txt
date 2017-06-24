@@ -24,7 +24,6 @@
 # DEALINGS IN THE SOFTWARE.
 ################################################################################
 
-if(NOT OPENSSL_NO_COMP)
 set(CSOURCES
     comp_lib.c comp_err.c
     c_zlib.c
@@ -35,4 +34,3 @@ set(TARGET_NAME comp)
 add_library(${TARGET_NAME} OBJECT ${CSOURCES})
 
 set(TARGET_OBJECTS ${TARGET_OBJECTS} $<TARGET_OBJECTS:${TARGET_NAME}> PARENT_SCOPE)
-endif()

@@ -24,7 +24,6 @@
 # DEALINGS IN THE SOFTWARE.
 ################################################################################
 
-if(NOT OPENSSL_NO_MDC2)
 set(CSOURCES
     mdc2dgst.c mdc2_one.c
 )
@@ -34,4 +33,3 @@ set(TARGET_NAME mdc2)
 add_library(${TARGET_NAME} OBJECT ${CSOURCES})
 
 set(TARGET_OBJECTS ${TARGET_OBJECTS} $<TARGET_OBJECTS:${TARGET_NAME}> PARENT_SCOPE)
-endif()

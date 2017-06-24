@@ -24,7 +24,6 @@
 # DEALINGS IN THE SOFTWARE.
 ################################################################################
 
-if(NOT OPENSSL_NO_DSO)
 set(CSOURCES
     dso_dl.c dso_dlfcn.c dso_err.c dso_lib.c
     dso_openssl.c dso_win32.c dso_vms.c
@@ -35,5 +34,3 @@ set(TARGET_NAME dso)
 add_library(${TARGET_NAME} OBJECT ${CSOURCES})
 
 set(TARGET_OBJECTS ${TARGET_OBJECTS} $<TARGET_OBJECTS:${TARGET_NAME}> PARENT_SCOPE)
-
-endif()

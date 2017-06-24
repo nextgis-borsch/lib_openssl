@@ -24,7 +24,6 @@
 # DEALINGS IN THE SOFTWARE.
 ################################################################################
 
-if(NOT OPENSSL_NO_RC5)
 set(CSOURCES
     rc5_skey.c rc5_ecb.c rc5cfb64.c rc5ofb64.c
 )
@@ -49,4 +48,3 @@ set(TARGET_NAME rc5)
 add_library(${TARGET_NAME} OBJECT ${CSOURCES})
 
 set(TARGET_OBJECTS ${TARGET_OBJECTS} $<TARGET_OBJECTS:${TARGET_NAME}> PARENT_SCOPE)
-endif()

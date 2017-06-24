@@ -24,7 +24,6 @@
 # DEALINGS IN THE SOFTWARE.
 ################################################################################
 
-if(NOT OPENSSL_NO_SEED)
 set(CSOURCES
     seed.c seed_ecb.c seed_cbc.c seed_cfb.c seed_ofb.c
 )
@@ -34,4 +33,3 @@ set(TARGET_NAME seed)
 add_library(${TARGET_NAME} OBJECT ${CSOURCES})
 
 set(TARGET_OBJECTS ${TARGET_OBJECTS} $<TARGET_OBJECTS:${TARGET_NAME}> PARENT_SCOPE)
-endif()

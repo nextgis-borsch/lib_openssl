@@ -24,7 +24,6 @@
 # DEALINGS IN THE SOFTWARE.
 ################################################################################
 
-if(NOT OPENSSL_NO_OCSP)
 set(CSOURCES
     ocsp_asn.c ocsp_ext.c ocsp_ht.c ocsp_lib.c ocsp_cl.c
     ocsp_srv.c ocsp_prn.c ocsp_vfy.c ocsp_err.c v3_ocsp.c
@@ -35,4 +34,3 @@ set(TARGET_NAME ocsp)
 add_library(${TARGET_NAME} OBJECT ${CSOURCES})
 
 set(TARGET_OBJECTS ${TARGET_OBJECTS} $<TARGET_OBJECTS:${TARGET_NAME}> PARENT_SCOPE)
-endif()

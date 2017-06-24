@@ -24,7 +24,6 @@
 # DEALINGS IN THE SOFTWARE.
 ################################################################################
 
-if(NOT OPENSSL_NO_CT)
 set(CSOURCES
     ct_b64.c ct_err.c ct_log.c ct_oct.c ct_policy.c
     ct_prn.c ct_sct.c ct_sct_ctx.c ct_vfy.c ct_x509v3.c
@@ -35,4 +34,3 @@ set(TARGET_NAME ct)
 add_library(${TARGET_NAME} OBJECT ${CSOURCES})
 
 set(TARGET_OBJECTS ${TARGET_OBJECTS} $<TARGET_OBJECTS:${TARGET_NAME}> PARENT_SCOPE)
-endif()
