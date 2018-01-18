@@ -3,8 +3,8 @@
 # Purpose:  CMake build scripts
 # Author:   Dmitry Baryshnikov, dmitry.baryshnikov@nextgis.com
 ################################################################################
-# Copyright (C) 2015, 2017, NextGIS <info@nextgis.com>
-# Copyright (C) 2015 Dmitry Baryshnikov <dmitry.baryshnikov@nextgis.com>
+# Copyright (C) 2015-2018, NextGIS <info@nextgis.com>
+# Copyright (C) 2015-2018 Dmitry Baryshnikov <dmitry.baryshnikov@nextgis.com>
 #
 # Permission is hereby granted, free of charge, to any person obtaining a
 # copy of this software and associated documentation files (the "Software"),
@@ -171,7 +171,7 @@ macro(generate_asm2 FILE_NAME OUT_FILE_NAME)
     set(CSOURCES ${CSOURCES} ${CMAKE_CURRENT_BINARY_DIR}/${OUT_FILE_NAME}.${ASM_FILE_EXT})
 endmacro()
 
-function(check_version major minor rev fix)
+function( check_version major minor rev fix )
 
     set(VERSION_FILE ${CMAKE_CURRENT_SOURCE_DIR}/include/openssl/opensslv.h)
 
@@ -195,18 +195,50 @@ function(check_version major minor rev fix)
 
     # Store version string in file for installer needs
     file(TIMESTAMP ${VERSION_FILE} VERSION_DATETIME "%Y-%m-%d %H:%M:%S" UTC)
-    file(WRITE ${CMAKE_BINARY_DIR}/version.str "${MAJOR_VER}.${MINOR_VER}.${REL_VER}\n${VERSION_DATETIME}")
+    set(VERSION ${MAJOR_VER}.${MINOR_VER}.${REL_VER}.${FIX_VER})
+    get_cpack_filename(${VERSION} PROJECT_CPACK_FILENAME)
+    file(WRITE ${CMAKE_BINARY_DIR}/version.str "${VERSION}\n${VERSION_DATETIME}\n${PROJECT_CPACK_FILENAME}")
 
 endfunction()
 
-function(report_version name ver)
+function( report_version name ver )
 
     string(ASCII 27 Esc)
     set(BoldYellow  "${Esc}[1;33m")
     set(ColourReset "${Esc}[m")
 
-    message(STATUS "${BoldYellow}${name} version ${ver}${ColourReset}")
+    message("${BoldYellow}${name} version ${ver}${ColourReset}")
 
+endfunction()
+
+function( get_cpack_filename ver name )
+    get_compiler_version(COMPILER)
+    if(BUILD_SHARED_LIBS OR OSX_FRAMEWORK)
+        set(${name} ${PROJECT_NAME}-${ver}-${COMPILER} PARENT_SCOPE)
+    else()
+        set(${name} ${PROJECT_NAME}-${ver}-STATIC-${COMPILER} PARENT_SCOPE)
+    endif()
+endfunction()
+
+function( get_compiler_version ver )
+    ## Limit compiler version to 2 or 1 digits
+    string(REPLACE "." ";" VERSION_LIST ${CMAKE_C_COMPILER_VERSION})
+    list(LENGTH VERSION_LIST VERSION_LIST_LEN)
+    if(VERSION_LIST_LEN GREATER 2 OR VERSION_LIST_LEN EQUAL 2)
+        list(GET VERSION_LIST 0 COMPILER_VERSION_MAJOR)
+        list(GET VERSION_LIST 1 COMPILER_VERSION_MINOR)
+        set(COMPILER ${CMAKE_C_COMPILER_ID}-${COMPILER_VERSION_MAJOR}.${COMPILER_VERSION_MINOR})
+    else()
+        set(COMPILER ${CMAKE_C_COMPILER_ID}-${CMAKE_C_COMPILER_VERSION})
+    endif()
+
+    if(WIN32)
+        if(CMAKE_CL_64)
+            set(COMPILER "${COMPILER}-64bit")
+        endif()
+    endif()
+
+    set(${ver} ${COMPILER} PARENT_SCOPE)
 endfunction()
 
 # macro to find packages on the host OS

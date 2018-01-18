@@ -24,11 +24,59 @@
 # DEALINGS IN THE SOFTWARE.
 ################################################################################
 
+include_directories(${CMAKE_CURRENT_BINARY_DIR})
+
+set(SOURCES_C
+    openssl.c
+    asn1pars.c ca.c ciphers.c cms.c crl.c crl2p7.c dgst.c dhparam.c
+    dsa.c dsaparam.c ec.c ecparam.c enc.c engine.c errstr.c gendsa.c
+    genpkey.c genrsa.c nseq.c ocsp.c passwd.c pkcs12.c pkcs7.c pkcs8.c
+    pkey.c pkeyparam.c pkeyutl.c prime.c rand.c req.c rsa.c rsautl.c
+    s_client.c s_server.c s_time.c sess_id.c smime.c speed.c spkac.c
+    srp.c ts.c verify.c version.c x509.c rehash.c
+    apps.c opt.c s_cb.c s_socket.c
+    app_rand.c
+)
+
+foreach(file ${SOURCES_C})
+    set(APPS_OPENSSL "${APPS_OPENSSL} ${file}")
+endforeach()
+
+add_custom_command(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/progs.h
+    COMMAND ${PERL_EXECUTABLE} progs.pl "${APPS_OPENSSL}" > ${CMAKE_CURRENT_BINARY_DIR}/progs.h
+    DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/progs.pl
+    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+    VERBATIM
+)
+
+set(HEADERS_H
+    ${CMAKE_CURRENT_BINARY_DIR}/progs.h
+)
+
+set_source_files_properties(
+    ${HEADERS_H} PROPERTIES GENERATED TRUE
+)
+
+add_executable(openssl_app ${SOURCES_C} ${HEADERS_H})
+target_link_libraries(openssl_app ${LIB_NAME})
+if(OSX_FRAMEWORK)
+    set_target_properties(openssl_app PROPERTIES INSTALL_RPATH "@executable_path/../../Library/Frameworks")
+endif()
+set_target_properties(openssl_app PROPERTIES OUTPUT_NAME "openssl")
+
+if(NOT SKIP_INSTALL_LIBRARIES AND NOT SKIP_INSTALL_ALL)
+    install(TARGETS openssl_app
+        RUNTIME DESTINATION ${INSTALL_BIN_DIR}
+        LIBRARY DESTINATION ${INSTALL_LIB_DIR}
+        ARCHIVE DESTINATION ${INSTALL_LIB_DIR}
+        INCLUDES DESTINATION ${INSTALL_INC_DIR}
+        FRAMEWORK DESTINATION ${INSTALL_LIB_DIR} )
+endif()
+
 # Get Mosilla certs from curl site
 file(DOWNLOAD "https://curl.haxx.se/ca/cacert.pem" ${CMAKE_CURRENT_BINARY_DIR}/cert.pem
     INACTIVITY_TIMEOUT 30
     TLS_VERIFY OFF
-    SHOW_PROGRESS
 )
 
 install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/ct_log_list.cnf DESTINATION ${INSTALL_SHARE_DIR}/private)
@@ -37,4 +85,5 @@ if(EXISTS ${CMAKE_CURRENT_BINARY_DIR}/cert.pem)
     install(FILES ${CMAKE_CURRENT_BINARY_DIR}/cert.pem DESTINATION ${INSTALL_SHARE_DIR}/certs)
 endif()
 
-# TODO: creat openssl app
+# TODO: create openssl app
+# https://packages.ubuntu.com/artful/amd64/openssl/filelist

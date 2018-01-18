@@ -1,9 +1,0 @@
-
-;
-; Definition file for the DLL version of the SSLEAY library from OpenSSL
-;
-
-LIBRARY         openssl
-
-EXPORTS
-    test

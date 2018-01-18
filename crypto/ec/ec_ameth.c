@@ -254,8 +254,10 @@ static int eckey_priv_encode(PKCS8_PRIV_KEY_INFO *p8, const EVP_PKEY *pkey)
     }
 
     if (!PKCS8_pkey_set0(p8, OBJ_nid2obj(NID_X9_62_id_ecPublicKey), 0,
-                         ptype, pval, ep, eplen))
+                         ptype, pval, ep, eplen)) {
+        OPENSSL_free(ep);
         return 0;
+    }
 
     return 1;
 }
@@ -296,17 +298,21 @@ static int ec_missing_parameters(const EVP_PKEY *pkey)
 static int ec_copy_parameters(EVP_PKEY *to, const EVP_PKEY *from)
 {
     EC_GROUP *group = EC_GROUP_dup(EC_KEY_get0_group(from->pkey.ec));
+
     if (group == NULL)
         return 0;
     if (to->pkey.ec == NULL) {
         to->pkey.ec = EC_KEY_new();
         if (to->pkey.ec == NULL)
-            return 0;
+            goto err;
     }
     if (EC_KEY_set_group(to->pkey.ec, group) == 0)
-        return 0;
+        goto err;
     EC_GROUP_free(group);
     return 1;
+ err:
+    EC_GROUP_free(group);
+    return 0;
 }
 
 static int ec_cmp_parameters(const EVP_PKEY *a, const EVP_PKEY *b)

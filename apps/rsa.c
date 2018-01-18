@@ -215,7 +215,7 @@ int rsa_main(int argc, char **argv)
     }
 
     if (check) {
-        int r = RSA_check_key(rsa);
+        int r = RSA_check_key_ex(rsa, NULL);
 
         if (r == 1)
             BIO_printf(out, "RSA key ok\n");
@@ -224,7 +224,7 @@ int rsa_main(int argc, char **argv)
 
             while ((err = ERR_peek_error()) != 0 &&
                    ERR_GET_LIB(err) == ERR_LIB_RSA &&
-                   ERR_GET_FUNC(err) == RSA_F_RSA_CHECK_KEY &&
+                   ERR_GET_FUNC(err) == RSA_F_RSA_CHECK_KEY_EX &&
                    ERR_GET_REASON(err) != ERR_R_MALLOC_FAILURE) {
                 BIO_printf(out, "RSA key error: %s\n",
                            ERR_reason_error_string(err));
@@ -263,7 +263,7 @@ int rsa_main(int argc, char **argv)
             i = PEM_write_bio_RSAPrivateKey(out, rsa,
                                             enc, NULL, 0, NULL, passout);
         }
-# if !defined(OPENSSL_NO_DSA) && !defined(OPENSSL_NO_RC4)
+# ifndef OPENSSL_NO_DSA
     } else if (outformat == FORMAT_MSBLOB || outformat == FORMAT_PVK) {
         EVP_PKEY *pk;
         pk = EVP_PKEY_new();
@@ -275,7 +275,13 @@ int rsa_main(int argc, char **argv)
                 goto end;
             }
             assert(private);
+#  ifdef OPENSSL_NO_RC4
+            BIO_printf(bio_err, "PVK format not supported\n");
+            EVP_PKEY_free(pk);
+            goto end;
+#  else
             i = i2b_PVK_bio(out, pk, pvk_encr, 0, passout);
+#  endif
         } else if (pubin || pubout) {
             i = i2b_PublicKey_bio(out, pk);
         } else {

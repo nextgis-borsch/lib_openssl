@@ -91,17 +91,21 @@ int RSA_padding_add_PKCS1_OAEP_mgf1(unsigned char *to, int tlen,
     }
 
     if (PKCS1_MGF1(dbmask, emlen - mdlen, seed, mdlen, mgf1md) < 0)
-        return 0;
+        goto err;
     for (i = 0; i < emlen - mdlen; i++)
         db[i] ^= dbmask[i];
 
     if (PKCS1_MGF1(seedmask, mdlen, db, emlen - mdlen, mgf1md) < 0)
-        return 0;
+        goto err;
     for (i = 0; i < mdlen; i++)
         seed[i] ^= seedmask[i];
 
     OPENSSL_free(dbmask);
     return 1;
+
+ err:
+    OPENSSL_free(dbmask);
+    return 0;
 }
 
 int RSA_padding_check_PKCS1_OAEP(unsigned char *to, int tlen,
@@ -118,7 +122,7 @@ int RSA_padding_check_PKCS1_OAEP_mgf1(unsigned char *to, int tlen,
                                       int plen, const EVP_MD *md,
                                       const EVP_MD *mgf1md)
 {
-    int i, dblen, mlen = -1, one_index = 0, msg_index;
+    int i, dblen = 0, mlen = -1, one_index = 0, msg_index;
     unsigned int good, found_one_byte;
     const unsigned char *maskedseed, *maskeddb;
     /*
@@ -235,8 +239,8 @@ int RSA_padding_check_PKCS1_OAEP_mgf1(unsigned char *to, int tlen,
     RSAerr(RSA_F_RSA_PADDING_CHECK_PKCS1_OAEP_MGF1,
            RSA_R_OAEP_DECODING_ERROR);
  cleanup:
-    OPENSSL_free(db);
-    OPENSSL_free(em);
+    OPENSSL_clear_free(db, dblen);
+    OPENSSL_clear_free(em, num);
     return mlen;
 }
 

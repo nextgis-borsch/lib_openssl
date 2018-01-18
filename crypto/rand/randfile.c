@@ -21,9 +21,7 @@
 #ifdef OPENSSL_SYS_VMS
 # include <unixio.h>
 #endif
-#ifndef NO_SYS_TYPES_H
-# include <sys/types.h>
-#endif
+#include <sys/types.h>
 #ifndef OPENSSL_NO_POSIX_IO
 # include <sys/stat.h>
 # include <fcntl.h>
@@ -208,8 +206,8 @@ int RAND_write_file(const char *file)
              */
             return 1;
         }
-# endif
     }
+# endif
 #endif
 
 #if defined(O_CREAT) && !defined(OPENSSL_NO_POSIX_IO) && \

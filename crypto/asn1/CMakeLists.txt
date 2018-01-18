@@ -29,7 +29,7 @@ set(CSOURCES
     a_print.c a_type.c a_dup.c a_d2i_fp.c a_i2d_fp.c
     a_utf8.c a_sign.c a_digest.c a_verify.c a_mbstr.c a_strex.c
     x_algor.c x_val.c x_sig.c x_bignum.c
-    x_long.c x_info.c x_spki.c nsseq.c
+    x_int64.c x_long.c x_info.c x_spki.c nsseq.c
     d2i_pu.c d2i_pr.c i2d_pu.c i2d_pr.c
     t_pkey.c t_spki.c t_bitst.c
     tasn_new.c tasn_fre.c tasn_enc.c tasn_dec.c tasn_utl.c tasn_typ.c
@@ -37,7 +37,7 @@ set(CSOURCES
     f_int.c f_string.c n_pkey.c
     x_pkey.c bio_asn1.c bio_ndef.c asn_mime.c
     asn1_gen.c asn1_par.c asn1_lib.c asn1_err.c a_strnid.c
-    evp_asn1.c asn_pack.c p5_pbe.c p5_pbev2.c p5_scrypt.c p8_pkey.c 
+    evp_asn1.c asn_pack.c p5_pbe.c p5_pbev2.c p5_scrypt.c p8_pkey.c
     asn_moid.c asn_mstbl.c
 )
 

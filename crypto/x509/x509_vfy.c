@@ -216,7 +216,6 @@ static int verify_chain(X509_STORE_CTX *ctx)
     if ((ok = build_chain(ctx)) == 0 ||
         (ok = check_chain_extensions(ctx)) == 0 ||
         (ok = check_auth_level(ctx)) == 0 ||
-        (ok = check_name_constraints(ctx)) == 0 ||
         (ok = check_id(ctx)) == 0 || 1)
         X509_get_pubkey_parameters(NULL, ctx->chain);
     if (ok == 0 || (ok = ctx->check_revocation(ctx)) == 0)
@@ -232,6 +231,9 @@ static int verify_chain(X509_STORE_CTX *ctx)
     /* Verify chain signatures and expiration times */
     ok = (ctx->verify != NULL) ? ctx->verify(ctx) : internal_verify(ctx);
     if (!ok)
+        return ok;
+
+    if ((ok = check_name_constraints(ctx)) == 0)
         return ok;
 
 #ifndef OPENSSL_NO_RFC3779
@@ -308,16 +310,17 @@ int X509_verify_cert(X509_STORE_CTX *ctx)
 static X509 *find_issuer(X509_STORE_CTX *ctx, STACK_OF(X509) *sk, X509 *x)
 {
     int i;
+    X509 *issuer, *rv = NULL;
 
     for (i = 0; i < sk_X509_num(sk); i++) {
-        X509 *issuer = sk_X509_value(sk, i);
-
-        if (!ctx->check_issued(ctx, x, issuer))
-            continue;
-        if (x509_check_cert_time(ctx, issuer, -1))
-            return issuer;
+        issuer = sk_X509_value(sk, i);
+        if (ctx->check_issued(ctx, x, issuer)) {
+            rv = issuer;
+            if (x509_check_cert_time(ctx, rv, -1))
+                break;
+        }
     }
-    return NULL;
+    return rv;
 }
 
 /* Given a possible certificate and issuer check them */

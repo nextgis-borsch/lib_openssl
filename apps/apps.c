@@ -18,9 +18,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#ifndef NO_SYS_TYPES_H
-# include <sys/types.h>
-#endif
+#include <sys/types.h>
 #ifndef OPENSSL_NO_POSIX_IO
 # include <sys/stat.h>
 # include <fcntl.h>
@@ -244,36 +242,27 @@ int password_callback(char *buf, int bufsiz, int verify, PW_CB_DATA *cb_tmp)
     int res = 0;
 #ifndef OPENSSL_NO_UI
     UI *ui = NULL;
-    const char *prompt_info = NULL;
 #endif
-    const char *password = NULL;
     PW_CB_DATA *cb_data = (PW_CB_DATA *)cb_tmp;
 
-    if (cb_data) {
-        if (cb_data->password)
-            password = cb_data->password;
-#ifndef OPENSSL_NO_UI
-        if (cb_data->prompt_info)
-            prompt_info = cb_data->prompt_info;
-#endif
-    }
-
-    if (password) {
-        res = strlen(password);
+#ifdef OPENSSL_NO_UI
+    if (cb_data != NULL && cb_data->password != NULL) {
+        res = strlen(cb_data->password);
         if (res > bufsiz)
             res = bufsiz;
-        memcpy(buf, password, res);
-        return res;
+        memcpy(buf, cb_data->password, res);
     }
-
-#ifndef OPENSSL_NO_UI
+#else
     ui = UI_new_method(ui_method);
     if (ui) {
         int ok = 0;
         char *buff = NULL;
         int ui_flags = 0;
+        const char *prompt_info = NULL;
         char *prompt;
 
+        if (cb_data != NULL && cb_data->prompt_info != NULL)
+            prompt_info = cb_data->prompt_info;
         prompt = UI_construct_prompt(ui, "pass phrase", prompt_info);
         if (!prompt) {
             BIO_printf(bio_err, "Out of memory\n");
@@ -283,6 +272,9 @@ int password_callback(char *buf, int bufsiz, int verify, PW_CB_DATA *cb_tmp)
 
         ui_flags |= UI_INPUT_FLAG_DEFAULT_PWD;
         UI_ctrl(ui, UI_CTRL_PRINT_ERRORS, 1, 0, 0);
+
+        /* We know that there is no previous user data to return to us */
+        (void)UI_add_user_data(ui, cb_data);
 
         if (ok >= 0)
             ok = UI_add_input_string(ui, prompt, ui_flags, buf,
@@ -2261,29 +2253,27 @@ int app_access(const char* name, int flag)
 #ifdef _WIN32
 int app_isdir(const char *name)
 {
-    HANDLE hList;
-    WIN32_FIND_DATA FileData;
+    DWORD attr;
 # if defined(UNICODE) || defined(_UNICODE)
     size_t i, len_0 = strlen(name) + 1;
+    WCHAR tempname[MAX_PATH];
 
-    if (len_0 > OSSL_NELEM(FileData.cFileName))
+    if (len_0 > MAX_PATH)
         return -1;
 
 #  if !defined(_WIN32_WCE) || _WIN32_WCE>=101
-    if (!MultiByteToWideChar
-        (CP_ACP, 0, name, len_0, FileData.cFileName, len_0))
+    if (!MultiByteToWideChar(CP_ACP, 0, name, len_0, tempname, MAX_PATH))
 #  endif
         for (i = 0; i < len_0; i++)
-            FileData.cFileName[i] = (WCHAR)name[i];
+            tempname[i] = (WCHAR)name[i];
 
-    hList = FindFirstFile(FileData.cFileName, &FileData);
+    attr = GetFileAttributes(tempname);
 # else
-    hList = FindFirstFile(name, &FileData);
+    attr = GetFileAttributes(name);
 # endif
-    if (hList == INVALID_HANDLE_VALUE)
+    if (attr == INVALID_FILE_ATTRIBUTES)
         return -1;
-    FindClose(hList);
-    return ((FileData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) != 0);
+    return ((attr & FILE_ATTRIBUTE_DIRECTORY) != 0);
 }
 #else
 # include <sys/stat.h>
@@ -2581,6 +2571,7 @@ void wait_for_async(SSL *s)
     fd_set asyncfds;
     OSSL_ASYNC_FD *fds;
     size_t numfds;
+    size_t i;
 
     if (!SSL_get_all_async_fds(s, NULL, &numfds))
         return;
@@ -2589,17 +2580,17 @@ void wait_for_async(SSL *s)
     fds = app_malloc(sizeof(OSSL_ASYNC_FD) * numfds, "allocate async fds");
     if (!SSL_get_all_async_fds(s, fds, &numfds)) {
         OPENSSL_free(fds);
+        return;
     }
 
     FD_ZERO(&asyncfds);
-    while (numfds > 0) {
-        if (width <= (int)*fds)
-            width = (int)*fds + 1;
-        openssl_fdset((int)*fds, &asyncfds);
-        numfds--;
-        fds++;
+    for (i = 0; i < numfds; i++) {
+        if (width <= (int)fds[i])
+            width = (int)fds[i] + 1;
+        openssl_fdset((int)fds[i], &asyncfds);
     }
     select(width, (void *)&asyncfds, NULL, NULL, NULL);
+    OPENSSL_free(fds);
 #endif
 }
 
