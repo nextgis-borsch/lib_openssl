@@ -58,7 +58,7 @@ set_source_files_properties(
 )
 
 add_executable(openssl_app ${SOURCES_C} ${HEADERS_H})
-target_link_libraries(openssl_app ${LIB_NAME})
+target_link_libraries(openssl_app ${LIB_NAME} ${TARGET_LINK_LIB})
 if(OSX_FRAMEWORK)
     set_target_properties(openssl_app PROPERTIES INSTALL_RPATH "@executable_path/../../Library/Frameworks")
 endif()
@@ -85,5 +85,4 @@ if(EXISTS ${CMAKE_CURRENT_BINARY_DIR}/cert.pem)
     install(FILES ${CMAKE_CURRENT_BINARY_DIR}/cert.pem DESTINATION ${INSTALL_SHARE_DIR}/certs)
 endif()
 
-# TODO: create openssl app
-# https://packages.ubuntu.com/artful/amd64/openssl/filelist
+# TODO: create app see https://packages.ubuntu.com/artful/amd64/openssl/filelist

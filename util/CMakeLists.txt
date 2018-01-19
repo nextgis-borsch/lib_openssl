@@ -41,7 +41,7 @@ macro(fill_list)
 
         list(GET FUNC_LIST 1 EXTERNAL_TEST)
 
-        if(EXTERNAL_TEST MATCHES ZLIB AND NOT FOUND_ZLIB)
+        if(EXTERNAL_TEST MATCHES ZLIB AND NOT ZLIB_FOUND)
             continue()
         elseif(WIN32 AND EXTERNAL_TEST MATCHES "!WIN32")
             continue()
