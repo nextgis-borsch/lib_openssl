@@ -38,6 +38,12 @@ set(SOURCES_C
     app_rand.c
 )
 
+if(WIN32)
+    set(SOURCES_C ${SOURCES_C}
+        win32_init.c
+    )
+endif()
+
 foreach(file ${SOURCES_C})
     set(APPS_OPENSSL "${APPS_OPENSSL} ${file}")
 endforeach()
