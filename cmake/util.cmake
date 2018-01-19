@@ -82,7 +82,7 @@ macro(make_def LIB_NAME FUNCTION_LIST FILE_PATH)
 ; Definition file for the DLL version of the SSLEAY library from OpenSSL
 ;
 
-LIBRARY         ${LIB_NAME}
+LIBRARY         ${LIB_NAME}-${MAJOR_VER}_${MINOR_VER}
 
 EXPORTS
 "

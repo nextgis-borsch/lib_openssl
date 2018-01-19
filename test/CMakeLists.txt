@@ -109,7 +109,7 @@ set_property(TEST ssltest_old6 PROPERTY ENVIRONMENT
     "CTLOG_FILE=${CMAKE_CURRENT_SOURCE_DIR}/ct/log_list.conf"
 )
 
-# TODO: Additional tests from ./test/recipes/80-test_ssl_old.t
+# TODO: Add more tests from ./test/recipes/80-test_ssl_old.t
 
 add_onefile_test(dsatest.c)
 add_onefile_test(exptest.c)
@@ -118,9 +118,7 @@ add_onefile_test(rsa_test.c)
 # add_onefile_test(evp_test.c)
 add_executable(evp_test evp_test.c)
 target_link_libraries(evp_test ${LIB_NAME})
-add_test(
-    NAME evp_test
-    COMMAND evp_test ${CMAKE_CURRENT_SOURCE_DIR}/evptests.txt
+add_test(evp_test evp_test ${CMAKE_CURRENT_SOURCE_DIR}/evptests.txt
 )
 
 add_onefile_test(evp_extra_test.c)
@@ -130,17 +128,13 @@ add_onefile_test(v3nametest.c)
 # add_onefile_test(v3ext.c)
 add_executable(v3ext v3ext.c)
 target_link_libraries(v3ext ${LIB_NAME})
-add_test(
-    NAME v3ext
-    COMMAND v3ext ${CMAKE_CURRENT_SOURCE_DIR}/certs/pathlen.pem
+add_test(v3ext v3ext ${CMAKE_CURRENT_SOURCE_DIR}/certs/pathlen.pem
 )
 
 # add_onefile_test(danetest.c)
 add_executable(danetest danetest.c)
 target_link_libraries(danetest ${LIB_NAME})
-add_test(
-    NAME danetest
-    COMMAND danetest "example.com" ${CMAKE_CURRENT_SOURCE_DIR}/danetest.pem ${CMAKE_CURRENT_SOURCE_DIR}/danetest.in
+add_test(danetest danetest "example.com" ${CMAKE_CURRENT_SOURCE_DIR}/danetest.pem ${CMAKE_CURRENT_SOURCE_DIR}/danetest.in
 )
 
 add_onefile_test(p5_crpt2_test.c)
@@ -149,9 +143,7 @@ add_onefile_test(constant_time_test.c)
 # add_onefile_test(verify_extra_test.c)
 add_executable(verify_extra_test verify_extra_test.c)
 target_link_libraries(verify_extra_test ${LIB_NAME})
-add_test(
-    NAME verify_extra_test
-    COMMAND verify_extra_test
+add_test(verify_extra_test verify_extra_test
         ${CMAKE_CURRENT_SOURCE_DIR}/certs/roots.pem
         ${CMAKE_CURRENT_SOURCE_DIR}/certs/untrusted.pem
         ${CMAKE_CURRENT_SOURCE_DIR}/certs/bad.pem
@@ -171,9 +163,7 @@ add_onefile_test(afalgtest.c)
 # add_onefile_test(x509aux.c)
 add_executable(x509aux x509aux.c)
 target_link_libraries(x509aux ${LIB_NAME})
-add_test(
-    NAME x509aux
-    COMMAND x509aux
+add_test(x509aux x509aux
         ${CMAKE_CURRENT_SOURCE_DIR}/certs/roots.pem
         ${CMAKE_CURRENT_SOURCE_DIR}/certs/root+anyEKU.pem
         ${CMAKE_CURRENT_SOURCE_DIR}/certs/root-anyEKU.pem
@@ -225,9 +215,7 @@ add_multifile_test(cipherlist_test cipherlist_test.c testutil.c)
 # add_multifile_test(asynciotest asynciotest.c ssltestlib.c)
 add_executable(asynciotest asynciotest.c ssltestlib.c)
 target_link_libraries(asynciotest ${LIB_NAME})
-add_test(
-    NAME asynciotest
-    COMMAND asynciotest
+add_test(asynciotest asynciotest
         ${PROJECT_SOURCE_DIR}/apps/server.pem
         ${PROJECT_SOURCE_DIR}/apps/server.pem
 )
@@ -235,9 +223,7 @@ add_test(
 # add_multifile_test(sslapitest sslapitest.c ssltestlib.c testutil.c)
 add_executable(sslapitest sslapitest.c ssltestlib.c testutil.c)
 target_link_libraries(sslapitest ${LIB_NAME})
-add_test(
-    NAME sslapitest
-    COMMAND sslapitest
+add_test(sslapitest sslapitest
         ${PROJECT_SOURCE_DIR}/apps/server.pem
         ${PROJECT_SOURCE_DIR}/apps/server.pem
 )
@@ -245,9 +231,7 @@ add_test(
 # add_multifile_test(dtlstest dtlstest.c ssltestlib.c testutil.c)
 add_executable(dtlstest dtlstest.c ssltestlib.c testutil.c)
 target_link_libraries(dtlstest ${LIB_NAME})
-add_test(
-    NAME dtlstest
-    COMMAND dtlstest
+add_test(dtlstest dtlstest
         ${PROJECT_SOURCE_DIR}/apps/server.pem
         ${PROJECT_SOURCE_DIR}/apps/server.pem
 )
@@ -255,9 +239,7 @@ add_test(
 # add_multifile_test(sslcorrupttest sslcorrupttest.c ssltestlib.c testutil.c)
 add_executable(sslcorrupttest sslcorrupttest.c ssltestlib.c testutil.c)
 target_link_libraries(sslcorrupttest ${LIB_NAME})
-add_test(
-    NAME sslcorrupttest
-    COMMAND sslcorrupttest
+add_test(sslcorrupttest sslcorrupttest
         ${PROJECT_SOURCE_DIR}/apps/server.pem
         ${PROJECT_SOURCE_DIR}/apps/server.pem
 )

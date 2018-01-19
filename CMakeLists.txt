@@ -130,7 +130,7 @@ if(BUILD_SHARED_LIBS)
         VERSION ${VERSION}
         SOVERSION ${MAJOR_VER})
     if(MSVC)
-        set_target_properties(${LIB_NAME} PROPERTIES SUFFIX "-${MAJOR_VER}_${MINOR_VER}.dll" )
+        set_target_properties(${LIB_NAME} PROPERTIES SUFFIX "-${MAJOR_VER}_${MINOR_VER}.dll")
     endif()
 elseif(OSX_FRAMEWORK)
     add_library(${LIB_NAME} SHARED ${TARGET_OBJECTS} ${PUBLIC_HDRS})
