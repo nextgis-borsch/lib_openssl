@@ -35,11 +35,13 @@ function(get_binary_package repo repo_type exact_version download_url name)
     get_compiler_version(COMPILER)
 
     if(repo_type STREQUAL "github") # TODO: Add gitlab here.
-        file(DOWNLOAD
+        if(NOT EXISTS ${CMAKE_CURRENT_BINARY_DIR}/latest.json)
+            file(DOWNLOAD
                 https://api.github.com/repos/${repo}/releases/latest
                 ${CMAKE_CURRENT_BINARY_DIR}/latest.json
                 TLS_VERIFY OFF
             )
+        endif()
         # Get assets files.
         file(READ ${CMAKE_CURRENT_BINARY_DIR}/latest.json _JSON_CONTENTS)
 
@@ -93,11 +95,14 @@ function(find_extproject name)
 
     if(BINARY_URL)
         # Download binary build files.
-        file(DOWNLOAD
-            ${BINARY_URL}
-            ${CMAKE_CURRENT_BINARY_DIR}/${name}.zip
-            TLS_VERIFY OFF
-        )
+        if(NOT EXISTS ${CMAKE_CURRENT_BINARY_DIR}/${name}.zip)
+            file(DOWNLOAD
+                ${BINARY_URL}
+                ${CMAKE_CURRENT_BINARY_DIR}/${name}.zip
+                TLS_VERIFY OFF
+            )
+        endif()
+        
         # Extact files.
         execute_process(
             COMMAND ${CMAKE_COMMAND} -E make_directory ${EXT_INSTALL_DIR}
