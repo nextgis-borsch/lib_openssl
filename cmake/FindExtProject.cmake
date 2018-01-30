@@ -112,7 +112,7 @@ function(find_extproject name)
         else()
             set(CMAKE_PREFIX_PATH ${EXT_INSTALL_DIR}/${BINARY_NAME})
         endif()
-        find_package(${name})
+        find_package(${name} NO_MODULE)
 
         string(TOUPPER ${name} UPPER_NAME)
         set(${UPPER_NAME}_FOUND ${${UPPER_NAME}_FOUND} PARENT_SCOPE)
@@ -385,7 +385,6 @@ function(find_extproject name)
     endif()
 
     string(TOUPPER ${name} UPPER_NAME)
-    set(${UPPER_NAME}_CMAKE_DIR ${EXT_BINARY_DIR})
     include(${EXT_BINARY_DIR}/${UPPER_NAME}Config.cmake)
 
     set(${UPPER_NAME}_FOUND ${${UPPER_NAME}_FOUND} PARENT_SCOPE)

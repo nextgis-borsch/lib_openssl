@@ -55,7 +55,7 @@ if(OSX_FRAMEWORK)
     set(INSTALL_PARENT_INC_DIR ${INSTALL_INC_DIR} CACHE INTERNAL "Installation directory for headers" FORCE)
     set(INSTALL_CMAKECONF_DIR ${INSTALL_LIB_DIR}/${PROJECT_NAME}.framework/Resources/CMake CACHE INTERNAL "Installation directory for cmake config files" FORCE)
     set(SKIP_INSTALL_HEADERS ON)
-    set(SKIP_INSTALL_EXECUTABLES ON)
+    set(SKIP_INSTALL_EXECUTABLES OFF)
     set(SKIP_INSTALL_FILES ON)
     set(SKIP_INSTALL_EXPORT ON)
     set(CMAKE_MACOSX_RPATH ON)
@@ -194,7 +194,7 @@ if(REGISTER_PACKAGE)
     export(PACKAGE ${PACKAGE_UPPER_NAME})
 endif()
 
-# Create the ZLIBConfig.cmake file
+# Create the OPENSSLConfig.cmake file
 configure_file(cmake/PackageConfig.cmake.in
     ${PROJECT_BINARY_DIR}/${PACKAGE_UPPER_NAME}Config.cmake @ONLY)
 
