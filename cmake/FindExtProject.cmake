@@ -38,12 +38,12 @@ function(get_binary_package repo repo_type exact_version download_url name)
         if(NOT EXISTS ${CMAKE_CURRENT_BINARY_DIR}/latest.json)
             file(DOWNLOAD
                 https://api.github.com/repos/${repo}/releases/latest
-                ${CMAKE_CURRENT_BINARY_DIR}/latest.json
+                ${CMAKE_CURRENT_BINARY_DIR}/${repo}_latest.json
                 TLS_VERIFY OFF
             )
         endif()
         # Get assets files.
-        file(READ ${CMAKE_CURRENT_BINARY_DIR}/latest.json _JSON_CONTENTS)
+        file(READ ${CMAKE_CURRENT_BINARY_DIR}/${repo}_latest.json _JSON_CONTENTS)
 
         include(JSONParser)
         sbeParseJson(api_request _JSON_CONTENTS)
@@ -102,7 +102,7 @@ function(find_extproject name)
                 TLS_VERIFY OFF
             )
         endif()
-        
+
         # Extact files.
         execute_process(
             COMMAND ${CMAKE_COMMAND} -E make_directory ${EXT_INSTALL_DIR}
