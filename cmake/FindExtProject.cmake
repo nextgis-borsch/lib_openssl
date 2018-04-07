@@ -73,7 +73,7 @@ endfunction()
 function(find_extproject name)
     set(options OPTIONAL EXACT)
     set(oneValueArgs VERSION SHARED)
-    set(multiValueArgs CMAKE_ARGS NAMES)
+    set(multiValueArgs CMAKE_ARGS COMPONENTS NAMES)
     cmake_parse_arguments(find_extproject "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
 
     # Set default third party lib path.
@@ -121,8 +121,13 @@ function(find_extproject name)
         else()
             set(CMAKE_PREFIX_PATH ${EXT_INSTALL_DIR}/${BINARY_NAME})
         endif()
-        if(find_anyproject_NAMES)
-            set(FIND_PROJECT_ARG ${FIND_PROJECT_ARG} NAMES ${find_anyproject_NAMES})
+
+        if(find_extproject_COMPONENTS)
+            set(FIND_PROJECT_ARG ${FIND_PROJECT_ARG} COMPONENTS ${find_extproject_COMPONENTS})
+        endif()
+
+        if(find_extproject_NAMES)
+            set(FIND_PROJECT_ARG ${FIND_PROJECT_ARG} NAMES ${find_extproject_NAMES})
         endif()
 
         find_package(${name} NO_MODULE ${FIND_PROJECT_ARG})
@@ -134,6 +139,7 @@ function(find_extproject name)
         set(${UPPER_NAME}_LIBRARIES ${${UPPER_NAME}_LIBRARIES} PARENT_SCOPE)
         set(${UPPER_NAME}_INCLUDE_DIRS ${${UPPER_NAME}_INCLUDE_DIRS} PARENT_SCOPE)
 
+        set_target_properties(${${UPPER_NAME}_LIBRARIES} PROPERTIES IMPORTED_GLOBAL TRUE)
         return()
     endif()
 
@@ -402,7 +408,17 @@ function(find_extproject name)
     endif()
 
     string(TOUPPER ${name} UPPER_NAME)
-    include(${EXT_BINARY_DIR}/${UPPER_NAME}Config.cmake)
+    if(EXISTS ${EXT_BINARY_DIR}/${UPPER_NAME}Config.cmake)
+        include(${EXT_BINARY_DIR}/${UPPER_NAME}Config.cmake)
+    else()
+        foreach(ALT_NAME ${find_extproject_NAMES})
+            string(TOUPPER ${ALT_NAME} ALT_UPPER_NAME)
+            if(EXISTS ${EXT_BINARY_DIR}/${ALT_UPPER_NAME}Config.cmake)
+                include(${EXT_BINARY_DIR}/${ALT_UPPER_NAME}Config.cmake)
+                break()
+            endif()
+        endforeach()
+    endif()
 
     set(${UPPER_NAME}_FOUND ${${UPPER_NAME}_FOUND} PARENT_SCOPE)
     set(${UPPER_NAME}_VERSION ${${UPPER_NAME}_VERSION} PARENT_SCOPE)
@@ -410,11 +426,16 @@ function(find_extproject name)
     set(${UPPER_NAME}_LIBRARIES ${${UPPER_NAME}_LIBRARIES} PARENT_SCOPE)
     set(${UPPER_NAME}_INCLUDE_DIRS ${${UPPER_NAME}_INCLUDE_DIRS} PARENT_SCOPE)
 
+    set_target_properties(${${UPPER_NAME}_LIBRARIES} PROPERTIES IMPORTED_GLOBAL TRUE)
+
     add_dependencies(${${UPPER_NAME}_LIBRARIES} ${name}_EP)
 
     # On static build we need all targets in TARGET_LINK_LIB
-    # Add to list imported targets with GLOBAL?
-    set(EXPORTS_PATHS "${EXPORTS_PATHS} ${EXT_BINARY_DIR}/${UPPER_NAME}Targets.cmake" PARENT_SCOPE)
+    if(ALT_UPPER_NAME)
+        set(EXPORTS_PATHS "${EXPORTS_PATHS} ${EXT_BINARY_DIR}/${ALT_UPPER_NAME}Targets.cmake" PARENT_SCOPE)
+    else()
+        set(EXPORTS_PATHS "${EXPORTS_PATHS} ${EXT_BINARY_DIR}/${UPPER_NAME}Targets.cmake" PARENT_SCOPE)
+    endif()
 
     # For static builds we need all libraries list in main project.
     if(EXISTS ${EXT_BINARY_DIR}/ext_options.cmake)
