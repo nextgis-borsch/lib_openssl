@@ -24,6 +24,8 @@
 # DEALINGS IN THE SOFTWARE.
 ################################################################################
 
+set(ENGINE_PUBLIC_HDRS)
+
 if(NOT OPENSSL_NO_STATIC_ENGINE)
     set(CSOURCES
         e_padlock.c
@@ -93,3 +95,5 @@ if(NOT OPENSSL_NO_DYNAMIC_ENGINE)
 endif()
 
 set(TARGET_OBJECTS ${TARGET_OBJECTS} PARENT_SCOPE)
+
+set(PUBLIC_HDRS ${PUBLIC_HDRS} .h PARENT_SCOPE)
