@@ -69,16 +69,20 @@ if(OSX_FRAMEWORK)
     set_target_properties(openssl_app PROPERTIES INSTALL_RPATH "@executable_path/../../Library/Frameworks")
 endif()
 set_target_properties(openssl_app PROPERTIES OUTPUT_NAME "openssl")
+set(APP_TARGETS openssl_app)
 
-include_directories(${PROJECT_SOURCE_DIR}/engines/gost)
-add_executable(cryptopro2openssl cryptopro2openssl.c)
-target_link_libraries(cryptopro2openssl ${LIB_NAME} ${TARGET_LINK_LIB})
-if(OSX_FRAMEWORK)
-    set_target_properties(cryptopro2openssl PROPERTIES INSTALL_RPATH "@executable_path/../../Library/Frameworks")
+if(NOT WIN32)
+    include_directories(${PROJECT_SOURCE_DIR}/engines/gost)
+    add_executable(cryptopro2openssl cryptopro2openssl.c)
+    target_link_libraries(cryptopro2openssl ${LIB_NAME} ${TARGET_LINK_LIB})
+    if(OSX_FRAMEWORK)
+        set_target_properties(cryptopro2openssl PROPERTIES INSTALL_RPATH "@executable_path/../../Library/Frameworks")
+    endif()
+    set(APP_TARGETS ${APP_TARGETS} cryptopro2openssl)
 endif()
 
 if(NOT SKIP_INSTALL_EXECUTABLES AND NOT SKIP_INSTALL_ALL)
-    install(TARGETS openssl_app cryptopro2openssl
+    install(TARGETS ${APP_TARGETS}
         RUNTIME DESTINATION ${INSTALL_BIN_DIR}
         LIBRARY DESTINATION ${INSTALL_LIB_DIR}
         ARCHIVE DESTINATION ${INSTALL_LIB_DIR}
