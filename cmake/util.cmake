@@ -213,7 +213,7 @@ endfunction()
 
 function( get_cpack_filename ver name )
     get_compiler_version(COMPILER)
-    
+
     if(BUILD_STATIC_LIBS)
         set(STATIC_PREFIX "static-")
     endif()
@@ -227,7 +227,8 @@ function( get_compiler_version ver )
     list(LENGTH VERSION_LIST VERSION_LIST_LEN)
     if(VERSION_LIST_LEN GREATER 2 OR VERSION_LIST_LEN EQUAL 2)
         list(GET VERSION_LIST 0 COMPILER_VERSION_MAJOR)
-        list(GET VERSION_LIST 1 COMPILER_VERSION_MINOR)
+        # list(GET VERSION_LIST 1 COMPILER_VERSION_MINOR)
+        set(COMPILER_VERSION_MINOR 0)
         set(COMPILER ${CMAKE_C_COMPILER_ID}-${COMPILER_VERSION_MAJOR}.${COMPILER_VERSION_MINOR})
     else()
         set(COMPILER ${CMAKE_C_COMPILER_ID}-${CMAKE_C_COMPILER_VERSION})
