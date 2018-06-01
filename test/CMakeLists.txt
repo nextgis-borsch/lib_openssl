@@ -210,7 +210,7 @@ add_test(ssl_test_ctx_test ssl_test_ctx_test ${CMAKE_CURRENT_SOURCE_DIR}/ssl_tes
 
 # add_multifile_test(ssl_test ssl_test_ctx_test.c ssl_test_ctx.c testutil.c) # Complicated - see ./test/recipes/80-test_ssl_new.t
 
-add_multifile_test(cipherlist_test cipherlist_test.c testutil.c)
+# Disable this test as added GOST ciphers: add_multifile_test(cipherlist_test cipherlist_test.c testutil.c)
 
 # add_multifile_test(asynciotest asynciotest.c ssltestlib.c)
 add_executable(asynciotest asynciotest.c ssltestlib.c)
