@@ -21,7 +21,17 @@ void ENGINE_load_builtin_engines(void)
 
     #ifndef OPENSSL_NO_GOST
         ENGINE_load_gost();
-        gost_set_default_param(0, "id-Gost28147-89-CryptoPro-A-ParamSet");
+        ENGINE *e_gost = ENGINE_by_id("gost");
+        if(e_gost) {
+            ENGINE_init(e_gost);
+            ENGINE_set_default(e_gost, ENGINE_METHOD_ALL);
+            //ENGINE_METHOD_CIPHERS|ENGINE_METHOD_DIGESTS|ENGINE_METHOD_PKEY_METHS | ENGINE_METHOD_PKEY_ASN1_METHS); // CIPHERS, DIGESTS, PKEY, PKEY_CRYPTO, PKEY_ASN1 // ENGINE_METHOD_ALL
+            // gost_set_default_param(0, "id-Gost28147-89-CryptoPro-A-ParamSet");
+
+            // ENGINE_register_complete(e_gost);
+            ENGINE_ctrl_cmd_string(e_gost, "CRYPT_PARAMS", "id-Gost28147-89-CryptoPro-A-ParamSet", 0);
+            ENGINE_free(e_gost);
+        }
     #endif
 }
 

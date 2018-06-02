@@ -727,7 +727,7 @@ int register_pmeth_gost(int id, EVP_PKEY_METHOD **pmeth, int flags)
     *pmeth = EVP_PKEY_meth_new(id, flags);
     if (!*pmeth)
         return 0;
-
+    EVP_PKEY_meth_add0(pmeth);
     switch (id) {
     case NID_id_GostR3410_2001:
         EVP_PKEY_meth_set_ctrl(*pmeth,

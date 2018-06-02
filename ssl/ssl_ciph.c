@@ -433,37 +433,37 @@ void ssl_load_ciphers(void)
     disabled_mkey_mask |= SSL_kSRP;
 #endif
 
-    // /*
-    //  * Check for presence of GOST 34.10 algorithms, and if they are not
-    //  * present, disable appropriate auth and key exchange
-    //  */
-    // ssl_mac_pkey_id[SSL_MD_GOST89MAC_IDX] = get_optional_pkey_id("gost-mac");
-    // if (ssl_mac_pkey_id[SSL_MD_GOST89MAC_IDX]) {
-    //     ssl_mac_secret_size[SSL_MD_GOST89MAC_IDX] = 32;
-    // } else {
-    //     disabled_mac_mask |= SSL_GOST89MAC;
-    // }
-    //
-    // ssl_mac_pkey_id[SSL_MD_GOST89MAC12_IDX] =
-    //     get_optional_pkey_id("gost-mac-12");
-    // if (ssl_mac_pkey_id[SSL_MD_GOST89MAC12_IDX]) {
-    //     ssl_mac_secret_size[SSL_MD_GOST89MAC12_IDX] = 32;
-    // } else {
-    //     disabled_mac_mask |= SSL_GOST89MAC12;
-    // }
-    //
-    // if (!get_optional_pkey_id("gost2001"))
-    //     disabled_auth_mask |= SSL_aGOST01 | SSL_aGOST12;
-    // if (!get_optional_pkey_id("gost2012_256"))
-    //     disabled_auth_mask |= SSL_aGOST12;
-    // if (!get_optional_pkey_id("gost2012_512"))
-    //     disabled_auth_mask |= SSL_aGOST12;
-    // /*
-    //  * Disable GOST key exchange if no GOST signature algs are available *
-    //  */
-    // if ((disabled_auth_mask & (SSL_aGOST01 | SSL_aGOST12)) ==
-    //     (SSL_aGOST01 | SSL_aGOST12))
-    //     disabled_mkey_mask |= SSL_kGOST;
+    /*
+     * Check for presence of GOST 34.10 algorithms, and if they are not
+     * present, disable appropriate auth and key exchange
+     */
+    ssl_mac_pkey_id[SSL_MD_GOST89MAC_IDX] = get_optional_pkey_id("gost-mac");
+    if (ssl_mac_pkey_id[SSL_MD_GOST89MAC_IDX]) {
+        ssl_mac_secret_size[SSL_MD_GOST89MAC_IDX] = 32;
+    } else {
+        disabled_mac_mask |= SSL_GOST89MAC;
+    }
+
+    ssl_mac_pkey_id[SSL_MD_GOST89MAC12_IDX] =
+        get_optional_pkey_id("gost-mac-12");
+    if (ssl_mac_pkey_id[SSL_MD_GOST89MAC12_IDX]) {
+        ssl_mac_secret_size[SSL_MD_GOST89MAC12_IDX] = 32;
+    } else {
+        disabled_mac_mask |= SSL_GOST89MAC12;
+    }
+
+    if (!get_optional_pkey_id("gost2001"))
+        disabled_auth_mask |= SSL_aGOST01 | SSL_aGOST12;
+    if (!get_optional_pkey_id("gost2012_256"))
+        disabled_auth_mask |= SSL_aGOST12;
+    if (!get_optional_pkey_id("gost2012_512"))
+        disabled_auth_mask |= SSL_aGOST12;
+    /*
+     * Disable GOST key exchange if no GOST signature algs are available *
+     */
+    if ((disabled_auth_mask & (SSL_aGOST01 | SSL_aGOST12)) ==
+        (SSL_aGOST01 | SSL_aGOST12))
+        disabled_mkey_mask |= SSL_kGOST;
 }
 
 #ifndef OPENSSL_NO_COMP

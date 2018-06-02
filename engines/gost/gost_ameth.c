@@ -451,7 +451,7 @@ static int priv_encode_gost(PKCS8_PRIV_KEY_INFO *p8, const EVP_PKEY *pk)
     return PKCS8_pkey_set0(p8, algobj, 0, V_ASN1_SEQUENCE, params,
                            priv_buf, priv_len); */
     return PKCS8_pkey_set0(p8, algobj, 0, V_ASN1_SEQUENCE, params,
-                           buf, key_len); 
+                           buf, key_len);
 }
 
 /* --------- printing keys --------------------------------*/
@@ -915,5 +915,6 @@ int register_ameth_gost(int nid, EVP_PKEY_ASN1_METHOD **ameth,
         EVP_PKEY_asn1_set_ctrl(*ameth, mac_ctrl_gost_12);
         break;
     }
+    EVP_PKEY_asn1_add0(*ameth);
     return 1;
 }
