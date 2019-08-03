@@ -26,12 +26,28 @@
 include (CheckIncludeFile)
 include (TestBigEndian)
 
+if(NOT OPENSSL_SEED_SOURCES)
+    set(OPENSSL_SEED_SOURCES os) # getrandom devrandom os egd none rdcpu librandom
+endif()
+
+foreach(SEED_SOURCE ${OPENSSL_SEED_SOURCES})
+    string(TOUPPER ${SEED_SOURCE} SEED_SOURCE_UPPER)
+    set(OPENSSL_RAND_SEED_${SEED_SOURCE_UPPER} ON)
+endforeach()
+
 test_big_endian(WORDS_BIGENDIAN)
 if (WORDS_BIGENDIAN)
     add_definitions(-DB_ENDIAN)
 else()
     add_definitions(-DL_ENDIAN)
 endif ()
+
+include (CheckIncludeFile)
+check_include_file("crypto/cryptodev.h" HAVE_CRYPTODEV_H)
+
+if(NOT HAVE_CRYPTODEV_H)
+    set(OPENSSL_NO_DEVCRYPTOENG ON)
+endif()
 
 if(BUILD_STATIC_LIBS)
     set(OPENSSL_NO_SHARED ON)
@@ -42,6 +58,7 @@ set(OPENSSL_FEATURES
     asan
     asm
     async
+    aria
     autoalginit
     autoerrinit
     bf
@@ -58,6 +75,7 @@ set(OPENSSL_FEATURES
     ct
     deprecated
     des
+    devcryptoeng
     dgram
     dh
     dsa
@@ -103,7 +121,14 @@ set(OPENSSL_FEATURES
     seed
     shared
     sock
+    sha
+    siphash
+    sm2
+    sm3
+    sm4
     srp
+    stack
+    store
     srtp
     sse2
     ssl
@@ -132,10 +157,13 @@ endforeach()
 
 set(OPENSSL_FEATURES_DISABLED
     asan
+    buildtest-c++
     crypto-mdebug
     crypto-mdebug-backtrace
+    devcryptoeng
     ec_nistp_64_gcc_128
     egd
+    external-tests
     fuzz-libfuzzer
     fuzz-afl
     heartbeats
@@ -287,6 +315,8 @@ endif()
 if(OPENSSL_NO_ENGINE)
     add_definitions(-DOPENSSL_NO_AFALGENG)
     set(OPENSSL_NO_AFALGENG ON)
+    add_definitions(-DOPENSSL_NO_DEVCRYPTOENG)
+    set(OPENSSL_NO_DEVCRYPTOENG ON)
 endif()
 
 if(OPENSSL_NO_AUTOERRINIT)
@@ -542,6 +572,8 @@ if(UNIX)
     check_include_file("dlfcn.h" HAVE_DLFCN_H)
     if(HAVE_DLFCN_H)
         add_definitions(-DDSO_DLFCN -DHAVE_DLFCN_H)
+    else()
+        add_definitions(-DDSO_DLFCN)
     endif()
 
     if(BUILD_SHARED_LIBS OR OSX_FRAMEWORK)
@@ -675,3 +707,5 @@ else()
 endif()
 
 configure_file(${CMAKE_SOURCE_DIR}/cmake/cmake_uninstall.cmake.in ${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake IMMEDIATE @ONLY)
+
+add_definitions(-Dcompiler_flags="${CMAKE_C_FLAGS}")

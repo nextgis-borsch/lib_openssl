@@ -3,7 +3,7 @@
 # Purpose:  CMake build scripts
 # Author:   Dmitry Baryshnikov, dmitry.baryshnikov@nextgis.com
 ################################################################################
-# Copyright (C) 2015, 2017, NextGIS <info@nextgis.com>
+# Copyright (C) 2015,2017,2019 NextGIS <info@nextgis.com>
 #
 # Permission is hereby granted, free of charge, to any person obtaining a
 # copy of this software and associated documentation files (the "Software"),
@@ -25,10 +25,10 @@
 ################################################################################
 
 set(CSOURCES
-    rsa_ossl.c rsa_gen.c rsa_lib.c rsa_sign.c rsa_saos.c rsa_err.c
-    rsa_pk1.c rsa_ssl.c rsa_none.c rsa_oaep.c rsa_chk.c rsa_null.c
+    rsa_ossl.c rsa_gen.c rsa_lib.c rsa_sign.c rsa_saos.c rsa_err.c 
+    rsa_pk1.c rsa_ssl.c rsa_none.c rsa_oaep.c rsa_chk.c 
     rsa_pss.c rsa_x931.c rsa_asn1.c rsa_depr.c rsa_ameth.c rsa_prn.c 
-    rsa_pmeth.c rsa_crpt.c rsa_x931g.c rsa_meth.c
+    rsa_pmeth.c rsa_crpt.c rsa_x931g.c rsa_meth.c rsa_mp.c
 )
 
 set(TARGET_NAME rsa)

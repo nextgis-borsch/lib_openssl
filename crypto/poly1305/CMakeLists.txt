@@ -26,6 +26,8 @@
 
 set(CSOURCES
     poly1305.c
+    poly1305_ameth.c
+    poly1305_pmeth.c
 )
 
 if(NOT OPENSSL_NO_ASM)

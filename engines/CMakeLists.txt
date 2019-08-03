@@ -47,7 +47,7 @@ if(NOT OPENSSL_NO_STATIC_ENGINE)
     endif()
 
     if(NOT OPENSSL_NO_AFALGENG)
-        set(CSOURCES ${CSOURCES} afalg/e_afalg.c afalg/e_afalg_err.c)
+        set(CSOURCES ${CSOURCES} e_afalg.c e_afalg_err.c)
     endif()
 
     if(NOT OPENSSL_NO_GOSTENG)

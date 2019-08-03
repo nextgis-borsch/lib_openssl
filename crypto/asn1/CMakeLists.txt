@@ -3,7 +3,7 @@
 # Purpose:  CMake build scripts
 # Author:   Dmitry Baryshnikov, dmitry.baryshnikov@nextgis.com
 ################################################################################
-# Copyright (C) 2015, 2017, NextGIS <info@nextgis.com>
+# Copyright (C) 2015,2017,2019 NextGIS <info@nextgis.com>
 #
 # Permission is hereby granted, free of charge, to any person obtaining a
 # copy of this software and associated documentation files (the "Software"),
@@ -38,7 +38,7 @@ set(CSOURCES
     x_pkey.c bio_asn1.c bio_ndef.c asn_mime.c
     asn1_gen.c asn1_par.c asn1_lib.c asn1_err.c a_strnid.c
     evp_asn1.c asn_pack.c p5_pbe.c p5_pbev2.c p5_scrypt.c p8_pkey.c
-    asn_moid.c asn_mstbl.c
+    asn_moid.c asn_mstbl.c asn1_item_list.c
 )
 
 set(TARGET_NAME asn1)

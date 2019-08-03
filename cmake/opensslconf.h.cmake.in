@@ -34,6 +34,34 @@ extern "C" {
 #cmakedefine OPENSSL_THREADS
 #endif
 
+#ifndef OPENSSL_RAND_SEED_GETRANDOM
+#cmakedefine OPENSSL_RAND_SEED_GETRANDOM
+#endif
+
+#ifndef OPENSSL_RAND_SEED_DEVRANDOM
+#cmakedefine OPENSSL_RAND_SEED_DEVRANDOM
+#endif
+
+#ifndef OPENSSL_RAND_SEED_OS
+#cmakedefine OPENSSL_RAND_SEED_OS
+#endif
+
+#ifndef OPENSSL_RAND_SEED_EGD
+#cmakedefine OPENSSL_RAND_SEED_EGD
+#endif
+
+#ifndef OPENSSL_RAND_SEED_NONE
+#cmakedefine OPENSSL_RAND_SEED_NONE
+#endif
+
+#ifndef OPENSSL_RAND_SEED_RDCPU
+#cmakedefine OPENSSL_RAND_SEED_RDCPU
+#endif
+
+#ifndef OPENSSL_RAND_SEED_LIBRANDOM
+#cmakedefine OPENSSL_RAND_SEED_LIBRANDOM
+#endif
+
 #ifndef OPENSSL_NO_AFALGENG
 #cmakedefine OPENSSL_NO_AFALGENG
 #endif
@@ -48,6 +76,10 @@ extern "C" {
 
 #ifndef OPENSSL_NO_ASYNC
 #cmakedefine OPENSSL_NO_ASYNC
+#endif
+
+#ifndef OPENSSL_NO_ARIA
+#cmakedefine OPENSSL_NO_ARIA
 #endif
 
 #ifndef OPENSSL_NO_AUTOALGINIT
@@ -300,6 +332,26 @@ extern "C" {
 #cmakedefine OPENSSL_NO_SRTP
 #endif
 
+#ifndef OPENSSL_NO_SIPHASH
+#cmakedefine OPENSSL_NO_SIPHASH
+#endif
+
+#ifndef OPENSSL_NO_SM2
+#cmakedefine OPENSSL_NO_SM2
+#endif
+
+#ifndef OPENSSL_NO_SM3
+#cmakedefine OPENSSL_NO_SM3
+#endif
+
+#ifndef OPENSSL_NO_SM4
+#cmakedefine OPENSSL_NO_SM4
+#endif
+
+#ifndef OPENSSL_NO_STORE
+#cmakedefine OPENSSL_NO_STORE
+#endif
+
 #ifndef OPENSSL_NO_SSE2
 #cmakedefine OPENSSL_NO_SSE2
 #endif
@@ -437,6 +489,18 @@ extern "C" {
 #if !defined(OPENSSL_API_COMPAT) || OPENSSL_API_COMPAT < OPENSSL_MIN_API
 # undef OPENSSL_API_COMPAT
 # define OPENSSL_API_COMPAT OPENSSL_MIN_API
+#endif
+
+/*
+ * Do not deprecate things to be deprecated in version 1.2.0 before the
+ * OpenSSL version number matches.
+ */
+#if OPENSSL_VERSION_NUMBER < 0x10200000L
+# define DEPRECATEDIN_1_2_0(f)   f;
+#elif OPENSSL_API_COMPAT < 0x10200000L
+# define DEPRECATEDIN_1_2_0(f)   DECLARE_DEPRECATED(f)
+#else
+# define DEPRECATEDIN_1_2_0(f)
 #endif
 
 #if OPENSSL_API_COMPAT < 0x10100000L

@@ -29,6 +29,8 @@ include_directories(${CMAKE_CURRENT_BINARY_DIR})
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
 include_directories(${CMAKE_CURRENT_BINARY_DIR}/include)
 
+add_subdirectory(aria)
+
 add_subdirectory(objects)
 if(NOT OPENSSL_NO_MD2)
     add_subdirectory(md2)
@@ -193,11 +195,26 @@ if(NOT OPENSSL_NO_KDF)
     add_subdirectory(kdf)
 endif()
 
+add_subdirectory(store)
+
+if(NOT OPENSSL_NO_SM2)
+    add_subdirectory(sm2)
+endif()
+if(NOT OPENSSL_NO_SM3)
+    add_subdirectory(sm3)
+endif()
+if(NOT OPENSSL_NO_SM4)
+    add_subdirectory(sm4)
+endif()
+if(NOT OPENSSL_NO_SIPHASH)
+    add_subdirectory(siphash)
+endif()
+
 set(CSOURCES
     cryptlib.c mem.c mem_dbg.c cversion.c ex_data.c cpt_err.c
     ebcdic.c uid.c o_time.c o_str.c o_dir.c o_fopen.c
     threads_pthread.c threads_win.c threads_none.c
-    o_init.c o_fips.c mem_sec.c init.c
+    o_init.c o_fips.c mem_sec.c init.c getenv.c ctype.c
 )
 
 if(NOT WIN32)

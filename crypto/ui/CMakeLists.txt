@@ -25,7 +25,7 @@
 ################################################################################
 
 set(CSOURCES
-    ui_err.c ui_lib.c ui_openssl.c ui_util.c
+    ui_err.c ui_lib.c ui_openssl.c ui_util.c ui_null.c
 )
 
 set(TARGET_NAME ui)

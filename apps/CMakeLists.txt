@@ -33,10 +33,10 @@ set(SOURCES_C
     genpkey.c genrsa.c nseq.c ocsp.c passwd.c pkcs12.c pkcs7.c pkcs8.c
     pkey.c pkeyparam.c pkeyutl.c prime.c rand.c req.c rsa.c rsautl.c
     s_client.c s_server.c s_time.c sess_id.c smime.c speed.c spkac.c
-    srp.c ts.c verify.c version.c x509.c rehash.c
-    apps.c opt.c s_cb.c s_socket.c
-    app_rand.c
+    srp.c ts.c verify.c version.c x509.c rehash.c storeutl.c
 )
+
+add_library(apps STATIC apps.c opt.c s_cb.c s_socket.c app_rand.c bf_prefix.c)
 
 if(WIN32)
     set(SOURCES_C ${SOURCES_C}
@@ -64,7 +64,7 @@ set_source_files_properties(
 )
 
 add_executable(openssl_app ${SOURCES_C} ${HEADERS_H})
-target_link_libraries(openssl_app ${LIB_NAME} ${TARGET_LINK_LIB})
+target_link_libraries(openssl_app ${LIB_NAME} ${TARGET_LINK_LIB} apps)
 if(OSX_FRAMEWORK)
     set_target_properties(openssl_app PROPERTIES INSTALL_RPATH "@executable_path/../../Library/Frameworks")
 endif()
@@ -74,7 +74,7 @@ set(APP_TARGETS openssl_app)
 if(NOT WIN32)
     include_directories(${PROJECT_SOURCE_DIR}/engines/gost)
     add_executable(cryptopro2openssl cryptopro2openssl.c)
-    target_link_libraries(cryptopro2openssl ${LIB_NAME} ${TARGET_LINK_LIB})
+    target_link_libraries(cryptopro2openssl ${LIB_NAME} ${TARGET_LINK_LIB} apps)
     if(OSX_FRAMEWORK)
         set_target_properties(cryptopro2openssl PROPERTIES INSTALL_RPATH "@executable_path/../../Library/Frameworks")
     endif()

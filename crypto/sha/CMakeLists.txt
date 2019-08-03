@@ -25,20 +25,20 @@
 ################################################################################
 
 set(CSOURCES
-    sha1dgst.c sha1_one.c sha256.c sha512.c
+    sha1dgst.c sha1_one.c sha256.c sha512.c keccak1600.c
 )
 
 if(NOT OPENSSL_NO_ASM)
     if(ANDROID_ARMV4 OR IOS_ARM32)
-        set(ASM_SOURCES sha1-armv4-large sha256-armv4 sha512-armv4)
+        set(ASM_SOURCES sha1-armv4-large sha256-armv4 sha512-armv4 keccak1600-armv4)
     elseif(ANDROID_MIPS32)
         set(ASM_SOURCES sha1-mips sha256-mips)
     elseif(ANDROID_AARCH64 OR IOS_ARM64)
-        set(ASM_SOURCES sha1-armv8 sha256-armv8 sha512-armv8)
+        set(ASM_SOURCES sha1-armv8 sha256-armv8 sha512-armv8 keccak1600-armv8)
     elseif(ANDROID_MIPS64)
         set(ASM_SOURCES sha512-mips)
     elseif(HOST_X64)
-        set(ASM_SOURCES sha1-x86_64 sha512-x86_64 sha1-mb-x86_64 sha256-mb-x86_64)
+        set(ASM_SOURCES sha1-x86_64 sha512-x86_64 sha1-mb-x86_64 sha256-mb-x86_64 keccak1600-x86_64)
         generate_asm2(sha512-x86_64 sha256-x86_64)
     else()
         set(ASM_SOURCES sha1-586 sha256-586 sha512-586)

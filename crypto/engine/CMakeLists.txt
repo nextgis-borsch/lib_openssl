@@ -29,9 +29,12 @@ set(CSOURCES
     eng_table.c eng_pkey.c eng_fat.c eng_all.c
     tb_rsa.c tb_dsa.c tb_dh.c tb_rand.c
     tb_cipher.c tb_digest.c tb_pkmeth.c tb_asnmth.c tb_eckey.c
-    eng_openssl.c eng_cnf.c eng_dyn.c eng_cryptodev.c
-    eng_rdrand.c
+    eng_openssl.c eng_cnf.c eng_dyn.c eng_rdrand.c
 )
+
+if(NOT OPENSSL_NO_DEVCRYPTOENG)
+    set(CSOURCES ${CSOURCES} eng_devcrypto.c)
+endif()
 
 set(TARGET_NAME engine)
 
