@@ -6,6 +6,16 @@
 #ifndef GOST_GRASSHOPPER_MATH_H
 #define GOST_GRASSHOPPER_MATH_H
 
+// These allow helping the compiler in some often-executed branches, whose
+// result is almost always the same.
+#ifdef __GNUC__
+#	define likely(expr) __builtin_expect(expr, true)
+#	define unlikely(expr) __builtin_expect(expr, false)
+#else
+#	define likely(expr) (expr)
+#	define unlikely(expr) (expr)
+#endif
+
 #if defined(__cplusplus)
 extern "C" {
 #endif
@@ -119,7 +129,7 @@ extern uint8_t grasshopper_galois_alpha_to[256];
 extern uint8_t grasshopper_galois_index_of[256];
 
 static GRASSHOPPER_INLINE uint8_t grasshopper_galois_mul(uint8_t x, uint8_t y) {
-    if (__builtin_expect(x != 0 && y != 0, 1)) {
+    if (likely(x != 0 && y != 0)) {
         return grasshopper_galois_alpha_to[(grasshopper_galois_index_of[x] + grasshopper_galois_index_of[y]) %
                                          GRASSHOPPER_GALOIS_FIELD_SIZE];
     } else {
