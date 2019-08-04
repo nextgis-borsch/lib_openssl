@@ -75,7 +75,7 @@ add_onefile_test(exdatatest.c)
 add_onefile_test(bntest.c)
 add_onefile_test(ectest.c)
 
-if(NOT SKIP_LONG_TESTS)
+if(WITH_LONG_TESTS)
     add_onefile_test(ecstresstest.c)
 endif()
 
