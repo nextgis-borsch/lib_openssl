@@ -30,8 +30,9 @@ set(IGNORE_DEPRECATION_NAMES "ASN1_STRING_data" "TLSv1_server_method" "TLSv1_cli
 
 macro(fill_list)
     foreach(FILE_STRING ${FILE_STRINGS})
-        string(SUBSTRING ${FILE_STRING} 0 40 FUNC_NAME)
-        string(SUBSTRING ${FILE_STRING} 50 -1 FUNC_DESCRIPTION)
+        string(REGEX MATCHALL "[a-zA-Z0-9_:!,]+" STRING_LIST ${FILE_STRING})
+        list(GET STRING_LIST 0 FUNC_NAME)
+        list(GET STRING_LIST 3 FUNC_DESCRIPTION)
         string(REPLACE ":" ";" FUNC_LIST ${FUNC_DESCRIPTION})
 
         list(GET FUNC_LIST 0 EXIST_TEST)
@@ -47,7 +48,7 @@ macro(fill_list)
             continue()
         elseif(EXTERNAL_TEST MATCHES VMS)
             continue()
-        elseif(EXTERNAL_TEST MATCHES UNIX AND NOT UNIX)
+        elseif(NOT UNIX AND EXTERNAL_TEST MATCHES UNIX)
             continue()
         endif()
 
