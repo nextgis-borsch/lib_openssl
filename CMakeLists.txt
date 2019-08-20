@@ -73,6 +73,8 @@ endif()
 set(PACKAGE_NAME ${PROJECT_NAME})
 string(TOUPPER ${PACKAGE_NAME} PACKAGE_UPPER_NAME)
 
+option(STATIC_RUNTIME "Build with /MT instead /MD - make sense only on Windows" OFF)
+
 include(util)
 include(configure)
 enable_testing()
@@ -93,7 +95,6 @@ if(WIN32)
     set(TARGET_LINK_LIB ${TARGET_LINK_LIB} Ws2_32.lib Crypt32.lib)
 endif()
 
-option(STATIC_RUNTIME "Buidl with /MT instead /MD - make sense only on Windows" OFF)
 if(STATIC_RUNTIME)
     set(OPENSSL_NO_ZIP ON)
     set(OPENSSL_NO_ZIP_DYNAMIC ON)
