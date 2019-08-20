@@ -703,22 +703,6 @@ else() # STATIC
     if(CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX OR APPLE)
         set( CMAKE_CXX_FLAGS "-fpic ${CMAKE_CXX_FLAGS}" )
         set( CMAKE_C_FLAGS   "-fpic ${CMAKE_C_FLAGS}" )
-    elseif(WIN32) # Static Qt check openssl following cl -c -nologo -Zc:wchar_t -FS -Zc:rvalueCast -Zc:inline -Zc:strictStrings -Zc:throwingNew -Zc:referenceBinding -O2 -MT -W0 -EHsc -DUNICODE -D_UNICODE -DWIN32 -D_ENABLE_EXTENDED_ALIGNED_STORAGE -DNDEBUG ...
-        # set(CMAKE_CXX_FLAGS_RELEASE "/MT")
-        # set(CMAKE_CXX_FLAGS_DEBUG "/MTd")
-        # set(CMAKE_C_FLAGS_RELEASE "/MT")
-        # set(CMAKE_C_FLAGS_DEBUG "/MTd")
-        set(CompilerFlags
-            CMAKE_CXX_FLAGS
-            CMAKE_CXX_FLAGS_DEBUG
-            CMAKE_CXX_FLAGS_RELEASE
-            CMAKE_C_FLAGS
-            CMAKE_C_FLAGS_DEBUG
-            CMAKE_C_FLAGS_RELEASE
-        )
-        foreach(CompilerFlag ${CompilerFlags})
-            string(REPLACE "/MD" "/MT" ${CompilerFlag} "${${CompilerFlag}}")
-        endforeach()
     endif()
 endif()
 

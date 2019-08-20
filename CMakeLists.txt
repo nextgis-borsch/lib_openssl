@@ -3,7 +3,7 @@
 # Purpose:  CMake build scripts
 # Author:   Dmitry Baryshnikov, dmitry.baryshnikov@nextgis.com
 ################################################################################
-# Copyright (C) 2015-2018, NextGIS <info@nextgis.com>
+# Copyright (C) 2015-2019, NextGIS <info@nextgis.com>
 #
 # Permission is hereby granted, free of charge, to any person obtaining a
 # copy of this software and associated documentation files (the "Software"),
@@ -93,20 +93,15 @@ if(WIN32)
     set(TARGET_LINK_LIB ${TARGET_LINK_LIB} Ws2_32.lib Crypt32.lib)
 endif()
 
-if(WIN32 AND BUILD_STATIC_LIBS)
+find_anyproject(ZLIB DEFAULT OFF)
+if(ZLIB_FOUND)
+    add_definitions(-DZLIB)
+    if(BUILD_SHARED_LIBS)
+        add_definitions(-DZLIB_SHARED)
+    endif()
+else()
     set(OPENSSL_NO_ZIP ON)
     set(OPENSSL_NO_ZIP_DYNAMIC ON)
-else()
-    find_anyproject(ZLIB DEFAULT OFF)
-    if(ZLIB_FOUND)
-        add_definitions(-DZLIB)
-        if(BUILD_SHARED_LIBS)
-            add_definitions(-DZLIB_SHARED)
-        endif()
-    else()
-        set(OPENSSL_NO_ZIP ON)
-        set(OPENSSL_NO_ZIP_DYNAMIC ON)
-    endif()
 endif()
 
 file(GLOB PUBLIC_HDRS ${CMAKE_CURRENT_SOURCE_DIR}/include/openssl/*.h)
