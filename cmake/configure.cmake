@@ -649,7 +649,7 @@ if(NOT OPENSSL_NO_ASM)
     set(OPENSSL_CPUID_OBJ ON)
 endif()
 
-if( CMAKE_HOST_SYSTEM_PROCESSOR MATCHES "386")
+if(CMAKE_HOST_SYSTEM_PROCESSOR MATCHES "386")
     set(I386_ONLY ON)
     set(OPENSSL_NO_SSE2 ON)
 endif()
@@ -703,6 +703,21 @@ else() # STATIC
     if(CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX OR APPLE)
         set( CMAKE_CXX_FLAGS "-fpic ${CMAKE_CXX_FLAGS}" )
         set( CMAKE_C_FLAGS   "-fpic ${CMAKE_C_FLAGS}" )
+    elseif(WIN32)
+        # Switch /MD to /MT in static build
+        if(BUILD_STATIC_LIBS AND STATIC_RUNTIME)
+            set(CompilerFlags
+                CMAKE_CXX_FLAGS
+                CMAKE_CXX_FLAGS_DEBUG
+                CMAKE_CXX_FLAGS_RELEASE
+                CMAKE_C_FLAGS
+                CMAKE_C_FLAGS_DEBUG
+                CMAKE_C_FLAGS_RELEASE
+            )
+            foreach(CompilerFlag ${CompilerFlags})
+                string(REPLACE "/MD" "/MT" ${CompilerFlag} "${${CompilerFlag}}")
+            endforeach()
+        endif()
     endif()
 endif()
 
