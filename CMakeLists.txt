@@ -93,7 +93,7 @@ if(WIN32)
     set(TARGET_LINK_LIB ${TARGET_LINK_LIB} Ws2_32.lib Crypt32.lib)
 endif()
 
-find_anyproject(ZLIB DEFAULT ON)
+find_anyproject(ZLIB DEFAULT OFF)
 if(ZLIB_FOUND)
     add_definitions(-DZLIB)
     if(BUILD_SHARED_LIBS OR OSX_FRAMEWORK)
