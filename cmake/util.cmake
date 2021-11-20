@@ -281,7 +281,7 @@ function(get_compiler_version ver)
     endif()
 
     # Debug 
-    set(COMPILER "Clang-10.0")
+    # set(COMPILER "Clang-10.0")
 
     set(${ver} ${COMPILER} PARENT_SCOPE)
 endfunction()

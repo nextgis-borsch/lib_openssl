@@ -96,11 +96,22 @@ if(NOT OPENSSL_NO_STATIC_ENGINE)
             gost/gost_keywrap.h
             gost/gost_lcl.h
             gost/gost_params.c
+            gost/gost_keyexpimp.c
+            gost/gost_omac.c
+            gost/gost_omac_acpkm.c
         )
 
         set(GOST_EC_SOURCE_FILES
             gost/gost_ec_keyx.c
             gost/gost_ec_sign.c
+            gost/ecp_id_GostR3410_2001_CryptoPro_A_ParamSet.c
+            gost/ecp_id_GostR3410_2001_CryptoPro_B_ParamSet.c
+            gost/ecp_id_GostR3410_2001_CryptoPro_C_ParamSet.c
+            gost/ecp_id_GostR3410_2001_TestParamSet.c
+            gost/ecp_id_tc26_gost_3410_2012_256_paramSetA.c
+            gost/ecp_id_tc26_gost_3410_2012_512_paramSetA.c
+            gost/ecp_id_tc26_gost_3410_2012_512_paramSetB.c
+            gost/ecp_id_tc26_gost_3410_2012_512_paramSetC.c
         )
 
         set(GOST_LIB_SOURCE_FILES
