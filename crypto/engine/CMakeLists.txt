@@ -24,6 +24,8 @@
 # DEALINGS IN THE SOFTWARE.
 ################################################################################
 
+include_directories(${CMAKE_CURRENT_SOURCE_DIR})
+
 set(CSOURCES
     eng_err.c eng_lib.c eng_list.c eng_init.c eng_ctrl.c
     eng_table.c eng_pkey.c eng_fat.c eng_all.c

@@ -24,6 +24,8 @@
 # DEALINGS IN THE SOFTWARE.
 ################################################################################
 
+include_directories(${CMAKE_CURRENT_SOURCE_DIR})
+
 set(CSOURCES
     cmll_ecb.c cmll_ofb.c cmll_cfb.c cmll_ctr.c
 )

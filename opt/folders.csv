@@ -1,4 +1,4 @@
-,,,"ACKNOWLEDGEMENTS,AUTHORS,CHANGES,CONTRIBUTING,FAQ,INSTALL,LICENSE,NEWS,README,README.ECC,README.ENGINE,README.FIPS,VMS,h"
+,,,"ACKNOWLEDGEMENTS,AUTHORS,CHANGES,CONTRIBUTING,FAQ,INSTALL,LICENSE,NEWS,README,README.ECC,README.ENGINE,README.FIPS"
 apps,apps,,"c,h,cnf,pem,pl"
 crypto,crypto,,"c,h,pl,S"
 crypto/aes,crypto/aes,,"c,h"
@@ -86,13 +86,12 @@ crypto/x509v3,crypto/x509v3,,"c,h"
 demos,demos,skip,
 doc,doc,skip,
 engines,engines,,"c,h"
-engines/afalg,engines/afalg,,"c,h"
 engines/asm,engines/asm,,pl
-engines/vendor_defns,engines/vendor_defns,,"h,in"
 fuzz,fuzz,skip,
 external,external,skip,
 include/internal,include/internal,,"c,h"
 include/openssl,include/openssl,,"h,in"
+include/crypto,include/crypto,,"h,in"
 ms,ms,,"c,h,pl"
 os-dep,os-dep,skip,
 ssl,ssl,,"c,h"

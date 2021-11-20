@@ -24,6 +24,8 @@
 # DEALINGS IN THE SOFTWARE.
 ################################################################################
 
+include_directories(${CMAKE_CURRENT_SOURCE_DIR})
+
 set(CSOURCES
     comp_lib.c comp_err.c
     c_zlib.c

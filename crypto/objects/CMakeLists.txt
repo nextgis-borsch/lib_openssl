@@ -24,6 +24,8 @@
 # DEALINGS IN THE SOFTWARE.
 ################################################################################
 
+include_directories(${CMAKE_CURRENT_SOURCE_DIR})
+
 set(CSOURCES
     o_names.c obj_dat.c obj_lib.c obj_err.c obj_xref.c
 )

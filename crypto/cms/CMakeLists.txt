@@ -24,6 +24,8 @@
 # DEALINGS IN THE SOFTWARE.
 ################################################################################
 
+include_directories(${CMAKE_CURRENT_SOURCE_DIR})
+
 set(CSOURCES
     cms_lib.c cms_asn1.c cms_att.c cms_io.c cms_smime.c cms_err.c
     cms_sd.c cms_dd.c cms_cd.c cms_env.c cms_enc.c cms_ess.c

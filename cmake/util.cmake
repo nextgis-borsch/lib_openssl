@@ -46,28 +46,21 @@ macro(hexchar2dec VAR VAL)
 endmacro()
 
 macro(hex2dec VAR VAL)
+    set(CURINDEX 0)
+    string(LENGTH "${VAL}" CURLENGTH)
 
-    if (${VAL} EQUAL 0)
-        set(${VAR} 0)
-    else()
-        set(CURINDEX 0)
-        string(LENGTH "${VAL}" CURLENGTH)
+    set(${VAR} 0)
 
-        set(${VAR} 0)
+    while (CURINDEX LESS CURLENGTH)
 
-        while (CURINDEX LESS CURLENGTH)
+        string(SUBSTRING "${VAL}" ${CURINDEX} 1 CHAR)
+        hexchar2dec(CHAR ${CHAR})
 
-            string(SUBSTRING "${VAL}" ${CURINDEX} 1 CHAR)
-
-            hexchar2dec(CHAR ${CHAR})
-
-            math(EXPR POWAH "(1<<((${CURLENGTH}-${CURINDEX}-1)*4))")
-            math(EXPR CHAR "(${CHAR}*${POWAH})")
-            math(EXPR ${VAR} "${${VAR}}+${CHAR}")
-            math(EXPR CURINDEX "${CURINDEX}+1")
-        endwhile()
-    endif()
-
+        math(EXPR POWAH "(1<<((${CURLENGTH}-${CURINDEX}-1)*4))")
+        math(EXPR CHAR "(${CHAR}*${POWAH})")
+        math(EXPR ${VAR} "${${VAR}}+${CHAR}")
+        math(EXPR CURINDEX "${CURINDEX}+1")
+    endwhile()
 endmacro()
 
 macro(make_def LIB_NAME FUNCTION_LIST FILE_PATH)
@@ -257,7 +250,6 @@ function(get_prefix prefix IS_STATIC)
   set(${prefix} ${STATIC_PREFIX} PARENT_SCOPE)
 endfunction()
 
-
 function(get_cpack_filename ver name)
     get_compiler_version(COMPILER)
     
@@ -287,6 +279,9 @@ function(get_compiler_version ver)
             set(COMPILER "${COMPILER}-64bit")
         endif()
     endif()
+
+    # Debug 
+    set(COMPILER "Clang-10.0")
 
     set(${ver} ${COMPILER} PARENT_SCOPE)
 endfunction()

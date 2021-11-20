@@ -24,6 +24,8 @@
 # DEALINGS IN THE SOFTWARE.
 ################################################################################
 
+include_directories(${CMAKE_CURRENT_SOURCE_DIR})
+
 set(CSOURCES
     i_cbc.c i_cfb64.c i_ofb64.c i_ecb.c i_skey.c
 )

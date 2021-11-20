@@ -24,6 +24,8 @@
 # DEALINGS IN THE SOFTWARE.
 ################################################################################
 
+include_directories(${CMAKE_CURRENT_SOURCE_DIR})
+
 set(CSOURCES
     cbc128.c ctr128.c cts128.c cfb128.c ofb128.c gcm128.c
     ccm128.c xts128.c wrap128.c ocb128.c

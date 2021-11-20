@@ -24,6 +24,8 @@
 # DEALINGS IN THE SOFTWARE.
 ################################################################################
 
+include_directories(${CMAKE_CURRENT_SOURCE_DIR})
+
 set(CSOURCES
     a_object.c a_bitstr.c a_utctm.c a_gentm.c a_time.c a_int.c a_octet.c
     a_print.c a_type.c a_dup.c a_d2i_fp.c a_i2d_fp.c

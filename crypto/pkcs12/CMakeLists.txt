@@ -24,6 +24,8 @@
 # DEALINGS IN THE SOFTWARE.
 ################################################################################
 
+include_directories(${CMAKE_CURRENT_SOURCE_DIR})
+
 set(CSOURCES
     p12_add.c p12_asn.c p12_attr.c p12_crpt.c p12_crt.c p12_decr.c
     p12_init.c p12_key.c p12_kiss.c p12_mutl.c p12_sbag.c 

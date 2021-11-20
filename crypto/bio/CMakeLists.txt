@@ -24,6 +24,8 @@
 # DEALINGS IN THE SOFTWARE.
 ################################################################################
 
+include_directories(${CMAKE_CURRENT_SOURCE_DIR})
+
 set(CSOURCES
     bio_lib.c bio_cb.c bio_err.c
     bss_mem.c bss_null.c bss_fd.c

@@ -24,6 +24,8 @@
 # DEALINGS IN THE SOFTWARE.
 ################################################################################
 
+include_directories(${CMAKE_CURRENT_SOURCE_DIR})
+
 set(CSOURCES
     dso_dl.c dso_dlfcn.c dso_err.c dso_lib.c
     dso_openssl.c dso_win32.c dso_vms.c

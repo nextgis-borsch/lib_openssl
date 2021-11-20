@@ -24,6 +24,8 @@
 # DEALINGS IN THE SOFTWARE.
 ################################################################################
 
+include_directories(${CMAKE_CURRENT_SOURCE_DIR})
+
 if(OPENSSL_NO_ASM)
     set(CSOURCES
         rc4_enc.c rc4_skey.c

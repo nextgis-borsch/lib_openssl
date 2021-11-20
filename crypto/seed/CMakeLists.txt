@@ -24,6 +24,8 @@
 # DEALINGS IN THE SOFTWARE.
 ################################################################################
 
+include_directories(${CMAKE_CURRENT_SOURCE_DIR})
+
 set(CSOURCES
     seed.c seed_ecb.c seed_cbc.c seed_cfb.c seed_ofb.c
 )

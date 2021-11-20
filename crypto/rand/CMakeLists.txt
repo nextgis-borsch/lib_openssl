@@ -24,6 +24,9 @@
 # DEALINGS IN THE SOFTWARE.
 ################################################################################
 
+include_directories(${CMAKE_CURRENT_SOURCE_DIR})
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../modes)
+
 set(CSOURCES
     randfile.c rand_lib.c rand_err.c rand_egd.c 
     rand_win.c rand_unix.c rand_vms.c drbg_lib.c drbg_ctr.c

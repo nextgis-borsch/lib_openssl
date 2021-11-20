@@ -24,6 +24,8 @@
 # DEALINGS IN THE SOFTWARE.
 ################################################################################
 
+include_directories(${CMAKE_CURRENT_SOURCE_DIR})
+
 set(CSOURCES
     rc5_skey.c rc5_ecb.c rc5cfb64.c rc5ofb64.c
 )

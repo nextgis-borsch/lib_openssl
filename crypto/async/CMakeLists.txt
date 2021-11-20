@@ -24,6 +24,8 @@
 # DEALINGS IN THE SOFTWARE.
 ################################################################################
 
+include_directories(${CMAKE_CURRENT_SOURCE_DIR})
+
 set(CSOURCES
     async.c async_wait.c async_err.c arch/async_posix.c arch/async_win.c
     arch/async_null.c

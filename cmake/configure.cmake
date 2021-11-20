@@ -665,15 +665,14 @@ if(WIN32)
     set(OPENSSL_EXPORT_VAR_AS_FUNCTION ON)
 endif()
 
-string(LENGTH CMAKE_C_FLAGS FLAGS_LEN)
-foreach(CHAR_POS RANGE FLAGS_LEN)
-    string(SUBSTRING CMAKE_C_FLAGS CHAR_POS 1 CHAR_VAL)
-    if(CHAR_POS EQUAL 0)
-        set(OPENSSL_CFLAGS "'${CHAR_VAL}'")
-    else()
-        set(OPENSSL_CFLAGS "'${OPENSSL_CFLAGS}', '${CHAR_VAL}'")
+set(OPENSSL_CFLAGS "")
+string(REPLACE " " ";" OPENSSL_CFLAGS_LIST "${CMAKE_C_FLAGS}")
+foreach(CFLAG IN LISTS OPENSSL_CFLAGS_LIST)
+    if(NOT "${CFLAG}" STREQUAL "")
+        string(APPEND OPENSSL_CFLAGS "'${CFLAG}', ")
     endif()
 endforeach()
+set(OPENSSL_CFLAGS "\"${OPENSSL_CFLAGS}\"")
 string(TIMESTAMP OPENSSL_BUILD_DATE "%Y-%m-%d %H:%M:%S" UTC)
 
 configure_file(${CMAKE_SOURCE_DIR}/cmake/buildinf.h.cmake.in ${CMAKE_CURRENT_BINARY_DIR}/buildinf.h IMMEDIATE @ONLY)
@@ -687,11 +686,11 @@ endif()
 
 # Generate include/openssl/opensslconf.h
 configure_file(${CMAKE_SOURCE_DIR}/cmake/opensslconf.h.cmake.in ${CMAKE_CURRENT_BINARY_DIR}/openssl/opensslconf.h IMMEDIATE @ONLY)
-# Generate crypto/include/internal/bn_conf.h
-configure_file(${CMAKE_SOURCE_DIR}/cmake/bn_conf.h.cmake.in ${CMAKE_CURRENT_BINARY_DIR}/internal/bn_conf.h IMMEDIATE @ONLY)
-# Generate crypto/include/internal/dso_conf.h
+# Generate include/crypto/bn_conf.h
+configure_file(${CMAKE_SOURCE_DIR}/cmake/bn_conf.h.cmake.in ${CMAKE_CURRENT_BINARY_DIR}/include/crypto/bn_conf.h IMMEDIATE @ONLY)
+# Generate include/crypto/dso_conf.h
 set(DSO_EXTENSION ${CMAKE_SHARED_LIBRARY_SUFFIX})
-configure_file(${CMAKE_SOURCE_DIR}/cmake/dso_conf.h.cmake.in ${CMAKE_CURRENT_BINARY_DIR}/internal/dso_conf.h IMMEDIATE @ONLY)
+configure_file(${CMAKE_SOURCE_DIR}/cmake/dso_conf.h.cmake.in ${CMAKE_CURRENT_BINARY_DIR}/include/crypto/dso_conf.h IMMEDIATE @ONLY)
 
 if(OPENSSL_NO_STATIC_ENGINE)
     add_definitions(-DOPENSSL_NO_STATIC_ENGINE)

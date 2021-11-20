@@ -37,6 +37,7 @@ set(TEST_UTIL_SRS
     testutil/driver.c testutil/tests.c testutil/cb.c testutil/stanza.c 
     testutil/format_output.c testutil/tap_bio.c 
     testutil/test_cleanup.c testutil/main.c testutil/init.c
+    testutil/random.c testutil/testutil_init.c
 )
 
 add_library(testutil STATIC ${TEST_UTIL_SRS})
@@ -149,6 +150,7 @@ add_test(verify_extra_test verify_extra_test
     ${CMAKE_CURRENT_SOURCE_DIR}/certs/roots.pem
     ${CMAKE_CURRENT_SOURCE_DIR}/certs/untrusted.pem
     ${CMAKE_CURRENT_SOURCE_DIR}/certs/bad.pem
+    ${CMAKE_CURRENT_SOURCE_DIR}/certs/rootCA.pem
 )
 
 # add_onefile_test(clienthellotest.c)
@@ -244,8 +246,7 @@ add_onefile_test(bioprinttest.c)
 add_executable(sslapitest sslapitest.c ssltestlib.c)
 target_link_libraries(sslapitest ${LIB_NAME} testutil)
 add_test(sslapitest sslapitest
-    ${PROJECT_SOURCE_DIR}/apps/server.pem
-    ${PROJECT_SOURCE_DIR}/apps/server.pem
+    ${CMAKE_CURRENT_SOURCE_DIR}/certs
     ${CMAKE_CURRENT_SOURCE_DIR}/recipes/90-test_sslapi_data/passwd.txt
     ${CMAKE_CURRENT_BINARY_DIR}/sslapitest.tmp
 )

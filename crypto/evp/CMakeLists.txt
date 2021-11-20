@@ -24,6 +24,8 @@
 # DEALINGS IN THE SOFTWARE.
 ################################################################################
 
+include_directories(${CMAKE_CURRENT_SOURCE_DIR})
+
 set(CSOURCES
     encode.c digest.c evp_enc.c evp_key.c evp_cnf.c 
     e_des.c e_bf.c e_idea.c e_des3.c e_camellia.c

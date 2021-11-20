@@ -6,16 +6,6 @@
 #ifndef GOST_GRASSHOPPER_MATH_H
 #define GOST_GRASSHOPPER_MATH_H
 
-// These allow helping the compiler in some often-executed branches, whose
-// result is almost always the same.
-#ifdef __GNUC__
-#	define likely(expr) __builtin_expect(expr, true)
-#	define unlikely(expr) __builtin_expect(expr, false)
-#else
-#	define likely(expr) (expr)
-#	define unlikely(expr) (expr)
-#endif
-
 #if defined(__cplusplus)
 extern "C" {
 #endif
@@ -87,9 +77,15 @@ static GRASSHOPPER_INLINE void grasshopper_copy128(grasshopper_w128_t* to, const
 
 static GRASSHOPPER_INLINE void grasshopper_append128(grasshopper_w128_t* x, const grasshopper_w128_t* y) {
 		int i;
+#ifdef STRICT_ALIGNMENT
+    for (i = 0; i < 16; i++) {
+        GRASSHOPPER_ACCESS_128_VALUE_8(*x, i) ^= GRASSHOPPER_ACCESS_128_VALUE_8(*y, i);
+    }
+#else
     for (i = 0; i < GRASSHOPPER_BIT_PARTS; i++) {
         GRASSHOPPER_ACCESS_128_VALUE(*x, i) ^= GRASSHOPPER_ACCESS_128_VALUE(*y, i);
     }
+#endif
 }
 
 static GRASSHOPPER_INLINE void grasshopper_plus128(grasshopper_w128_t* result, const grasshopper_w128_t* x,

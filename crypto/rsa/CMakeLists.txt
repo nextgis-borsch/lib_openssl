@@ -24,6 +24,8 @@
 # DEALINGS IN THE SOFTWARE.
 ################################################################################
 
+include_directories(${CMAKE_CURRENT_SOURCE_DIR})
+
 set(CSOURCES
     rsa_ossl.c rsa_gen.c rsa_lib.c rsa_sign.c rsa_saos.c rsa_err.c 
     rsa_pk1.c rsa_ssl.c rsa_none.c rsa_oaep.c rsa_chk.c 

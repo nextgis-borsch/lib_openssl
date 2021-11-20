@@ -24,6 +24,8 @@
 # DEALINGS IN THE SOFTWARE.
 ################################################################################
 
+include_directories(${CMAKE_CURRENT_SOURCE_DIR})
+
 set(CSOURCES
     aes_misc.c aes_ecb.c aes_cfb.c aes_ofb.c aes_ige.c aes_wrap.c
 )

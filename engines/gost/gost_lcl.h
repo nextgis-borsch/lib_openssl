@@ -11,7 +11,6 @@
  **********************************************************************/
 # include <openssl/bn.h>
 # include <openssl/evp.h>
-# include <openssl/dsa.h>
 # include <openssl/asn1t.h>
 # include <openssl/x509.h>
 # include <openssl/engine.h>
@@ -21,9 +20,11 @@
 /* Control commands */
 # define GOST_PARAM_CRYPT_PARAMS 0
 # define GOST_PARAM_PBE_PARAMS 1
-# define GOST_PARAM_MAX 1
+# define GOST_PARAM_PK_FORMAT 2
+# define GOST_PARAM_MAX 3
 # define GOST_CTRL_CRYPT_PARAMS (ENGINE_CMD_BASE+GOST_PARAM_CRYPT_PARAMS)
 # define GOST_CTRL_PBE_PARAMS   (ENGINE_CMD_BASE+GOST_PARAM_PBE_PARAMS)
+# define GOST_CTRL_PK_FORMAT   (ENGINE_CMD_BASE+GOST_PARAM_PK_FORMAT)
 
 typedef struct R3410_ec {
     int nid;
@@ -33,7 +34,7 @@ typedef struct R3410_ec {
     char *q;
     char *x;
     char *y;
-		char *cofactor;
+    char *cofactor;
 } R3410_ec_params;
 
 extern R3410_ec_params R3410_2001_paramset[],
@@ -54,6 +55,7 @@ int register_pmeth_gost(int id, EVP_PKEY_METHOD **pmeth, int flags);
 /* Gost-specific pmeth control-function parameters */
 /* For GOST R34.10 parameters */
 # define param_ctrl_string "paramset"
+# define ukm_ctrl_string "ukmhex"
 # define EVP_PKEY_CTRL_GOST_PARAMSET (EVP_PKEY_ALG_CTRL+1)
 /* For GOST 28147 MAC */
 # define key_ctrl_string "key"
@@ -67,7 +69,9 @@ struct gost_pmeth_data {
                                  * filled */
     EVP_MD *md;
     unsigned char *shared_ukm;
+    size_t shared_ukm_size;     /* XXX temporary use shared_ukm and hash for 2018 CKE */
     int peer_key_used;
+    int cipher_nid;             /* KExp15/KImp15 algs */
 };
 
 struct gost_mac_pmeth_data {
@@ -111,6 +115,24 @@ typedef struct {                /* FIXME incomplete */
     GOST_KEY_TRANSPORT *gkt;
 } GOST_CLIENT_KEY_EXCHANGE_PARAMS;
 
+/*   PSKeyTransport ::= SEQUENCE {
+       PSEXP OCTET STRING,
+       ephemeralPublicKey SubjectPublicKeyInfo
+   }
+   SubjectPublicKeyInfo ::= SEQUENCE {
+       algorithm AlgorithmIdentifier,
+       subjectPublicKey BITSTRING
+   }
+   AlgorithmIdentifier ::= SEQUENCE {
+       algorithm OBJECT IDENTIFIER,
+       parameters ANY OPTIONAL
+   }*/
+typedef struct PSKeyTransport_st {
+    ASN1_OCTET_STRING *psexp;
+    X509_PUBKEY       *ephem_key;
+} PSKeyTransport_gost;
+
+DECLARE_ASN1_FUNCTIONS(PSKeyTransport_gost)
 /*
  * Hacks to shorten symbols to 31 characters or less, or OpenVMS. This mimics
  * what's done in symhacks.h, but since this is a very local header file, I
@@ -177,6 +199,12 @@ EVP_MD *imit_gost_cpa(void);
 void imit_gost_cpa_destroy(void);
 EVP_MD *imit_gost_cp_12(void);
 void imit_gost_cp_12_destroy(void);
+EVP_MD *magma_omac(void);
+void magma_omac_destroy(void);
+EVP_MD *grasshopper_omac(void);
+EVP_MD *grasshopper_omac_acpkm(void);
+void grasshopper_omac_destroy(void);
+void grasshopper_omac_acpkm_destroy(void);
 /* Cipher context used for EVP_CIPHER operation */
 struct ossl_gost_cipher_ctx {
     int paramNID;
@@ -210,48 +238,86 @@ const EVP_CIPHER *cipher_gost();
 const EVP_CIPHER *cipher_gost_cbc();
 const EVP_CIPHER *cipher_gost_cpacnt();
 const EVP_CIPHER *cipher_gost_cpcnt_12();
+const EVP_CIPHER *cipher_magma_cbc();
+const EVP_CIPHER *cipher_magma_ctr();
 void cipher_gost_destroy();
+
+void inc_counter(unsigned char *counter, size_t counter_bytes);
+
 # define EVP_MD_CTRL_KEY_LEN (EVP_MD_CTRL_ALG_CTRL+3)
 # define EVP_MD_CTRL_SET_KEY (EVP_MD_CTRL_ALG_CTRL+4)
-# define EVP_MD_CTRL_MAC_LEN (EVP_MD_CTRL_ALG_CTRL+5)
 /* EVP_PKEY_METHOD key encryption callbacks */
 /* From gost_ec_keyx.c */
-int pkey_GOST_ECcp_encrypt(EVP_PKEY_CTX *ctx, unsigned char *out,
-                           size_t *outlen, const unsigned char *key,
+int pkey_gost_encrypt(EVP_PKEY_CTX *pctx, unsigned char *out,
+                           size_t *out_len, const unsigned char *key,
                            size_t key_len);
 
-int pkey_GOST_ECcp_decrypt(EVP_PKEY_CTX *ctx, unsigned char *out,
-                           size_t *outlen, const unsigned char *in,
+int pkey_gost_decrypt(EVP_PKEY_CTX *pctx, unsigned char *key,
+                           size_t *key_len, const unsigned char *in,
                            size_t in_len);
 /* derive functions */
 /* From gost_ec_keyx.c */
-int pkey_gost_ec_derive(EVP_PKEY_CTX *ctx, unsigned char *key,
-                        size_t *keylen);
+int pkey_gost_ec_derive(EVP_PKEY_CTX *ctx, unsigned char *key, size_t *keylen);
 int fill_GOST_EC_params(EC_KEY *eckey, int nid);
-int gost_sign_keygen(DSA *dsa);
 int gost_ec_keygen(EC_KEY *ec);
 
-DSA_SIG *gost_ec_sign(const unsigned char *dgst, int dlen, EC_KEY *eckey);
-
-int gost_do_verify(const unsigned char *dgst, int dgst_len,
-                   DSA_SIG *sig, DSA *dsa);
+ECDSA_SIG *gost_ec_sign(const unsigned char *dgst, int dlen, EC_KEY *eckey);
 int gost_ec_verify(const unsigned char *dgst, int dgst_len,
-                   DSA_SIG *sig, EC_KEY *ec);
+                   ECDSA_SIG *sig, EC_KEY *ec);
 int gost_ec_compute_public(EC_KEY *ec);
+int gost_ec_point_mul(const EC_GROUP *group, EC_POINT *r, const BIGNUM *n,
+                      const EC_POINT *q, const BIGNUM *m, BN_CTX *ctx);
+
+#define CURVEDEF(a) \
+int point_mul_##a(const EC_GROUP *group, EC_POINT *r, const EC_POINT *q, const BIGNUM *m, BN_CTX *ctx);\
+int point_mul_g_##a(const EC_GROUP *group, EC_POINT *r, const BIGNUM *n, BN_CTX *ctx);\
+int point_mul_two_##a(const EC_GROUP *group, EC_POINT *r, const BIGNUM *n, const EC_POINT *q, const BIGNUM *m, BN_CTX *ctx);
+
+CURVEDEF(id_GostR3410_2001_CryptoPro_A_ParamSet)
+CURVEDEF(id_GostR3410_2001_CryptoPro_B_ParamSet)
+CURVEDEF(id_GostR3410_2001_CryptoPro_C_ParamSet)
+CURVEDEF(id_GostR3410_2001_TestParamSet)
+CURVEDEF(id_tc26_gost_3410_2012_256_paramSetA)
+CURVEDEF(id_tc26_gost_3410_2012_512_paramSetA)
+CURVEDEF(id_tc26_gost_3410_2012_512_paramSetB)
+CURVEDEF(id_tc26_gost_3410_2012_512_paramSetC)
+
+/* VKO */
+int VKO_compute_key(unsigned char *shared_key,
+                    const EC_POINT *pub_key, const EC_KEY *priv_key,
+                    const unsigned char *ukm, const size_t ukm_size,
+                    const int vko_dgst_nid);
+
+/* KDF TREE */
+int gost_kdftree2012_256(unsigned char *keyout, size_t keyout_len,
+                         const unsigned char *key, size_t keylen,
+                         const unsigned char *label, size_t label_len,
+                         const unsigned char *seed, size_t seed_len,
+                         const size_t representation);
+
+int gost_tlstree(int cipher_nid, const unsigned char *in, unsigned char *out,
+                 const unsigned char *tlsseq);
+/* KExp/KImp */
+int gost_kexp15(const unsigned char *shared_key, const int shared_len,
+                int cipher_nid, const unsigned char *cipher_key,
+                int mac_nid, unsigned char *mac_key,
+                const unsigned char *iv, const size_t ivlen,
+                unsigned char *out, int *out_len);
+int gost_kimp15(const unsigned char *expkey, const size_t expkeylen,
+                int cipher_nid, const unsigned char *cipher_key,
+                int mac_nid, unsigned char *mac_key,
+                const unsigned char *iv, const size_t ivlen,
+                unsigned char *shared_key);
 /*============== miscellaneous functions============================= */
-/* from gost_sign.c */
-/* Convert GOST R 34.11 hash sum to bignum according to standard */
-BIGNUM *hashsum2bn(const unsigned char *dgst, int len);
 /*
  * Store bignum in byte array of given length, prepending by zeros if
  * nesseccary
  */
 int store_bignum(const BIGNUM *bn, unsigned char *buf, int len);
 /* Pack GOST R 34.10 signature according to CryptoPro rules */
-int pack_sign_cp(DSA_SIG *s, int order, unsigned char *sig, size_t *siglen);
+int pack_sign_cp(ECDSA_SIG *s, int order, unsigned char *sig, size_t *siglen);
 /* from ameth.c */
 /* Get private key as BIGNUM from both 34.10-2001 keys*/
 /* Returns pointer into EVP_PKEY structure */
 BIGNUM *gost_get0_priv_key(const EVP_PKEY *pkey);
-
 #endif

@@ -81,7 +81,7 @@ enable_testing()
 
 check_version(MAJOR_VER MINOR_VER REL_VER FIX_VER)
 set(VERSION ${MAJOR_VER}.${MINOR_VER}.${REL_VER})
-report_version(${PROJECT_NAME} ${VERSION})
+report_version(${PROJECT_NAME} "${VERSION}.${FIX_VER}")
 
 if(OSX_FRAMEWORK)
     set(FRAMEWORK_VERSION "${MAJOR_VER}")
