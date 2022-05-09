@@ -260,7 +260,6 @@ if(MSVC)
         ${CMAKE_SOURCE_DIR}/ms/applink.c
         ${CMAKE_SOURCE_DIR}/ms/uplink.c
     )
-    set(PUBLIC_HDRS ${PUBLIC_HDRS} ${CMAKE_SOURCE_DIR}/ms/applink.c PARENT_SCOPE)
 
     add_definitions(-DOPENSSL_USE_APPLINK)
 
@@ -281,6 +280,10 @@ if(MSVC)
     endif()
 
     set(CSOURCES ${CSOURCES} dllmain.c)
+
+    if(NOT SKIP_INSTALL_HEADERS AND NOT SKIP_INSTALL_ALL)
+        install(FILES ${CMAKE_SOURCE_DIR}/ms/applink.c DESTINATION "${INSTALL_INC_DIR}/openssl" COMPONENT dev)
+    endif()
 endif()
 
 set(TARGET_NAME crypto)
