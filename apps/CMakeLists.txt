@@ -104,6 +104,8 @@ install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/ct_log_list.cnf DESTINATION ${INSTALL_
 install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/openssl.cnf DESTINATION ${INSTALL_SHARE_DIR})
 if(EXISTS ${CMAKE_CURRENT_BINARY_DIR}/cert.pem)
     install(FILES ${CMAKE_CURRENT_BINARY_DIR}/cert.pem DESTINATION ${INSTALL_SHARE_DIR}/certs)
+else()
+    install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/cacert.pem RENAME cert.pem DESTINATION ${INSTALL_SHARE_DIR}/certs)
 endif()
 
 # TODO: create app see https://packages.ubuntu.com/artful/amd64/openssl/filelist
