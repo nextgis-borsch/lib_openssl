@@ -93,10 +93,12 @@ if(BUILD_APPS)
 endif()
 
 # Get Mosilla certs from curl site
-file(DOWNLOAD "https://curl.haxx.se/ca/cacert.pem" ${CMAKE_CURRENT_BINARY_DIR}/cert.pem
+file(DOWNLOAD "https://curl.se/ca/cacert.pem" ${CMAKE_CURRENT_BINARY_DIR}/cert.pem
     INACTIVITY_TIMEOUT 30
     TLS_VERIFY OFF
+    STATUS CERT_DOWNLOAD_STATUS
 )
+message(STATUS "cert.pem download status: ${CERT_DOWNLOAD_STATUS}")
 
 install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/ct_log_list.cnf DESTINATION ${INSTALL_SHARE_DIR}/private)
 install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/openssl.cnf DESTINATION ${INSTALL_SHARE_DIR})
