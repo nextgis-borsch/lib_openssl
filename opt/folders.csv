@@ -1,4 +1,4 @@
-,,,"ACKNOWLEDGEMENTS,AUTHORS,CHANGES,CONTRIBUTING,FAQ,INSTALL,LICENSE,NEWS,README,README.ECC,README.ENGINE,README.FIPS"
+,,,"ACKNOWLEDGEMENTS,AUTHORS,CHANGES,CONTRIBUTING,FAQ,INSTALL,LICENSE,NEWS,README,README.ECC,README.ENGINE,README.FIPS,e_os.h"
 apps,apps,,"c,h,cnf,pem,pl"
 crypto,crypto,,"c,h,pl,S"
 crypto/aes,crypto/aes,,"c,h"
@@ -103,10 +103,10 @@ test/ct,test/ct,,"conf,sct"
 test/d2i-tests,test/d2i-tests,,der
 test/ocsp-tests,test/ocsp-tests,skip,
 test/recipes/90-test_gost_data,test/recipes/90-test_gost_data,,"conf,pem"
-test/recipes/90-test_includes_data,test/recipes/90-test_includes_data,,"cnf"
-test/recipes/90-test_includes_data/conf-includes,test/recipes/90-test_includes_data/conf-includes,,"cnf"
-test/recipes/90-test_sslapi_data,test/recipes/90-test_sslapi_data,,"txt"
-test/recipes/30-test_evp_data,test/recipes/30-test_evp_data,,"txt"
+test/recipes/90-test_includes_data,test/recipes/90-test_includes_data,,cnf
+test/recipes/90-test_includes_data/conf-includes,test/recipes/90-test_includes_data/conf-includes,,cnf
+test/recipes/90-test_sslapi_data,test/recipes/90-test_sslapi_data,,txt
+test/recipes/30-test_evp_data,test/recipes/30-test_evp_data,,txt
 test/smime-certs,test/smime-certs,skip,
 test/ssl-tests,test/ssl-tests,skip,
 test/testutil,test/testutil,,"c,h"
