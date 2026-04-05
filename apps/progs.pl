@@ -12,7 +12,7 @@
 use strict;
 use warnings;
 use lib '.';
-use configdata qw/@disablables %unified_info/;
+# use configdata qw/@disablables %unified_info/;
 
 my $opt          = shift @ARGV;
 die "Unrecognised option, must be -C or -H\n"
@@ -29,11 +29,13 @@ my $YEAR         = [gmtime($ENV{SOURCE_DATE_EPOCH} || time())]->[5] + 1900;
 # because the program apps/openssl has object files as sources, and
 # they then have the corresponding C files as source, we need to chain
 # the lookups in %unified_info
-my @openssl_source =
-    map { @{$unified_info{sources}->{$_}} }
-    grep { /\.o$/
-           && !$unified_info{attributes}->{sources}->{$apps_openssl}->{$_}->{nocheck} }
-        @{$unified_info{sources}->{$apps_openssl}};
+# my @openssl_source =
+#     map { @{$unified_info{sources}->{$_}} }
+#     grep { /\.o$/
+#            && !$unified_info{attributes}->{sources}->{$apps_openssl}->{$_}->{nocheck} }
+#         @{$unified_info{sources}->{$apps_openssl}};
+my @openssl_source = split(' ', $apps_openssl);
+my @disablables = ();
 
 foreach my $filename (@openssl_source) {
     open F, $filename or die "Couldn't open $filename: $!\n";
