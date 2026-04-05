@@ -126,11 +126,24 @@ else()
 endif()
 
 file(GLOB PUBLIC_HDRS ${CMAKE_CURRENT_SOURCE_DIR}/include/openssl/*.h)
-set(PUBLIC_HDRS ${PUBLIC_HDRS})
+# Upstream git omits generated public headers; CMake either runs Perl (build/include/openssl/*.h) or opensslv.h only.
+if(OPENSSL_USE_PERL_PUBLIC_HEADERS)
+    file(GLOB _openssl_gen_pub ${CMAKE_BINARY_DIR}/include/openssl/*.h)
+    list(APPEND PUBLIC_HDRS ${_openssl_gen_pub})
+    list(REMOVE_ITEM PUBLIC_HDRS ${CMAKE_CURRENT_SOURCE_DIR}/include/openssl/opensslv.h)
+elseif(EXISTS "${CMAKE_SOURCE_DIR}/VERSION.dat")
+    list(REMOVE_ITEM PUBLIC_HDRS ${CMAKE_CURRENT_SOURCE_DIR}/include/openssl/opensslv.h)
+    list(APPEND PUBLIC_HDRS ${CMAKE_BINARY_DIR}/include/openssl/opensslv.h)
+endif()
+if(NOT OPENSSL_USE_PERL_PUBLIC_HEADERS)
+    set(PUBLIC_HDRS ${PUBLIC_HDRS} ${CMAKE_BINARY_DIR}/openssl/configuration.h)
+endif()
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
+# Generated crypto/*.h (bn_conf.h, dso_conf.h) live under ${BINARY_DIR}/include/crypto/
+include_directories(${CMAKE_CURRENT_BINARY_DIR}/include)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/providers/common/include)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/providers/implementations/include)
 
@@ -223,8 +236,9 @@ add_custom_target(uninstall COMMAND ${CMAKE_COMMAND} -P ${CMAKE_CURRENT_BINARY_D
 
 # Add path to includes to build-tree export
 target_include_directories(${TARGETS} PUBLIC
-  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
   $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/include>
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
 )
 
 # Add all targets to the build-tree export set
