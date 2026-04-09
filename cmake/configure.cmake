@@ -690,6 +690,22 @@ set(OPENSSL_USE_PERL_PUBLIC_HEADERS FALSE)
 include("${CMAKE_SOURCE_DIR}/cmake/openssl_perl_headers.cmake")
 openssl_try_perl_public_headers()
 
+# Perl-generated configuration.h defaults to OPENSSL_NO_ENGINE (empty engine.h). GOST needs ENGINE API.
+if(BUILD_ENGINES)
+    set(_ng_cfg_h "${CMAKE_BINARY_DIR}/include/openssl/configuration.h")
+    if(EXISTS "${_ng_cfg_h}")
+        file(READ "${_ng_cfg_h}" _ng_cfg_body)
+        string(REPLACE "\r\n" "\n" _ng_cfg_body "${_ng_cfg_body}")
+        string(REPLACE
+"# ifndef OPENSSL_NO_ENGINE
+#  define OPENSSL_NO_ENGINE
+# endif"
+"/* OPENSSL_NO_ENGINE omitted: BUILD_ENGINES */"
+            _ng_cfg_body "${_ng_cfg_body}")
+        file(WRITE "${_ng_cfg_h}" "${_ng_cfg_body}")
+    endif()
+endif()
+
 # Generate include/openssl/opensslconf.h
 configure_file(${CMAKE_SOURCE_DIR}/cmake/opensslconf_4x.h.cmake.in ${CMAKE_CURRENT_BINARY_DIR}/openssl/opensslconf.h IMMEDIATE @ONLY)
 # Version + generated opensslv.h (upstream git omits include/openssl/opensslv.h; it is gitignored).

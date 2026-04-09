@@ -74,7 +74,7 @@ set(PACKAGE_NAME ${PROJECT_NAME})
 string(TOUPPER ${PACKAGE_NAME} PACKAGE_UPPER_NAME)
 
 option(STATIC_RUNTIME "Build with /MT instead /MD - make sense only on Windows" OFF)
-option(BUILD_ENGINES "Build OpenSSL engines subtree" OFF)
+option(BUILD_ENGINES "Build OpenSSL engines subtree (includes GOST engine for NextGIS)" ON)
 option(BUILD_APPS "Build OpenSSL apps subtree" OFF)
 set(BUILD_SHARED_LIBS OFF CACHE BOOL "Build shared library" FORCE)
 set(OPENSSL_NO_ASM ON CACHE BOOL "Disable assembly for migration build" FORCE)
@@ -149,6 +149,13 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/providers/implementations/includ
 
 set(LIB_NAME ${PROJECT_NAME})
 set(TARGETS ${LIB_NAME})
+
+# Link GOST engine into libcrypto when building engines (see crypto/engine/eng_all.c).
+if(BUILD_ENGINES)
+    add_definitions(-DOPENSSL_HAVE_STATIC_GOST_ENGINE)
+endif()
+
+include("${CMAKE_SOURCE_DIR}/cmake/InitGostEngine.cmake")
 
 add_subdirectory(crypto)
 add_subdirectory(ssl)
