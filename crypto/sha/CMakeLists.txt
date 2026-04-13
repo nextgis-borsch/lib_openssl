@@ -27,7 +27,7 @@
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 
 set(CSOURCES
-    sha1dgst.c sha1_one.c sha256.c sha512.c keccak1600.c
+    sha1dgst.c sha1_one.c sha256.c sha512.c keccak1600.c sha3.c
 )
 
 if(NOT OPENSSL_NO_ASM)

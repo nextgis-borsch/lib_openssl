@@ -30,6 +30,7 @@ include_directories(${CMAKE_CURRENT_BINARY_DIR})
 include_directories(${CMAKE_CURRENT_BINARY_DIR}/include)
 include_directories(${CMAKE_BINARY_DIR})
 include_directories(${CMAKE_BINARY_DIR}/include)
+include_directories(${CMAKE_SOURCE_DIR}/providers/fips/include)
 
 add_subdirectory(aria)
 
@@ -60,7 +61,7 @@ if(NOT OPENSSL_NO_POLY1305)
     add_subdirectory(poly1305)
 endif()
 
-if(NOT OPENNSSL_NO_BLAKE2)
+if(NOT OPENSSL_NO_BLAKE2)
     add_subdirectory(blake2)
 endif()
 
@@ -212,12 +213,37 @@ if(NOT OPENSSL_NO_SIPHASH)
     add_subdirectory(siphash)
 endif()
 
+file(GLOB ROOT_CSOURCES ${CMAKE_CURRENT_SOURCE_DIR}/*.c)
+file(GLOB ENCODE_DECODE_CSOURCES ${CMAKE_CURRENT_SOURCE_DIR}/encode_decode/*.c)
+file(GLOB PROPERTY_CSOURCES ${CMAKE_CURRENT_SOURCE_DIR}/property/*.c)
+file(GLOB THREAD_CSOURCES ${CMAKE_CURRENT_SOURCE_DIR}/thread/*.c ${CMAKE_CURRENT_SOURCE_DIR}/thread/arch/*.c)
+file(GLOB FFC_CSOURCES ${CMAKE_CURRENT_SOURCE_DIR}/ffc/*.c)
+file(GLOB HTTP_CSOURCES ${CMAKE_CURRENT_SOURCE_DIR}/http/*.c)
+file(GLOB HASHTABLE_CSOURCES ${CMAKE_CURRENT_SOURCE_DIR}/hashtable/*.c)
+file(GLOB ESS_CSOURCES ${CMAKE_CURRENT_SOURCE_DIR}/ess/*.c)
+
 set(CSOURCES
-    cryptlib.c mem.c mem_dbg.c cversion.c ex_data.c cpt_err.c
-    ebcdic.c uid.c o_time.c o_str.c o_dir.c o_fopen.c
-    threads_pthread.c threads_win.c threads_none.c
-    o_init.c o_fips.c mem_sec.c init.c getenv.c ctype.c
+    ${ROOT_CSOURCES}
+    ${ENCODE_DECODE_CSOURCES}
+    ${PROPERTY_CSOURCES}
+    ${THREAD_CSOURCES}
+    ${FFC_CSOURCES}
+    ${HASHTABLE_CSOURCES}
+    ${ESS_CSOURCES}
 )
+
+if(NOT OPENSSL_NO_HTTP)
+    list(APPEND CSOURCES ${HTTP_CSOURCES})
+else()
+    list(APPEND CSOURCES ${CMAKE_CURRENT_SOURCE_DIR}/http/http_lib.c)
+endif()
+
+list(REMOVE_ITEM CSOURCES
+    ${CMAKE_CURRENT_SOURCE_DIR}/dllmain.c
+)
+
+list(FILTER CSOURCES EXCLUDE REGEX ".*/LPdir_.*\\.c$")
+list(FILTER CSOURCES EXCLUDE REGEX ".*/(armcap|loongarchcap|ppccap|riscvcap|s390xcap|sparcv9cap)\\.c$")
 
 if(NOT WIN32)
     set(GEN_ASM_CMD_PREFIX "CC=\"${CMAKE_C_COMPILER}\"")

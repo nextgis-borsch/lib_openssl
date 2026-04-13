@@ -26,10 +26,7 @@
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 
-set(CSOURCES
-    dh_asn1.c dh_gen.c dh_key.c dh_lib.c dh_check.c dh_err.c dh_depr.c 
-    dh_ameth.c dh_pmeth.c dh_prn.c dh_rfc5114.c dh_kdf.c dh_meth.c dh_rfc7919.c
-)
+file(GLOB CSOURCES ${CMAKE_CURRENT_SOURCE_DIR}/*.c)
 
 set(TARGET_NAME dh)
 set(_openssl_source_lists

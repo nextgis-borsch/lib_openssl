@@ -26,16 +26,10 @@
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 
-set(CSOURCES
-    ec_lib.c ecp_smpl.c ecp_mont.c ecp_nist.c ec_cvt.c ec_mult.c
-    ec_err.c ec_curve.c ec_check.c ec_print.c ec_asn1.c ec_key.c
-    ec2_smpl.c ec2_mult.c ec_ameth.c ec_pmeth.c eck_prn.c
-    ecp_nistp224.c ecp_nistp256.c ecp_nistp521.c ecp_nistputil.c
-    ecp_oct.c ec2_oct.c ec_oct.c ec_kmeth.c ecdh_ossl.c ecdh_kdf.c
-    ecdsa_ossl.c ecdsa_sign.c ecdsa_vrf.c curve25519.c ecx_meth.c
-    curve448/arch_32/f_impl.c curve448/f_generic.c curve448/scalar.c 
-    curve448/curve448_tables.c curve448/eddsa.c curve448/curve448.c
-)
+file(GLOB CSOURCES ${CMAKE_CURRENT_SOURCE_DIR}/*.c)
+file(GLOB CURVE448_CSOURCES ${CMAKE_CURRENT_SOURCE_DIR}/curve448/*.c)
+file(GLOB CURVE448_ARCH32_CSOURCES ${CMAKE_CURRENT_SOURCE_DIR}/curve448/arch_32/*.c)
+set(CSOURCES ${CSOURCES} ${CURVE448_CSOURCES} ${CURVE448_ARCH32_CSOURCES})
 
 include_directories(
     ${CMAKE_CURRENT_SOURCE_DIR} 
@@ -62,11 +56,8 @@ endif()
 
 # MSVC doesn't support __int128, required by these optimized implementations.
 if(MSVC)
-    list(REMOVE_ITEM CSOURCES
-        ecp_nistp224.c
-        ecp_nistp256.c
-        ecp_nistp521.c
-    )
+    list(FILTER CSOURCES EXCLUDE REGEX ".*/ecp_nistp(224|256|384|521)\\.c$")
+    list(FILTER CSOURCES EXCLUDE REGEX ".*/ecp_nistz256_table\\.c$")
 endif()
 
 set(TARGET_NAME ec)

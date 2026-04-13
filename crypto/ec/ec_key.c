@@ -409,6 +409,9 @@ err:
 int ossl_ec_generate_key_dhkem(EC_KEY *eckey,
     const unsigned char *ikm, size_t ikmlen)
 {
+#ifdef OPENSSL_NO_DHKEM
+    return 0;
+#else
     int ok = 0;
 
     if (eckey->priv_key == NULL) {
@@ -435,6 +438,7 @@ err:
             EC_POINT_set_to_infinity(eckey->group, eckey->pub_key);
     }
     return ok;
+#endif
 }
 #endif
 

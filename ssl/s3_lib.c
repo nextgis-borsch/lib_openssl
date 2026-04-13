@@ -3864,7 +3864,9 @@ void ssl3_free(SSL *s)
     ssl3_free_digest_list(sc);
     OPENSSL_free(sc->s3.alpn_selected);
     OPENSSL_free(sc->s3.alpn_proposed);
+#ifndef OPENSSL_NO_QUIC
     ossl_quic_tls_free(sc->qtls);
+#endif
 
 #ifndef OPENSSL_NO_PSK
     OPENSSL_free(sc->s3.tmp.psk);

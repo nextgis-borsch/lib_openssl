@@ -21,12 +21,18 @@ const OSSL_PROVIDER_INFO ossl_predefined_providers[] = {
 #ifdef FIPS_MODULE
     { "fips", NULL, ossl_fips_intern_provider_init, NULL, 1 },
 #else
+#ifdef NEXTGIS_NO_STATIC_PROVIDERS
+    { "default", NULL, NULL, NULL, 1 },
+    { "base", NULL, NULL, NULL, 0 },
+    { "null", NULL, NULL, NULL, 0 },
+#else
     { "default", NULL, ossl_default_provider_init, NULL, 1 },
 #ifdef STATIC_LEGACY
     { "legacy", NULL, ossl_legacy_provider_init, NULL, 0 },
 #endif
     { "base", NULL, ossl_base_provider_init, NULL, 0 },
     { "null", NULL, ossl_null_provider_init, NULL, 0 },
+#endif
 #endif
     { NULL, NULL, NULL, NULL, 0 }
 };

@@ -26,16 +26,7 @@
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 
-set(CSOURCES
-    x509_def.c x509_d2.c x509_r2x.c x509_cmp.c
-    x509_obj.c x509_req.c x509spki.c x509_vfy.c
-    x509_set.c x509cset.c x509rset.c x509_err.c
-    x509name.c x509_v3.c x509_ext.c x509_att.c
-    x509type.c x509_lu.c x_all.c x509_txt.c
-    x509_trs.c by_file.c by_dir.c x509_vpm.c
-    x_crl.c t_crl.c x_req.c t_req.c x_x509.c t_x509.c 
-    x_pubkey.c x_x509a.c x_attrib.c x_exten.c x_name.c x509_meth.c
-)
+file(GLOB CSOURCES ${CMAKE_CURRENT_SOURCE_DIR}/*.c)
 
 set(TARGET_NAME x509)
 set(_openssl_source_lists

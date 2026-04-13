@@ -26,14 +26,7 @@
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 
-set(CSOURCES
-    bio_lib.c bio_cb.c bio_err.c
-    bss_mem.c bss_null.c bss_fd.c
-    bss_file.c bss_sock.c bss_conn.c
-    bf_null.c bf_buff.c b_print.c b_dump.c b_addr.c
-    b_sock.c b_sock2.c bss_acpt.c bf_nbio.c bss_log.c bss_bio.c
-    bss_dgram.c bio_meth.c bf_lbuf.c
-)
+file(GLOB CSOURCES ${CMAKE_CURRENT_SOURCE_DIR}/*.c)
 
 set(TARGET_NAME bio)
 set(_openssl_source_lists

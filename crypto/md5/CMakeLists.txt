@@ -27,7 +27,7 @@
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 
 set(CSOURCES
-    md5_dgst.c md5_one.c
+    md5_dgst.c md5_one.c md5_sha1.c
 )
 
 if(NOT OPENSSL_NO_ASM)

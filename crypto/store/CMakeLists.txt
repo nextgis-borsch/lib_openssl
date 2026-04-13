@@ -26,10 +26,7 @@
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 
-set(CSOURCES
-    store_err.c store_init.c store_lib.c store_register.c store_strings.c 
-    loader_file.c
-)
+file(GLOB CSOURCES ${CMAKE_CURRENT_SOURCE_DIR}/*.c)
 
 set(TARGET_NAME store)
 set(_openssl_source_lists

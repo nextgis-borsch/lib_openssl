@@ -33,12 +33,17 @@ set(CSOURCES
     d1_lib.c  record/rec_layer_d1.c d1_msg.c 
     statem/statem_dtls.c d1_srtp.c 
     ssl_lib.c ssl_cert.c ssl_sess.c 
-    ssl_ciph.c ssl_stat.c ssl_rsa.c 
+    ssl_ciph.c ssl_stat.c ssl_rsa.c ssl_rsa_legacy.c 
     ssl_asn1.c ssl_txt.c ssl_init.c ssl_conf.c  ssl_mcnf.c 
     bio_ssl.c ssl_err.c tls_srp.c t1_trce.c ssl_utst.c 
     record/ssl3_buffer.c record/ssl3_record.c record/dtls1_bitmap.c 
     statem/statem.c record/ssl3_record_tls13.c
+    tls_depr.c
 )
+
+file(GLOB RECORD_METHOD_CSOURCES ${CMAKE_CURRENT_SOURCE_DIR}/record/methods/*.c)
+list(FILTER RECORD_METHOD_CSOURCES EXCLUDE REGEX ".*/ktls_meth\\.c$")
+list(APPEND CSOURCES ${RECORD_METHOD_CSOURCES})
 
 set(TARGET_NAME ssl)
 set(_openssl_source_lists

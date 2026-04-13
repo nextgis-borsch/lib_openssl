@@ -26,12 +26,8 @@
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 
-set(CSOURCES
-    rsa_ossl.c rsa_gen.c rsa_lib.c rsa_sign.c rsa_saos.c rsa_err.c 
-    rsa_pk1.c rsa_ssl.c rsa_none.c rsa_oaep.c rsa_chk.c 
-    rsa_pss.c rsa_x931.c rsa_asn1.c rsa_depr.c rsa_ameth.c rsa_prn.c 
-    rsa_pmeth.c rsa_crpt.c rsa_x931g.c rsa_meth.c rsa_mp.c
-)
+file(GLOB CSOURCES ${CMAKE_CURRENT_SOURCE_DIR}/*.c)
+list(FILTER CSOURCES EXCLUDE REGEX ".*/rsa_acvp_test_params\\.c$")
 
 set(TARGET_NAME rsa)
 set(_openssl_source_lists

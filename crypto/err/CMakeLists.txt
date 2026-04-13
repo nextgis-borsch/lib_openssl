@@ -25,7 +25,7 @@
 ################################################################################
 
 set(CSOURCES
-    err.c err_all.c err_prn.c
+    err_blocks.c err_mark.c err.c err_all.c err_all_legacy.c err_prn.c err_save.c
 )
 
 set(TARGET_NAME err)

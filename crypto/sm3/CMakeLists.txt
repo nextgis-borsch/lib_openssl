@@ -27,7 +27,7 @@
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 
 set(CSOURCES
-    sm3.c m_sm3.c
+    sm3.c m_sm3.c legacy_sm3.c
 )
 
 set(TARGET_NAME sm3)

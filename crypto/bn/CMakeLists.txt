@@ -32,6 +32,7 @@ set(CSOURCES
     bn_kron.c bn_sqrt.c bn_gcd.c bn_prime.c bn_err.c bn_sqr.c
     bn_recp.c bn_mont.c bn_mpi.c bn_exp2.c bn_nist.c
     bn_depr.c bn_const.c bn_x931p.c bn_intern.c bn_dh.c bn_srp.c
+    bn_conv.c bn_rsa_fips186_4.c
 )
 
 if(OPENSSL_NO_ASM)

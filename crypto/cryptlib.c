@@ -26,6 +26,17 @@
 #define alloca _alloca
 #endif
 
+/*
+ * Static lib consumers (e.g. Qt with -lopenssl) otherwise miss these and get
+ * LNK2001 on __imp_* from OPENSSL_showfatal / OPENSSL_isservice.
+ */
+#if defined(_MSC_VER)
+# pragma comment(lib, "Ws2_32.lib")
+# pragma comment(lib, "Advapi32.lib")
+# pragma comment(lib, "User32.lib")
+# pragma comment(lib, "Crypt32.lib")
+#endif
+
 #if defined(_WIN32_WINNT) && _WIN32_WINNT >= 0x0333
 #ifdef OPENSSL_SYS_WIN_CORE
 
