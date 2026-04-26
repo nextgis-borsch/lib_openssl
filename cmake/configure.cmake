@@ -690,8 +690,8 @@ set(OPENSSL_USE_PERL_PUBLIC_HEADERS FALSE)
 include("${CMAKE_SOURCE_DIR}/cmake/openssl_perl_headers.cmake")
 openssl_try_perl_public_headers()
 
-# Perl-generated configuration.h defaults to OPENSSL_NO_ENGINE (empty engine.h). GOST needs ENGINE API.
-if(BUILD_ENGINES)
+# Perl-generated configuration.h defaults to OPENSSL_NO_ENGINE (empty engine.h). Strip it when ENGINE is enabled.
+if(NOT OPENSSL_NO_ENGINE)
     set(_ng_cfg_h "${CMAKE_BINARY_DIR}/include/openssl/configuration.h")
     if(EXISTS "${_ng_cfg_h}")
         file(READ "${_ng_cfg_h}" _ng_cfg_body)
@@ -700,7 +700,7 @@ if(BUILD_ENGINES)
 "# ifndef OPENSSL_NO_ENGINE
 #  define OPENSSL_NO_ENGINE
 # endif"
-"/* OPENSSL_NO_ENGINE omitted: BUILD_ENGINES */"
+"/* OPENSSL_NO_ENGINE omitted: ENGINE API enabled */"
             _ng_cfg_body "${_ng_cfg_body}")
         file(WRITE "${_ng_cfg_h}" "${_ng_cfg_body}")
     endif()

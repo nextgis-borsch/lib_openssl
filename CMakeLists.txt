@@ -78,7 +78,7 @@ option(BUILD_APPS "Build OpenSSL apps subtree" OFF)
 set(BUILD_SHARED_LIBS OFF CACHE BOOL "Build shared library" FORCE)
 set(OPENSSL_NO_ASM ON CACHE BOOL "Disable assembly for migration build" FORCE)
 set(OPENSSL_NO_QUIC ON CACHE BOOL "Disable QUIC for migration build" FORCE)
-set(OPENSSL_NO_ENGINE ON CACHE BOOL "Disable ENGINE for migration build" FORCE)
+set(OPENSSL_NO_ENGINE OFF CACHE BOOL "Enable OpenSSL ENGINE API (required by libpq and similar)" FORCE)
 set(OPENSSL_NO_COMP ON CACHE BOOL "Disable compression for migration build" FORCE)
 set(OPENSSL_NO_HTTP ON CACHE BOOL "Disable HTTP for migration build" FORCE)
 set(OPENSSL_NO_CMP ON CACHE BOOL "Disable CMP for migration build" FORCE)
@@ -91,7 +91,6 @@ set(OPENSSL_NO_BLAKE2 ON CACHE BOOL "Disable BLAKE2 for migration build" FORCE)
 
 add_definitions(
     -DOPENSSL_NO_QUIC
-    -DOPENSSL_NO_ENGINE
     -DOPENSSL_NO_COMP
     -DOPENSSL_NO_HTTP
     -DOPENSSL_NO_CMP
